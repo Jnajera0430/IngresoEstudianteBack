@@ -32,12 +32,12 @@ pipeline{
             steps{
                 script {
                     if (isUnix()) {
-                        sh 'rm -rf /c/sites/IngresoEstudianteBack/*'
-                        sh 'cp -r dist/* /c/sites/IngresoEstudianteBack/'
+                        sh 'rm -rf /c/sites/IngresoEstudiantesBack/*'
+                        sh 'cp -r dist/* /c/sites/IngresoEstudiantesBack/'
                     } else {
-                        bat 'rmdir /s /q c:\\sites\\IngresoEstudianteBack'
-                        bat 'mkdir c:\\sites\\IngresoEstudianteBack'
-                        bat 'xcopy dist c:\\sites\\IngresoEstudianteBack /s /e'
+                        bat 'rmdir /s /q c:\\sites\\IngresoEstudiantesBack'
+                        bat 'mkdir c:\\sites\\IngresoEstudiantesBack'
+                        bat 'xcopy dist c:\\sites\\IngresoEstudiantesBack /s /e'
                     }
                 }
             }
