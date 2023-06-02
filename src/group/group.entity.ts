@@ -6,8 +6,8 @@ import { PrimaryGeneratedColumn, Column, Entity, ManyToOne } from "typeorm";
 
 export class Group {
 
-    @PrimaryGeneratedColumn('uuid')
-    id: String
+    @PrimaryGeneratedColumn('increment')
+    id: bigint
     @Column()
     code: Number
     @Column()

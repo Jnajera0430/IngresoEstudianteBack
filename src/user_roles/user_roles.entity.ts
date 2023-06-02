@@ -5,8 +5,8 @@ import { Roles } from '../roles/roles.entity'
     name: 'user_roles'
 })
 export class User_roles{
-    @PrimaryGeneratedColumn('uuid')
-    id: string
+    @PrimaryGeneratedColumn('increment')
+    id: bigint
     
     @OneToOne(()=>Users)
     @JoinColumn()

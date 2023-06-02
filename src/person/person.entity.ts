@@ -4,8 +4,8 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 
 @Entity({name: 'person'})
 export class Person{
-    @PrimaryGeneratedColumn('uuid')
-    id: String
+    @PrimaryGeneratedColumn('increment')
+    id: bigint
 
     @Column()
     firtName: String
