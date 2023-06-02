@@ -33,11 +33,11 @@ pipeline{
                 script {
                     if (isUnix()) {
                         sh 'rm -rf /c/sites/IngresoEstudiantesBack/*'
-                        sh 'cp -r dist/* /c/sites/IngresoEstudiantesBack/'
+                        sh 'cp -r ./* /c/sites/IngresoEstudiantesBack/'
                     } else {
                         bat 'rmdir /s /q c:\\sites\\IngresoEstudiantesBack'
                         bat 'mkdir c:\\sites\\IngresoEstudiantesBack'
-                        bat 'xcopy dist c:\\sites\\IngresoEstudiantesBack /s /e'
+                        bat 'xcopy . c:\\sites\\IngresoEstudiantesBack /s /e'
                     }
                 }
             }
