@@ -15,6 +15,17 @@ pipeline{
                 }
             }
         }
+        stage("Export secrets"){
+            steps{
+                script {
+                    if (isUnix()) {
+                        sh 'pm2 stop back'
+                    } else {
+                        bat 'pm2 stop back'
+                    }
+                }
+            }
+        }
         stage("Build"){
             steps{
                 script {
@@ -46,9 +57,9 @@ pipeline{
             steps{
                 script {
                     if (isUnix()) {
-                        sh 'pm2 start /c/sites/IngresoEstudiantesBack/main.js'
+                        sh 'pm2 start /c/sites/IngresoEstudiantesBack/dist/main.js --name=back'
                     } else {
-                        bat 'pm2 start /sites/IngresoEstudiantesBack/main.js'
+                        bat 'pm2 start /sites/IngresoEstudiantesBack/dist/main.js --name=back'
                     }
                 }
             }
