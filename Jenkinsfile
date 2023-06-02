@@ -15,7 +15,7 @@ pipeline{
                 }
             }
         }
-        stage("Export secrets"){
+        stage("Stop"){
             steps{
                 script {
                     if (isUnix()) {
