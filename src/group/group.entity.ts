@@ -6,7 +6,7 @@ import { PrimaryGeneratedColumn, Column, Entity, ManyToOne } from "typeorm";
 
 export class Group {
 
-    @PrimaryGeneratedColumn('uuid', { name: 'id' })
+    @PrimaryGeneratedColumn('uuid')
     id: String
     @Column()
     code: Number

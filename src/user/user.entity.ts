@@ -4,7 +4,7 @@ import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
     name: 'users'
 })
 export class Users{
-    @PrimaryGeneratedColumn('uuid',{name: 'id'})
+    @PrimaryGeneratedColumn('uuid')
     id: string
     @Column({unique: true})
     email: string

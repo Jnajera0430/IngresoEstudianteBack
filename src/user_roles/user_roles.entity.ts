@@ -5,7 +5,7 @@ import { Roles } from '../roles/roles.entity'
     name: 'user_roles'
 })
 export class User_roles{
-    @PrimaryGeneratedColumn('uuid',{name: 'id'})
+    @PrimaryGeneratedColumn('uuid')
     id: string
     
     @OneToOne(()=>Users)
