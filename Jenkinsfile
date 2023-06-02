@@ -28,5 +28,16 @@ pipeline{
                 }
             }
         }
+        stage("Start"){
+            steps{
+                script {
+                    if (isUnix()) {
+                        sh 'npm run start'
+                    } else {
+                        bat 'npm run start'
+                    }
+                }
+            }
+        }
     }
 }
