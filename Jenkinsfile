@@ -34,7 +34,7 @@ pipeline{
                     if (isUnix()) {
                         sh 'npm run start'
                     } else {
-                        bat 'npm run start'
+                        bat 'start npm run start'
                     }
                 }
             }
