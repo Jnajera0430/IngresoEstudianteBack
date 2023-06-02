@@ -28,13 +28,27 @@ pipeline{
                 }
             }
         }
+        stage("Copy"){
+            steps{
+                script {
+                    if (isUnix()) {
+                        sh 'rm -rf /c/sites/IngresoEstudianteBack/*'
+                        sh 'cp -r dist/* /c/sites/IngresoEstudianteBack/'
+                    } else {
+                        bat 'rmdir /s /q c:\\sites\\IngresoEstudianteBack'
+                        bat 'mkdir c:\\sites\\IngresoEstudianteBack'
+                        bat 'xcopy dist c:\\sites\\IngresoEstudianteBack /s /e'
+                    }
+                }
+            }
+        }
         stage("Start"){
             steps{
                 script {
                     if (isUnix()) {
-                        sh 'npm run start'
+                        sh 'pm2 start /c/sites/IngresoEstudiantesBack/main.js'
                     } else {
-                        bat 'start npm run start'
+                        bat 'pm2 start /sites/IngresoEstudiantesBack/main.js'
                     }
                 }
             }
