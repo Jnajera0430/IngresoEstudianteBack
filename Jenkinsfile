@@ -1,16 +1,17 @@
 pipeline{
     agent any
+    environment {
+        DB_HOST = credentials('DB_HOST')
+    }
     stages{
     	stage("Export secrets"){
             steps{
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'DB_HOST', variable: 'DB_HOST')]) {
-                        if (isUnix()) {
+                    if (isUnix()) {
                             sh 'export DB_HOST=${DB_HOST}'
                         } else {
                             bat 'set DB_HOST=${DB_HOST}'
                         }
-                    }
                 }
             }
         }
