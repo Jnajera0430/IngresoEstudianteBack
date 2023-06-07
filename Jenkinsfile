@@ -7,10 +7,12 @@ pipeline{
     	stage("Export secrets"){
             steps{
                 script {
-                    if (isUnix()) {
-                        sh 'export DB_NAME=${DB_NAME}'
-                    } else {
-                        bat 'set DB_NAME=${DB_NAME}'
+                    withCredentials([usernamePassword(credentialsId: 'DB_HOST', passwordVariable: 'DB_HOST')]) {
+                        if (isUnix()) {
+                            sh 'export DB_HOST=${DB_HOST}'
+                        } else {
+                            bat 'set DB_HOST=${DB_HOST}'
+                        }
                     }
                 }
             }
