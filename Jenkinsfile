@@ -7,7 +7,7 @@ pipeline{
     	stage("Export secrets"){
             steps{
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'DB_HOST', passwordVariable: 'DB_HOST')]) {
+                    withCredentials([usernamePassword(credentialsId: 'DB_HOST', variable: 'DB_HOST')]) {
                         if (isUnix()) {
                             sh 'export DB_HOST=${DB_HOST}'
                         } else {
