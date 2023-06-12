@@ -7,7 +7,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 @Entity({name: 'person'})
 export class Person{
     @PrimaryGeneratedColumn('increment')
-    id: bigint
+    id: number
 
     @Column()
     firtName: String

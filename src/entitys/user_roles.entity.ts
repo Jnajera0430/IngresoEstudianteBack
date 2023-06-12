@@ -6,13 +6,13 @@ import { Roles } from './roles.entity'
 })
 export class User_roles{
     @PrimaryGeneratedColumn('increment')
-    id: bigint
+    id: number
     
-    @OneToOne(()=>Users)
+    @OneToOne(()=>Users,user=>user.id)
     @JoinColumn()
     idUser: Users
     
-    @OneToOne(()=>Roles)
+    @OneToOne(()=>Roles, rol => rol.id)
     @JoinColumn()
     idRol: Roles
 }

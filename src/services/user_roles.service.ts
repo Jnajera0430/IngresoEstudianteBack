@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User_roles } from 'src/entitys/user_roles.entity';
 import { Users } from 'src/entitys/user.entity';
 import { Roles } from 'src/entitys/roles.entity';
+import { UserRoleDto } from 'src/dto/roles/rol.dto';
 
 
 @Injectable()
@@ -14,7 +15,13 @@ export class UserRolesService {
         @InjectRepository(Roles) private readonly rolesRepository: Repository<Roles>,
     ) { }
 
-    async createRol(rol: bigint, user: bigint) {
+    async createRol(idRol: Roles, idUser: Users) {
+        const newUserRoles: UserRoleDto= {
+            idUser,
+            idRol
+        }
+        const userRoles: User_roles = this.user_rolesRepository.create(newUserRoles);
+        return await this.user_rolesRepository.save(userRoles);
     }
     async findUserRolByIdUser(idUser: number) {
         return await this.user_rolesRepository.findOne({

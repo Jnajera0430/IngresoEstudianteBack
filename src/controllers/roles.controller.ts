@@ -12,7 +12,7 @@ export class RolesController {
     }
 
     @Get("get")
-    async getRolByType(@Body() rol: RoleDto){
+    async getRolByType(@Body() rol: string){        
         return await this.rolesServices.getRolByType(rol);
     }
 

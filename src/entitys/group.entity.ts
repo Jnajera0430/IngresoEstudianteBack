@@ -7,7 +7,7 @@ import { PrimaryGeneratedColumn, Column, Entity, ManyToOne } from "typeorm";
 export class Group {
 
     @PrimaryGeneratedColumn('increment')
-    id: bigint
+    id: number
     @Column()
     code: Number
     @Column()

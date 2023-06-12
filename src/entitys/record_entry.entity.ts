@@ -4,7 +4,7 @@ import { EntryType } from "src/entitys/entry_type.entity";
 @Entity({name: 'record_entry'})
 export class Record_entry{
     @PrimaryGeneratedColumn('increment')
-    id: bigint
+    id: number
 
     @Column({type: 'timestamp'})
     checkIn: Date

@@ -4,7 +4,7 @@ import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "ty
 @Entity({name: 'entry_device'})
 export class EntryDevice{
     @PrimaryGeneratedColumn('increment')
-    id:bigint;
+    id:number;
 
     @Column()
     inside: boolean

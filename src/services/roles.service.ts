@@ -16,10 +16,12 @@ export class RolesService {
         return await this.rolesRepository.find();
     }
 
-    async getRolByType(rol: RoleDto){
+    async getRolByType(rol: any) {
+        console.log("hola");
+        console.log(rol);
         return await this.rolesRepository.findOne({
             where: {
-                tipo: rol.tipo
+                tipo: rol?.tipo
             }
         })
     }

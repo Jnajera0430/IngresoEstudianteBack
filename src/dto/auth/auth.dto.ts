@@ -7,7 +7,7 @@ export class AuthUserDto{
 }
 
 export class AuthUserRolDto{
-    id: bigint;
+    id: number;
     idUser: Users;
     idRol: Roles;
 }
