@@ -1,15 +1,31 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post,Res } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { AuthUserDto } from 'src/dto/auth/auth.dto';
+import { Response } from 'express';
 
 @Controller('auth')
+@ApiTags('Atuh-user')
 export class AuthController {
-    constructor(private authService: AuthService) { }
-
+    constructor(
+        private authService: AuthService
+        ) { }
+    
     @HttpCode(HttpStatus.OK)
     @Post('login')
-    signIn(@Body() userData: AuthUserDto): Promise<string> {
-        return this.authService.login(userData);
+    @ApiOperation({
+        description: 'Allowed user get a access-token in the cookies'
+    })
+    signIn(@Body() userData: AuthUserDto, @Res() res:Response): Promise<any> {
+        const token =  this.authService.login(userData);
+        res.cookie("access-token", token,{
+            maxAge: 84600,
+            path:"/",
+            secure: false,
+            httpOnly: true
+        });
+
+        return
     }
     /*
     registrar usuario y iniciar session por hacer

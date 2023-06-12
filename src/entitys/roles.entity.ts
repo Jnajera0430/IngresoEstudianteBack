@@ -3,9 +3,9 @@ import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
 @Entity({name: 'roles'})
 export class Roles{
     @PrimaryGeneratedColumn('increment')
-    id: bigint
+    id: number
 
-    @Column()
-    tipo:String
+    @Column({unique: true})
+    tipo:string
 
 }
