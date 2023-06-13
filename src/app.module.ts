@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './models/user.module';
-import { UserRolesModule } from './models/user_roles.module';
 import { RolesModule } from './models/roles.module';
 import { PersonModule } from './models/person.module';
 import { GroupModule } from './models/group.module';
@@ -38,7 +37,7 @@ import { AuthModule } from './middlewares/auth/auth.module';
         entities:[__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true,
       }),
-      inject: [ConfigService]}), UserModule, UserRolesModule, RolesModule, PersonModule, GroupModule, CareerModule, PersonTypeModule, RecordEntryModule, EntryTypeModule, EntryDeviceModule, DeviceModule, DeviceTypeModule, VehicleModule, VehicleTypeModule, EntryVehicleModule, AuthModule,],
+      inject: [ConfigService]}), UserModule, RolesModule, PersonModule, GroupModule, CareerModule, PersonTypeModule, RecordEntryModule, EntryTypeModule, EntryDeviceModule, DeviceModule, DeviceTypeModule, VehicleModule, VehicleTypeModule, EntryVehicleModule, AuthModule,],
   controllers: [AppController],
   providers: [AppService],
 })

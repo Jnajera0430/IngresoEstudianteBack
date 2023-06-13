@@ -1,4 +1,5 @@
-import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn, JoinColumn, OneToOne, ManyToMany} from 'typeorm';
+import { Roles } from './roles.entity';
 
 @Entity({
     name: 'users'
@@ -14,4 +15,7 @@ export class Users{
     password: string
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date
+
+    @ManyToMany(()=>Roles, roles=> roles.user)
+    role: Roles[] 
 }

@@ -17,7 +17,7 @@ export class Group {
     @Column()
     state: Number
 
-    @ManyToOne(() => Career, career => career.id)
+    @ManyToOne(() => Career, career => career.groups)
     career: Career
 
     @ManyToOne(()=> Person, person=> person.groups)

@@ -5,7 +5,6 @@ import { CreateUserDto, UpdateUserDto } from 'src/dto/user/user.dto';
 import { Users } from 'src/entitys/user.entity';
 import { Bcrypt } from 'src/middlewares/bcrypt/bcrypt.middleware';
 import { Repository } from 'typeorm';
-import { UserRolesService } from './user_roles.service';
 import { RolesService } from './roles.service';
 import { RoleDto } from 'src/dto/roles/rol.dto';
 import { Roles } from 'src/entitys/roles.entity';
@@ -15,12 +14,11 @@ export class UserService {
     constructor(
         private configServiceEnv: ConfigServiceEnv,
         @InjectRepository(Users) private userRepository: Repository<Users>,
-        private readonly userRolesServices: UserRolesService,
         private readonly rolesServices: RolesService
     ) { }
 
     async findAll(): Promise<Users[]> {
-        return await this.userRepository.find();
+        return await this.userRepository.find({relations:["userRole"]});
     }
     async findOne(emailIngresado: string): Promise<Users> {
         return await this.userRepository.findOne({
@@ -37,13 +35,18 @@ export class UserService {
         });
     }
     async createUser(newUser: CreateUserDto): Promise<Users> {
-        const bcryptService: Bcrypt = new Bcrypt();
+        try {
+            const bcryptService: Bcrypt = new Bcrypt();
         newUser.password = await bcryptService.hashPassword(newUser.password);
         const user = this.userRepository.create(newUser);
         const userCreated:Users = await this.userRepository.save(user);
         const rol:Roles = await this.rolesServices.getRolByType(newUser.tipo);
-        await this.userRolesServices.createRol(rol,userCreated);
         return userCreated;
+        } catch (error) {
+            console.log(error);
+            
+        }
+        
     }
 
     async delete(id: number): Promise<any> {

@@ -17,8 +17,6 @@ export class RolesService {
     }
 
     async getRolByType(rol: any) {
-        console.log("hola");
-        console.log(rol);
         return await this.rolesRepository.findOne({
             where: {
                 tipo: rol?.tipo
