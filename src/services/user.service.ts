@@ -1,4 +1,4 @@
-import { Injectable,NotFoundException  } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigServiceEnv } from 'src/config/config.service';
 import { CreateUserDto, UpdateUserDto } from 'src/dto/user/user.dto';
@@ -18,9 +18,9 @@ export class UserService {
     ) { }
 
     async findAll(): Promise<Users[]> {
-        return await this.userRepository.find({relations:["userRole"]});
+        return await this.userRepository.find({ relations: ["userRole"] });
     }
-    async findOne(emailIngresado: string): Promise<Users> {
+    async findOneByEmail(emailIngresado: string): Promise<Users> {
         return await this.userRepository.findOne({
             where: {
                 email: emailIngresado
@@ -37,16 +37,17 @@ export class UserService {
     async createUser(newUser: CreateUserDto): Promise<Users> {
         try {
             const bcryptService: Bcrypt = new Bcrypt();
-        newUser.password = await bcryptService.hashPassword(newUser.password);
-        const user = this.userRepository.create(newUser);
-        const userCreated:Users = await this.userRepository.save(user);
-        const rol:Roles = await this.rolesServices.getRolByType(newUser.tipo);
-        return userCreated;
+            newUser.password = await bcryptService.hashPassword(newUser.password);
+            const user = this.userRepository.create(newUser);
+            const rol: Roles = await this.rolesServices.getRolByType(newUser.tipo);
+            user.role = rol.id;
+            const userCreated: Users = await this.userRepository.save(user);
+            console.log({ userCreated });
+            return userCreated
         } catch (error) {
             console.log(error);
-            
         }
-        
+
     }
 
     async delete(id: number): Promise<any> {

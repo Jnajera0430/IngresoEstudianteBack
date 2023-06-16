@@ -21,7 +21,7 @@ export class RolesService {
             where: {
                 tipo: rol?.tipo
             }
-        })
+        });
     }
     async findRolByid(id: number) {
         return await this.rolesRepository.findOneBy({ id })

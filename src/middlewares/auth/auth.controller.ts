@@ -16,8 +16,9 @@ export class AuthController {
     @ApiOperation({
         description: 'Allowed user get a access-token in the cookies'
     })
-    signIn(@Body() userData: AuthUserDto, @Res() res:Response): Promise<any> {
-        const token =  this.authService.login(userData);
+    async signIn(@Body() userData: AuthUserDto, @Res() res:Response): Promise<any> {
+        const token = await this.authService.login(userData);
+        console.log({token});
         res.cookie("access-token", token,{
             maxAge: 84600,
             path:"/",

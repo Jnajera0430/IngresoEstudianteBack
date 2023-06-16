@@ -20,4 +20,8 @@ export class ConfigServiceEnv {
     get dbPort(): number {
       return this.configService.get<number>('DB_PORT');
     }
+
+    get secretKey(): string {
+      return this.configService.get<string>('SECRET_KEY_JWT');
+    }
 }

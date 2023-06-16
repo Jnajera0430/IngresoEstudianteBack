@@ -1,4 +1,4 @@
-import {Entity, Column, PrimaryGeneratedColumn, ManyToMany} from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn, OneToOne} from 'typeorm';
 import { Users } from './user.entity';
 
 @Entity({name: 'roles'})
@@ -8,7 +8,4 @@ export class Roles{
 
     @Column({unique: true})
     tipo:string
-
-    @ManyToMany(()=>Users,user=>user.role)
-    user:Users[]
 }

@@ -1,4 +1,4 @@
-import {Entity, Column, PrimaryGeneratedColumn, JoinColumn, OneToOne, ManyToMany} from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn, OneToOne} from 'typeorm';
 import { Roles } from './roles.entity';
 
 @Entity({
@@ -16,6 +16,6 @@ export class Users{
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date
 
-    @ManyToMany(()=>Roles, roles=> roles.user)
-    role: Roles[] 
+    @OneToOne(()=>Roles, rol=>rol.id)
+    role: number 
 }
