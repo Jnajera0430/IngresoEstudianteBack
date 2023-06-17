@@ -1,21 +1,36 @@
-import {Entity, Column, PrimaryGeneratedColumn, OneToOne} from 'typeorm';
-import { Roles } from './roles.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  JoinColumn,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
+import { Role } from './roles.entity';
 
 @Entity({
-    name: 'users'
+  name: 'users',
 })
-export class Users{
-    @PrimaryGeneratedColumn('increment')
-    id: number
-    @Column({unique: true})
-    email: string
-    @Column()
-    username: string
-    @Column()
-    password: string
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt: Date
+export class User {
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
-    @OneToOne(()=>Roles, rol=>rol.id)
-    role: number 
+  @Column({ unique: true })
+  email: string;
+
+  @Column()
+  username: string;
+
+  @Column()
+  password: string;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
+
+  @ManyToMany(() => Role, (rol) => rol.users, {
+    nullable: true,
+  })
+  @JoinTable({ name: 'user_rol' })
+  role: Role[];
 }

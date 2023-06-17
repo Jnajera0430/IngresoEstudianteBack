@@ -12,8 +12,8 @@ export class RolesController {
     }
 
     @Get("get")
-    async getRolByType(@Body() rol: string){        
-        return await this.rolesServices.getRolByType(rol);
+    async getRolByType(@Body() tipoRol: number[]){        
+        return await this.rolesServices.getRolByType(tipoRol);
     }
 
     @Post()

@@ -1,5 +1,5 @@
-import { Users } from 'src/entitys/user.entity';
-import { Roles } from 'src/entitys/roles.entity';
+import { User } from 'src/entitys/user.entity';
+import { Role } from 'src/entitys/roles.entity';
 
 export class AuthUserDto{
     email: string;
@@ -8,8 +8,8 @@ export class AuthUserDto{
 
 export class AuthUserRolDto{
     id: number;
-    idUser: Users;
-    idRol: Roles;
+    idUser: User;
+    idRol: Role;
 }
 
 export class AuthUserRolFoundDto{

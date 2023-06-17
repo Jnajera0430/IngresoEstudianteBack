@@ -1,10 +1,23 @@
+import { Role } from "src/entitys/roles.entity";
+import { User } from "src/entitys/user.entity";
 
 export class CreateUserDto{
     email:string;
     username:string;
     password:string;
-    tipo: string
+    roles: number[]
 }
+
+export class TokenDto{
+    sub:number;
+    user: User;
+    iat?:bigint
+}
+
+export class AuthLogin {
+    token: string;
+    roles: Role[];
+  }
 
 export class UpdateUserDto{
     email?:string;
