@@ -9,10 +9,8 @@ import {
 import { ApiTags, ApiOperation, ApiParam, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { AuthUserDto } from 'src/dto/auth/auth.dto';
-import { Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
-import { TokenDto } from 'src/dto/user/user.dto';
-import { roleEnum } from 'src/dto/roles/rol.dto';
+import { Response } from 'express';
 
 @Controller('auth')
 @ApiTags('Atuh-user')
@@ -20,7 +18,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly jwtServices: JwtService,
-  ) {}
+  ) { }
   @HttpCode(HttpStatus.OK)
   @Post('login')
   @ApiOperation({
@@ -32,16 +30,35 @@ export class AuthController {
     examples: {
       example1: {
         value: {
-          email: 'johndoe@example.com',
-          password: 'password123',
+          email: 'example@gm.com',
+          password: 'sena123',
         },
         summary: 'Example of values required',
       },
     },
   })
-  async signIn(@Body() userData: AuthUserDto): Promise<Object> {
-    const { token } = await this.authService.login(userData);
-    return { access_token: token };
+  async signIn(@Res({ passthrough: true }) response: Response, @Body() userData: AuthUserDto): Promise<Object> {
+    const { token, rol } = await this.authService.login(userData);
+    switch (rol) {
+      case 'Super usuario' || 'Administrador' || 'Auditor':
+        response.cookie("access_token", token, {
+          httpOnly: true,
+          path: '/',
+          secure: true,
+          maxAge: 86400,
+        });
+        break;
+      case 'Puesto de servicio':
+        response.cookie("access_token", token, {
+          httpOnly: true,
+          path: '/',
+          secure: true,
+          maxAge: null,
+          expires: null
+        });
+        break;
+    }
+    return
   }
   /*
     registrar usuario y iniciar session por hacer

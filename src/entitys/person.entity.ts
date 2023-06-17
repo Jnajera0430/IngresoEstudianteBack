@@ -2,7 +2,7 @@ import { Device } from "src/entitys/device.entity";
 import { Group } from "src/entitys/group.entity";
 import { PersonType } from "src/entitys/person_type.entity";
 import { Vehicle } from "src/entitys/vehicle.entity";
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { Record_entry } from "./record_entry.entity";
 
 @Entity({name: 'person'})
@@ -22,7 +22,8 @@ export class Person{
     @Column()
     state: boolean
     
-    @OneToMany(()=>Group, group=> group.person)
+    @ManyToMany(()=>Group, group=> group.students)
+    @JoinTable({name: "person_group"})
     groups: Group[]
     
     @OneToMany(()=> PersonType, personType => personType.id)

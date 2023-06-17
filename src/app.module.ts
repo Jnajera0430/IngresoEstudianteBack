@@ -15,8 +15,8 @@ import { DeviceTypeModule } from './models/device_type.module';
 import { VehicleModule } from './models/vehicle.module';
 import { VehicleTypeModule } from './models/vehicle_type.module';
 import { EntryVehicleModule } from './models/entry_vehicle.module';
-import {TypeOrmModule}  from '@nestjs/typeorm';
-import {configuration} from './config/configuration'
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { configuration } from './config/configuration'
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './middlewares/auth/auth.module';
 @Module({
@@ -34,11 +34,12 @@ import { AuthModule } from './middlewares/auth/auth.module';
         username: configService.get('DB_USER'),
         password: configService.get('DB_PASS'),
         database: configService.get('DB_NAME'),
-        entities:[__dirname + '/**/*.entity{.ts,.js}'],
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true,
       }),
-      inject: [ConfigService]}), UserModule, RolesModule, PersonModule, GroupModule, CareerModule, PersonTypeModule, RecordEntryModule, EntryTypeModule, EntryDeviceModule, DeviceModule, DeviceTypeModule, VehicleModule, VehicleTypeModule, EntryVehicleModule, AuthModule,],
+      inject: [ConfigService]
+    }), UserModule, RolesModule, PersonModule, GroupModule, CareerModule, PersonTypeModule, RecordEntryModule, EntryTypeModule, EntryDeviceModule, DeviceModule, DeviceTypeModule, VehicleModule, VehicleTypeModule, EntryVehicleModule, AuthModule,],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

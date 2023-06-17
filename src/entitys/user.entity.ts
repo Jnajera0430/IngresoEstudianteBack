@@ -2,8 +2,6 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  OneToOne,
-  JoinColumn,
   ManyToMany,
   JoinTable,
 } from 'typeorm';
@@ -27,7 +25,7 @@ export class User {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
-
+  
   @ManyToMany(() => Role, (rol) => rol.users, {
     nullable: true,
   })
