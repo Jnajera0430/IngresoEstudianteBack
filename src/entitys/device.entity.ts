@@ -5,7 +5,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn
 @Entity({ name: 'devices' })
 export class Device {
     @PrimaryGeneratedColumn('increment')
-    id: bigint
+    id: number
     @Column({ type: 'timestamp' })
     dateOfEntry: Date
 

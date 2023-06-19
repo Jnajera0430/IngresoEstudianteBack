@@ -1,13 +1,13 @@
 import { Career } from "src/entitys/career.entity";
 import { Person } from "src/entitys/person.entity";
-import { PrimaryGeneratedColumn, Column, Entity, ManyToOne } from "typeorm";
+import { PrimaryGeneratedColumn, Column, Entity, ManyToOne, ManyToMany, JoinTable } from "typeorm";
 
 @Entity({ name: 'groups' })
 
 export class Group {
 
     @PrimaryGeneratedColumn('increment')
-    id: bigint
+    id: number
     @Column()
     code: Number
     @Column()
@@ -17,10 +17,19 @@ export class Group {
     @Column()
     state: Number
 
-    @ManyToOne(() => Career, career => career.id)
+    @ManyToOne(() => Career, career => career.groups,{
+        cascade: true,
+        eager: true,
+        nullable: false,
+        onDelete:"CASCADE",
+        onUpdate:"CASCADE"
+    })
     career: Career
 
-    @ManyToOne(()=> Person, person=> person.groups)
-    person: Person
+    @ManyToMany(()=> Person, person=> person.groups,{
+        nullable:true
+    })
+    @JoinTable()
+    students: Person[]
 
 }

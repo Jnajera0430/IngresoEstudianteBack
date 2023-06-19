@@ -5,12 +5,23 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { configuration } from './config/configuration';
 import { ConfigModule, ConfigService } from '@nestjs/config/dist';
 import { UserModule } from './models/user.module';
-import { UserRolesModule } from './models/user_roles.module';
 import { RolesModule } from './models/roles.module';
 import { PersonModule } from './models/person.module';
 import { GroupModule } from './models/group.module';
 import { CareerModule } from './models/career.module';
 import { PersonTypeModule } from './models/person_type.module';
+import { RecordEntryModule } from './models/record_entry.module';
+import { EntryTypeModule } from './models/entry_type.module';
+import { EntryDeviceModule } from './models/entry_device.module';
+import { DeviceModule } from './models/device.module';
+import { DeviceTypeModule } from './models/device_type.module';
+import { VehicleModule } from './models/vehicle.module';
+import { VehicleTypeModule } from './models/vehicle_type.module';
+import { EntryVehicleModule } from './models/entry_vehicle.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { configuration } from './config/configuration'
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from './middlewares/auth/auth.module';
 
 @Module({
   imports: [
@@ -30,17 +41,10 @@ import { PersonTypeModule } from './models/person_type.module';
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true,
       }),
-      inject: [ConfigService],
-    }),
-    UserModule,
-    UserRolesModule,
-    RolesModule,
-    PersonModule,
-    GroupModule,
-    CareerModule,
-    PersonTypeModule,
-  ],
+
+      inject: [ConfigService]
+    }), UserModule, RolesModule, PersonModule, GroupModule, CareerModule, PersonTypeModule, RecordEntryModule, EntryTypeModule, EntryDeviceModule, DeviceModule, DeviceTypeModule, VehicleModule, VehicleTypeModule, EntryVehicleModule, AuthModule,],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

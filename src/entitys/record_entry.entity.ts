@@ -1,10 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne } from "typeorm";
 import { Person } from "src/entitys/person.entity";
 import { EntryType } from "src/entitys/entry_type.entity";
 @Entity({name: 'record_entry'})
 export class Record_entry{
     @PrimaryGeneratedColumn('increment')
-    id: bigint
+    id: number
 
     @Column({type: 'timestamp'})
     checkIn: Date
@@ -12,8 +12,7 @@ export class Record_entry{
     @Column({type: 'timestamp'})
     checkOut: Date
 
-    @OneToOne(()=>Person)
-    @JoinColumn()
+    @ManyToOne(()=>Person, person=>person.recorEntry)
     person: Person
 
     @OneToOne(()=>EntryType)

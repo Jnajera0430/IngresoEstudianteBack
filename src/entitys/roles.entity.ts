@@ -1,11 +1,21 @@
-import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+} from 'typeorm';
+import { User } from './user.entity';
 
-@Entity({name: 'roles'})
-export class Roles{
-    @PrimaryGeneratedColumn('increment')
-    id: bigint
+@Entity({ name: 'roles' })
+export class Role {
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
-    @Column()
-    tipo:String
+  @Column({ unique: true })
+  tipo: string;
 
+  @ManyToMany(() => User, (user) => user.role, {
+    nullable: true,
+  })
+  users: User[];
 }

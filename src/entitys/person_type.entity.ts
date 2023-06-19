@@ -1,14 +1,14 @@
 import { Person } from "src/entitys/person.entity";
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({name: 'person_type'})
 export class PersonType{
     @PrimaryGeneratedColumn('increment')
-    id:bigint
+    id:number
 
     @Column()
     name:string
 
-    @ManyToOne(()=>Person, person=>person.personTypes)
-    person: Person
+    @OneToMany(()=>Person, person=>person.personTypes)
+    person: Person[]
 }

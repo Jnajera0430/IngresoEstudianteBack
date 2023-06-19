@@ -5,7 +5,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn
 @Entity({ name: 'entry_vehicle' })
 export class EntryVehicle {
     @PrimaryGeneratedColumn('increment')
-    id: bigint
+    id: number
 
     @Column()
     inside: boolean
