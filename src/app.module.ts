@@ -18,9 +18,6 @@ import { DeviceTypeModule } from './models/device_type.module';
 import { VehicleModule } from './models/vehicle.module';
 import { VehicleTypeModule } from './models/vehicle_type.module';
 import { EntryVehicleModule } from './models/entry_vehicle.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { configuration } from './config/configuration'
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './middlewares/auth/auth.module';
 
 @Module({
