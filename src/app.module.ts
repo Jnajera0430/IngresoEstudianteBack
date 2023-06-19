@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { configuration } from './config/configuration';
+import { ConfigModule, ConfigService } from '@nestjs/config/dist';
 import { UserModule } from './models/user.module';
 import { RolesModule } from './models/roles.module';
 import { PersonModule } from './models/person.module';
@@ -19,11 +22,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { configuration } from './config/configuration'
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './middlewares/auth/auth.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
-      isGlobal: true
+      isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -37,6 +41,7 @@ import { AuthModule } from './middlewares/auth/auth.module';
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true,
       }),
+
       inject: [ConfigService]
     }), UserModule, RolesModule, PersonModule, GroupModule, CareerModule, PersonTypeModule, RecordEntryModule, EntryTypeModule, EntryDeviceModule, DeviceModule, DeviceTypeModule, VehicleModule, VehicleTypeModule, EntryVehicleModule, AuthModule,],
   controllers: [AppController],
