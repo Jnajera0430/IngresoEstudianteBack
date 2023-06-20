@@ -12,8 +12,12 @@ export class EntryDevice{
     @Column()
     out: boolean
 
-    @OneToOne(()=>Record_entry)
-    @JoinColumn()
+    @OneToOne(()=>Record_entry,(recordEntry)=>recordEntry.deviceEntry,{
+        nullable: true,
+    })
+    @JoinColumn({
+        name: 'recordEntry'
+    })
     recordEntry: Record_entry
 
 }

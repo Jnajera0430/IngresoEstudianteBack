@@ -2,7 +2,7 @@ import { Device } from "src/entitys/device.entity";
 import { Group } from "src/entitys/group.entity";
 import { PersonType } from "src/entitys/person_type.entity";
 import { Vehicle } from "src/entitys/vehicle.entity";
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable, ManyToOne, JoinColumn } from "typeorm";
 import { Record_entry } from "./record_entry.entity";
 
 @Entity({name: 'person'})
@@ -11,7 +11,7 @@ export class Person{
     id: number
 
     @Column()
-    firtName: String
+    firtsName: String
 
     @Column()
     lastName: String
@@ -27,13 +27,14 @@ export class Person{
     groups: Group[]
     
     @ManyToOne(()=> PersonType, personType => personType.person)
+    @JoinColumn({name:'personTypes'})
     personTypes: PersonType
 
     @OneToMany(()=> Device, device => device.person)
     device: Device[]
 
     @OneToMany(()=> Vehicle, vehicle => vehicle.person)
-    vehicle: Vehicle[]
+    vehicles: Vehicle[]
     
     @OneToMany(()=>Record_entry,recordEntry=>recordEntry.person)
     recorEntry: Record_entry[]

@@ -15,7 +15,11 @@ export class Device {
     @ManyToOne(()=>Person, person=>person.device)
     person: Person
 
-    @OneToOne(()=>DeviceType)
-    @JoinColumn()
+    @OneToOne(()=>DeviceType,(type)=>type.device,{
+        cascade:true,
+        eager: true,
+        nullable:true
+    })
+    @JoinColumn({name:'deviceType'})
     deviceType: DeviceType
 }

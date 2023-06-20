@@ -11,7 +11,7 @@ export class AppController {
   @ApiOperation({
     description: 'Ejemplo get'
   })
-  getHello(): string {
+  getHello() {
     return this.appService.getHello();
   }
 }

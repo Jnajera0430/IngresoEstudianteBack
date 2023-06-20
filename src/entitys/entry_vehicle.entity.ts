@@ -14,8 +14,10 @@ export class EntryVehicle {
     out: Date
 
     @ManyToOne(()=>Vehicle,vehicle=>vehicle)
+    @JoinColumn({name: 'vehicle'})
     vehicle: Vehicle
 
-    @OneToOne(()=>Record_entry)
+    @OneToOne(()=>Record_entry,recordEntry=>recordEntry.vehicleEntry)
+    @JoinColumn({name:'recordEntry'})
     recordEntry: Record_entry
 }

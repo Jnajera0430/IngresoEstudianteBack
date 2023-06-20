@@ -1,7 +1,7 @@
 import { EntryVehicle } from "src/entitys/entry_vehicle.entity";
 import { Person } from "src/entitys/person.entity";
 import { VehicleType } from "src/entitys/vehicle_type.entity";
-import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({name: 'vehicles'})
 export class Vehicle{
@@ -14,13 +14,23 @@ export class Vehicle{
     @Column({ type: 'timestamp' })
     dateOfOut: Date
 
-    @ManyToOne(()=>Person, person=>person.vehicle)
+    @ManyToOne(()=>Person, person=>person.vehicles)
+    @JoinColumn({name:'person'})
     person: Person
 
-    @OneToOne(()=>VehicleType)
+    @OneToOne(()=>VehicleType,tipo => tipo.vehicle,{
+        cascade:true,
+        eager: true,
+        nullable:true
+    })
+    @JoinColumn({name: 'vehicleType'})
     vehicleType: VehicleType
 
-    @OneToMany(()=>EntryVehicle, entryVehicle=>entryVehicle.vehicle)
+    @OneToMany(()=>EntryVehicle, entryVehicle=>entryVehicle.vehicle,{
+        cascade:true,
+        eager: true,
+        nullable:true
+    })
     entryVehicle:EntryVehicle[]
 
 }
