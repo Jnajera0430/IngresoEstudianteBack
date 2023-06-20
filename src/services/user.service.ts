@@ -15,15 +15,25 @@ export class UserService {
     private configServiceEnv: ConfigServiceEnv,
     @InjectRepository(User) private userRepository: Repository<User>,
     private readonly rolesServices: RolesService,
-  ) {}
+  ) { }
 
+  /**
+     * Finds all Users and returns the list of Persons if the status is true.
+     * @returns Promise
+     */
   async findAll(): Promise<User[]> {
-    return await this.userRepository.find({ relations: ['userRole'] });
+    return await this.userRepository.find({
+      where: {
+        state: true
+      },
+      relations: ['userRole']
+    });
   }
   async findOneByEmail(emailIngresado: string): Promise<User> {
     return await this.userRepository.findOne({
       where: {
         email: emailIngresado,
+        state: true
       },
       loadRelationIds: {
         relations: ['role'],
@@ -34,6 +44,7 @@ export class UserService {
     return await this.userRepository.findOne({
       where: {
         id: id,
+        state: true
       },
       loadRelationIds: {
         relations: ['role'],
@@ -61,7 +72,8 @@ export class UserService {
     const userFound: User = await this.userRepository.findOne({
       where: {
         id: id,
-      },
+        state:true
+      }
     });
 
     if (!userFound) {

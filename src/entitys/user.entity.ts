@@ -25,7 +25,9 @@ export class User {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
-  
+
+  @Column({type: "boolean",default:true,})
+  state: boolean;
   @ManyToMany(() => Role, (rol) => rol.users, {
     nullable: true,
   })

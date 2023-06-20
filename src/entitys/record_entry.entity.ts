@@ -15,6 +15,7 @@ export class Record_entry{
     checkOut: Date
 
     @ManyToOne(()=>Person, person=>person.recorEntry)
+    @JoinColumn({name: 'person'})
     person: Person
 
     @OneToOne(()=>EntryVehicle,(entryVehicle)=>entryVehicle.recordEntry)

@@ -6,9 +6,10 @@ import { Group } from "src/entitys/group.entity";
 import { PersonType } from "src/entitys/person_type.entity";
 import { Device } from 'src/entitys/device.entity';
 import { Vehicle } from 'src/entitys/vehicle.entity';
+import { Person } from 'src/entitys/person.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Group, PersonType, Device, Vehicle])],
+  imports:[TypeOrmModule.forFeature([Group, PersonType, Device, Vehicle,Person])],
   providers: [PersonService],
   controllers: [PersonController]
 })

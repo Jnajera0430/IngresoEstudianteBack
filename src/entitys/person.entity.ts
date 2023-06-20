@@ -19,23 +19,43 @@ export class Person{
     @Column()
     document: Number
 
-    @Column()
+    @Column({type: "boolean", default: true})
     state: boolean
     
-    @ManyToMany(()=>Group, group=> group.students)
+    @ManyToMany(()=>Group, group=> group.students,{
+        cascade:true,
+        eager:true,
+        nullable:true
+    })
     @JoinTable({name: "person_group"})
     groups: Group[]
     
-    @ManyToOne(()=> PersonType, personType => personType.person)
+    @ManyToOne(()=> PersonType, personType => personType.person,{
+        cascade:true,
+        eager:true,
+        nullable:true
+    })
     @JoinColumn({name:'personTypes'})
     personTypes: PersonType
 
-    @OneToMany(()=> Device, device => device.person)
+    @OneToMany(()=> Device, device => device.person,{
+        cascade:true,
+        eager:true,
+        nullable:true
+    })
     device: Device[]
 
-    @OneToMany(()=> Vehicle, vehicle => vehicle.person)
+    @OneToMany(()=> Vehicle, vehicle => vehicle.person,{
+        cascade:true,
+        eager:true,
+        nullable:true
+    })
     vehicles: Vehicle[]
     
-    @OneToMany(()=>Record_entry,recordEntry=>recordEntry.person)
+    @OneToMany(()=>Record_entry,recordEntry=>recordEntry.person,{
+        cascade:true,
+        eager:true,
+        nullable:true
+    })
     recorEntry: Record_entry[]
 }
