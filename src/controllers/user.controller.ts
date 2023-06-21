@@ -13,7 +13,7 @@ import { UserService } from 'src/services/user.service';
 @ApiTags("api-User")
 export class UserController {
     constructor(private readonly userService: UserService) { }
-
+    //documentar la request
     @Post()
     @ApiOperation({
         summary: "Create new user",
