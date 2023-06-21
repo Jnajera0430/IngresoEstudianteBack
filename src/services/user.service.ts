@@ -35,7 +35,8 @@ export class UserService {
       where: {
         state: true
       },
-      relations: ['userRole']
+      relations: ['role'],
+      select:['id','email','username','state','createdAt','role']
     });
   }
 
@@ -54,6 +55,7 @@ export class UserService {
       loadRelationIds: {
         relations: ['role'],
       },
+      select:['id','email','username','state','createdAt','role']
     });
   }
   /**
@@ -71,6 +73,7 @@ export class UserService {
       loadRelationIds: {
         relations: ['role'],
       },
+      select:['id','email','username','state','createdAt','role']
     });
   }
 
@@ -85,14 +88,14 @@ export class UserService {
       const bcryptService: Bcrypt = new Bcrypt();
       newUser.password = await bcryptService.hashPassword(newUser.password);
       const user = this.userRepository.create(newUser);
-      const roles: Role[] = await this.rolesServices.getRolByType(
+      const roles: Role[] = await this.rolesServices.getRolById(
         newUser.roles,
       );
       user.role = roles;
       const userCreated: User = await this.userRepository.save(user);
-      console.log({ userCreated });
       return userCreated;
     } catch (error) {
+      
       console.log(error);
     }
   }

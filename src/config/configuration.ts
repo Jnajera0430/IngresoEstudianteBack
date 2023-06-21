@@ -5,7 +5,7 @@ export const configuration = () => ({
         secret: process.env.JWT_SECRET,
         expiresIn: process.env.JWT_EXPIRES_IN,
     },
-    database:{
+    database: {
         DB_HOST: process.env.DB_HOST,
         DB_USER: process.env.DB_USER,
         DB_PASS: process.env.DB_PASS,
@@ -14,3 +14,4 @@ export const configuration = () => ({
     }
 
 });
+

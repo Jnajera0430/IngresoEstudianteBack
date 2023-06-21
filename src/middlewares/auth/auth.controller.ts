@@ -6,14 +6,17 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiParam, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiUnauthorizedResponse, ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { AuthUserDto } from 'src/dto/auth/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import { bodyExampleAuthUser } from 'src/document/body.document';
+import { responseOkAuthUser } from 'src/document/responses.200';
+import { responseErrorExampleAuthUser } from 'src/document/responses.400';
 
 @Controller('auth')
-@ApiTags('Atuh-user')
+@ApiTags('Auth-user')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
@@ -22,21 +25,13 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   @ApiOperation({
+    summary: "Authenticate the user to log in to the application",
     description: 'sending the access-token for authenticate ',
+
   })
-  @ApiBody({
-    type: AuthUserDto,
-    description: 'Values required for Authenticate',
-    examples: {
-      example1: {
-        value: {
-          email: 'example@gm.com',
-          password: 'sena123',
-        },
-        summary: 'Example of values required',
-      },
-    },
-  })
+  @ApiBody(bodyExampleAuthUser())
+  @ApiOkResponse(responseOkAuthUser())
+  @ApiUnauthorizedResponse(responseErrorExampleAuthUser())
   async signIn(@Res({ passthrough: true }) response: Response, @Body() userData: AuthUserDto): Promise<Object> {
     const { token, rol } = await this.authService.login(userData);
     switch (rol) {
@@ -58,10 +53,10 @@ export class AuthController {
         });
         break;
     }
-    return
+    return;
   }
   /*
-    registrar usuario y iniciar session por hacer
+    registrar usuario e iniciar session 
     @HttpCode(HttpStatus.OK)
     @Post('signup')
     signUp(userData: AuthUserDto): Promise<any> {
