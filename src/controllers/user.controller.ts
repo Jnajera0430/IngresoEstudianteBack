@@ -1,11 +1,12 @@
-import { Body, Controller, Get, Put, Post, Delete,Req } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiBody, ApiConflictResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { bodyExampleCreateUser } from 'src/document/body.document';
-import { responseOkCreateUser, responseOkListUser } from 'src/document/responses.200';
+import { Body, Controller, Get, Put, Post, Delete, Req } from '@nestjs/common';
+import { ApiBadRequestResponse, ApiBody, ApiConflictResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { bodyExampleCreateUser, bodyExampleUpdateUser } from 'src/document/body.document';
+import { paramFindUser } from 'src/document/param.document';
+import { responseOkCreateUser, responseOkListUser, responseOkfindUserById } from 'src/document/responses.200';
 import { responseErrorExampleCreateUser400 } from 'src/document/responses.400';
 import { responseErrorServer } from 'src/document/responses.500';
 import { RoleDto } from 'src/dto/roles/rol.dto';
-import { CreateUserDto } from 'src/dto/user/user.dto';
+import { CreateUserDto, UpdateUserDto } from 'src/dto/user/user.dto';
 import { User } from 'src/entitys/user.entity';
 import { UserService } from 'src/services/user.service';
 
@@ -18,15 +19,12 @@ export class UserController {
     @ApiOperation({
         summary: "Create new user",
         description: 'Endpoint to create a new user',
-        requestBody: {
-            $ref: '#/components/schemas/CreateUserDto'
-        }
     })
     @ApiBody(bodyExampleCreateUser())
     @ApiResponse(responseOkCreateUser())
     @ApiBadRequestResponse(responseErrorExampleCreateUser400())
     @ApiResponse(responseErrorServer())
-    createUser(@Req() req: Request,@Body() newUser: CreateUserDto): Promise<User> {
+    createUser(@Req() req: Request, @Body() newUser: CreateUserDto): Promise<User> {
         return this.userService.createUser(newUser);
     }
 
@@ -43,13 +41,29 @@ export class UserController {
     }
 
     @Get(":id")
-    findOneById(@Req() req: Request,id: number): Promise<User> {
+    @ApiOperation({
+        summary: "find user by id",
+        description: 'Endpoint to search a user',
+    })
+    @ApiResponse(responseOkfindUserById())
+    @ApiBadRequestResponse(responseErrorExampleCreateUser400())
+    @ApiResponse(responseErrorServer())
+    @ApiParam(paramFindUser())
+    findOneById(@Req() req: Request, id: number): Promise<User> {
         return this.userService.findOneById(id);
     }
 
     @Put()
-    update(@Req() req: Request, res: Response) {
-
+    @ApiOperation({
+        summary: "Update user",
+        description: 'Endpoint to update user',
+    })
+    @ApiBody(bodyExampleUpdateUser())
+    @ApiResponse(responseOkfindUserById())
+    @ApiBadRequestResponse(responseErrorExampleCreateUser400())
+    @ApiResponse(responseErrorServer())
+    update(@Req() req: Request, @Body() user: UpdateUserDto) {
+        return this.userService.update(user.id, user);
     }
 
 }

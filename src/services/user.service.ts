@@ -36,7 +36,7 @@ export class UserService {
         state: true
       },
       relations: ['role'],
-      select:['id','email','username','state','createdAt','role']
+      select: ['id', 'email', 'username', 'state', 'createdAt', 'role']
     });
   }
 
@@ -52,10 +52,8 @@ export class UserService {
         email: emailIngresado,
         state: true
       },
-      loadRelationIds: {
-        relations: ['role'],
-      },
-      select:['id','email','username','state','createdAt','role']
+      relations: ['role'],
+      select: ['id', 'email', 'username', 'state', 'createdAt', 'role']
     });
   }
   /**
@@ -70,10 +68,8 @@ export class UserService {
         id: id,
         state: true
       },
-      loadRelationIds: {
-        relations: ['role'],
-      },
-      select:['id','email','username','state','createdAt','role']
+      relations: ['role'],
+      select: ['id', 'email', 'username', 'state', 'createdAt', 'role']
     });
   }
 
@@ -95,7 +91,7 @@ export class UserService {
       const userCreated: User = await this.userRepository.save(user);
       return userCreated;
     } catch (error) {
-      
+
       console.log(error);
     }
   }

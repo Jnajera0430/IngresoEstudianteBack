@@ -2,6 +2,7 @@ import { Role } from "src/entitys/roles.entity";
 import { User } from "src/entitys/user.entity";
 
 export class CreateUserDto {
+    id?:number;
     email: string;
     username: string;
     password: string;
@@ -19,8 +20,4 @@ export class AuthLogin {
     rol: string;
 }
 
-export class UpdateUserDto {
-    email?: string;
-    username?: string;
-    password?: string;
-}
+export type UpdateUserDto = Partial<CreateUserDto> 

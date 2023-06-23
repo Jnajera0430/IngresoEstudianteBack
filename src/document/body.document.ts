@@ -41,4 +41,29 @@ export const bodyExampleCreateUser = () => (
       $ref: '#/components/schemas/CreateUserDto'
     }
   }
-)
+);
+
+export const bodyExampleUpdateUser = () => (
+  {
+    type: 'UpdateUserDto',
+    description: 'Values required for create a user',
+    examples: {
+      example1: {
+        value: {
+          "id":1234,
+          "email?": "example5@gm.com",
+          "username?": "exampleUser5",
+          "password?": "sena123",
+          "state?": true,
+          "roles?": [1]
+        },
+        summary: 'Example of values required',
+
+      },
+    },
+    required: false,
+    schema: {
+      $ref: '#/components/schemas/UpdateUserDto'
+    }
+  }
+);

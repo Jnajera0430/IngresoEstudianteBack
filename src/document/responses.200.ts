@@ -133,3 +133,35 @@ export const responseOkListUser = () => (
     }
   }
 )
+
+export const responseOkfindUserById = () => (
+  {
+    status: 200,
+    description: 'Users list with your type of roles',
+    content: {
+      'application/json': {
+        schema: {
+          $ref: '#/components/schemas/CreateUserDto'
+        },
+        example: {
+          "status": 200,
+          message: "user found",
+          data:
+          {
+            "id": 21,
+            "email": "example4@gm.com",
+            "username": "exampleUser4",
+            "createdAt": "2023-06-17T07:37:49.159Z",
+            "state": true,
+            "role": [
+              {
+                "id": 1,
+                "tipo": "Super usuario"
+              }
+            ]
+          },
+        }
+      }
+    }
+  }
+)
