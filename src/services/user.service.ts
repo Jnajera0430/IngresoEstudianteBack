@@ -8,6 +8,7 @@ import { DeleteResult, Repository } from 'typeorm';
 import { RolesService } from './roles.service';
 import { RoleDto } from 'src/dto/roles/rol.dto';
 import { Role } from 'src/entitys/roles.entity';
+import { QueuesService } from 'src/queues/queues.service';
 
 @Injectable()
 export class UserService {
@@ -24,8 +25,9 @@ export class UserService {
     private configServiceEnv: ConfigServiceEnv,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly rolesServices: RolesService,
+    private readonly myQueueService: QueuesService,
   ) { }
-
+  
   /**
      * Finds all Users and returns the list of Persons if the status is true.
      * @returns Promise

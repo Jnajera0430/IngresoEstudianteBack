@@ -13,7 +13,9 @@ import { UserService } from 'src/services/user.service';
 @Controller('user')
 @ApiTags("api-User")
 export class UserController {
-    constructor(private readonly userService: UserService) { }
+    constructor(private readonly userService: UserService,
+    
+    ) { }
     //documentar la request
     @Post()
     @ApiOperation({

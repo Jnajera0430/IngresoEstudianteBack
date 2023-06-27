@@ -4,21 +4,22 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configuration } from './config/configuration';
 import { ConfigModule, ConfigService } from '@nestjs/config/dist';
-import { UserModule } from './models/user.module';
-import { RolesModule } from './models/roles.module';
-import { PersonModule } from './models/person.module';
-import { GroupModule } from './models/group.module';
-import { CareerModule } from './models/career.module';
-import { PersonTypeModule } from './models/person_type.module';
-import { RecordEntryModule } from './models/record_entry.module';
-import { EntryTypeModule } from './models/entry_type.module';
-import { EntryDeviceModule } from './models/entry_device.module';
-import { DeviceModule } from './models/device.module';
-import { DeviceTypeModule } from './models/device_type.module';
-import { VehicleModule } from './models/vehicle.module';
-import { VehicleTypeModule } from './models/vehicle_type.module';
-import { EntryVehicleModule } from './models/entry_vehicle.module';
+import { UserModule } from './modules/user.module';
+import { RolesModule } from './modules/roles.module';
+import { PersonModule } from './modules/person.module';
+import { GroupModule } from './modules/group.module';
+import { CareerModule } from './modules/career.module';
+import { PersonTypeModule } from './modules/person_type.module';
+import { RecordEntryModule } from './modules/record_entry.module';
+import { EntryTypeModule } from './modules/entry_type.module';
+import { EntryDeviceModule } from './modules/entry_device.module';
+import { DeviceModule } from './modules/device.module';
+import { DeviceTypeModule } from './modules/device_type.module';
+import { VehicleModule } from './modules/vehicle.module';
+import { VehicleTypeModule } from './modules/vehicle_type.module';
+import { EntryVehicleModule } from './modules/entry_vehicle.module';
 import { AuthModule } from './middlewares/auth/auth.module';
+import { QueuesModule } from './queues/queues.module';
 
 @Module({
   imports: [
@@ -40,7 +41,8 @@ import { AuthModule } from './middlewares/auth/auth.module';
       }),
 
       inject: [ConfigService]
-    }), UserModule, RolesModule, PersonModule, GroupModule, CareerModule, PersonTypeModule, RecordEntryModule, EntryTypeModule, EntryDeviceModule, DeviceModule, DeviceTypeModule, VehicleModule, VehicleTypeModule, EntryVehicleModule, AuthModule,],
+    }) 
+    , UserModule, RolesModule, PersonModule, GroupModule, CareerModule, PersonTypeModule, RecordEntryModule, EntryTypeModule, EntryDeviceModule, DeviceModule, DeviceTypeModule, VehicleModule, VehicleTypeModule, EntryVehicleModule, AuthModule, QueuesModule,],
   controllers: [AppController],
   providers: [AppService],
 })
