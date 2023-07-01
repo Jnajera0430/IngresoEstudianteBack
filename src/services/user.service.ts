@@ -6,9 +6,9 @@ import { User } from 'src/entitys/user.entity';
 import { Bcrypt } from 'src/middlewares/bcrypt/bcrypt.middleware';
 import { DeleteResult, Repository } from 'typeorm';
 import { RolesService } from './roles.service';
-import { RoleDto } from 'src/dto/roles/rol.dto';
 import { Role } from 'src/entitys/roles.entity';
-import { QueuesService } from 'src/queues/queues.service';
+import { FileService } from 'src/queues/files/files.service';
+import { Job } from 'bull';
 
 @Injectable()
 export class UserService {
@@ -25,14 +25,14 @@ export class UserService {
     private configServiceEnv: ConfigServiceEnv,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly rolesServices: RolesService,
-    private readonly myQueueService: QueuesService,
+    private readonly fileManaggerQueue: FileService,
   ) { }
   
   /**
      * Finds all Users and returns the list of Persons if the status is true.
      * @returns Promise
      */
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<User[]> {    
     return await this.userRepository.find({
       where: {
         state: true

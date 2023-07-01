@@ -20,6 +20,7 @@ import { VehicleTypeModule } from './modules/vehicle_type.module';
 import { EntryVehicleModule } from './modules/entry_vehicle.module';
 import { AuthModule } from './middlewares/auth/auth.module';
 import { QueuesModule } from './queues/queues.module';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -41,8 +42,17 @@ import { QueuesModule } from './queues/queues.module';
       }),
 
       inject: [ConfigService]
-    }) 
-    , UserModule, RolesModule, PersonModule, GroupModule, CareerModule, PersonTypeModule, RecordEntryModule, EntryTypeModule, EntryDeviceModule, DeviceModule, DeviceTypeModule, VehicleModule, VehicleTypeModule, EntryVehicleModule, AuthModule, QueuesModule,],
+    })
+    , BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          port: configService.get('REDIS_PORT'),
+          host: configService.get('REDIS_HOST'),
+        },
+      }),
+      inject: [ConfigService],
+    }), UserModule, RolesModule, PersonModule, GroupModule, CareerModule, PersonTypeModule, RecordEntryModule, EntryTypeModule, EntryDeviceModule, DeviceModule, DeviceTypeModule, VehicleModule, VehicleTypeModule, EntryVehicleModule, AuthModule, QueuesModule,],
   controllers: [AppController],
   providers: [AppService],
 })

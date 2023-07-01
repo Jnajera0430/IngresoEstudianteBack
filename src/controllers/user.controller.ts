@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Put, Post, Delete, Req } from '@nestjs/common';
+import { Body, Controller, Get, Put, Post, Delete, Req,UseInterceptors,UploadedFile } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBody, ApiConflictResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { bodyExampleCreateUser, bodyExampleUpdateUser } from 'src/document/body.document';
 import { paramFindUser } from 'src/document/param.document';
@@ -9,7 +9,7 @@ import { RoleDto } from 'src/dto/roles/rol.dto';
 import { CreateUserDto, UpdateUserDto } from 'src/dto/user/user.dto';
 import { User } from 'src/entitys/user.entity';
 import { UserService } from 'src/services/user.service';
-
+import {AnyFilesInterceptor} from '@nestjs/platform-express'
 @Controller('user')
 @ApiTags("api-User")
 export class UserController {
@@ -68,4 +68,9 @@ export class UserController {
         return this.userService.update(user.id, user);
     }
 
+    @Post("upload")
+    @UseInterceptors(AnyFilesInterceptor())
+    uploadFileUser(@UploadedFile() file:Array<Express.Multer.File>){
+        console.log(file);
+    }
 }
