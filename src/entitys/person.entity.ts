@@ -2,7 +2,8 @@ import { Device } from "src/entitys/device.entity";
 import { Group } from "src/entitys/group.entity";
 import { PersonType } from "src/entitys/person_type.entity";
 import { Vehicle } from "src/entitys/vehicle.entity";
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable, ManyToOne, JoinColumn } from "typeorm";
+import { DoctType } from "src/entitys/doctType.entity";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany,OneToOne, JoinTable, ManyToOne, JoinColumn } from "typeorm";
 import { Record_entry } from "./record_entry.entity";
 
 @Entity({name: 'person'})
@@ -38,6 +39,13 @@ export class Person{
     @JoinColumn({name:'personTypes'})
     personTypes: PersonType
 
+    @OneToOne(()=>DoctType, doctType=>doctType.person,{
+        cascade: true,
+        eager: true,
+        nullable: true
+    })
+    @JoinColumn({name:'doctType'})
+    doctType: DoctType
     @OneToMany(()=> Device, device => device.person,{
         cascade:true,
         eager:true,

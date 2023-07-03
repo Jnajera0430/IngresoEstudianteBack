@@ -26,7 +26,7 @@ export class PersonService {
             where: {
                 state: true
             },
-            relations: ["groups", "personTypes", "device", "vehicles", "recorEntry"]
+            relations: ["groups", "personTypes", "device", "vehicles", "recorEntry",'doctType']
         });
     }
     /**
@@ -41,7 +41,7 @@ export class PersonService {
                 id,
                 state: true
             },
-            relations: ["groups", "personTypes", "device", "vehicles", "recorEntry"]
+            relations: ["groups", "personTypes", "device", "vehicles", "recorEntry",'doctType']
         });
     }
 
@@ -58,7 +58,7 @@ export class PersonService {
                 id:person.id,
                 state: true
             },
-            relations:["groups", "personTypes", "device", "vehicles", "recorEntry"]
+            relations:["groups", "personTypes", "device", "vehicles", "recorEntry",'doctType']
         });
     }
 

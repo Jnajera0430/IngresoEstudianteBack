@@ -9,7 +9,7 @@ import { RoleDto } from 'src/dto/roles/rol.dto';
 import { CreateUserDto, UpdateUserDto } from 'src/dto/user/user.dto';
 import { User } from 'src/entitys/user.entity';
 import { UserService } from 'src/services/user.service';
-import {AnyFilesInterceptor} from '@nestjs/platform-express'
+import {AnyFilesInterceptor, FilesInterceptor,FileInterceptor} from '@nestjs/platform-express'
 @Controller('user')
 @ApiTags("api-User")
 export class UserController {
@@ -69,8 +69,8 @@ export class UserController {
     }
 
     @Post("upload")
-    @UseInterceptors(AnyFilesInterceptor())
-    uploadFileUser(@UploadedFile() file:Array<Express.Multer.File>){
-        console.log(file);
+    @UseInterceptors(FileInterceptor('file'))
+    uploadFileUser(@UploadedFile() file:Express.Multer.File){
+        return this.userService.readFile(file);
     }
 }

@@ -9,7 +9,7 @@ import { RolesService } from './roles.service';
 import { Role } from 'src/entitys/roles.entity';
 import { FileService } from 'src/queues/files/files.service';
 import { Job } from 'bull';
-
+import { read } from 'Xlsx'
 @Injectable()
 export class UserService {
   /**
@@ -27,12 +27,12 @@ export class UserService {
     private readonly rolesServices: RolesService,
     private readonly fileManaggerQueue: FileService,
   ) { }
-  
+
   /**
      * Finds all Users and returns the list of Persons if the status is true.
      * @returns Promise
      */
-  async findAll(): Promise<User[]> {    
+  async findAll(): Promise<User[]> {
     return await this.userRepository.find({
       where: {
         state: true
@@ -140,6 +140,48 @@ export class UserService {
       where: {
         id: id,
       },
+    });
+  }
+
+
+  async readFile(file: Express.Multer.File) {
+    const workBook = read(file.buffer, {
+      type: 'buffer',
+      sheetRows: 15,
+      raw: true,
+      cellDates: true
+    })
+    const sheetName = workBook.SheetNames[0];
+    const workSheet = workBook.Sheets[sheetName];
+    //fecha del reporte
+    const cellA2 = workSheet['A2'].v;
+    const cellC2 = workSheet['C2'].v;
+    //ficha de caracterizacion
+    const cellA3 = workSheet['A3'].v;
+    const cellC3 = workSheet['C3'].v;
+    //codig de la ficha
+    const cellA4 = workSheet['A4'].v;
+    const cellC4 = workSheet['C4'].v;
+    //codig de la ficha
+    const cellA6 = workSheet['A6'].v;
+    const cellC6 = workSheet['C6'].v;
+    //fecha de inicio
+    const cellA8 = workSheet['A8'].v;
+    const cellC8 = workSheet['C8'].v;
+    //fecha fin
+    const cellA9 = workSheet['A9'].v;
+    const cellC9 = workSheet['C9'].v;   
+
+    const dataObject = {
+      [cellA2]: cellC2,
+      [cellA3]: cellC3,
+      [cellA4]: parseInt(cellC4,10),
+      [cellA8]: cellC8,
+      [cellA9]: cellC9,
+    };
+
+    console.log({
+      dataObject
     });
   }
 }

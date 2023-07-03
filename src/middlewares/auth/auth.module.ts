@@ -5,14 +5,16 @@ import { UserModule } from 'src/modules/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { RolesModule } from 'src/modules/roles.module';
 import { ConfigModuleEnv } from 'src/config/config.module';
-import { ConfigServiceEnv } from 'src/config/config.service';
-
-
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [UserModule, RolesModule,JwtModule.register({
+  imports: [UserModule, RolesModule,JwtModule.registerAsync({
+    imports:[ConfigModule],
+    useFactory:(configService: ConfigService)=>({
+      secret: configService.get('SECRET_KEY_JWT') || 'secretKey'
+    }),
     global: true,
-    secret:"dsajhdasjh"
+    inject:[ConfigService]
   }), ConfigModuleEnv],
   providers: [AuthService],
   controllers: [AuthController],
