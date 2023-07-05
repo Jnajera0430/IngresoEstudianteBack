@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -21,6 +21,23 @@ import { EntryVehicleModule } from './modules/entry_vehicle.module';
 import { AuthModule } from './middlewares/auth/auth.module';
 import { QueuesModule } from './queues/queues.module';
 import { BullModule } from '@nestjs/bull';
+import * as Glob from 'glob';
+import { AuthController } from './middlewares/auth/auth.controller';
+import { TokenMiddleware } from './middlewares/jwt/token.middleware';
+import { VehicleController } from './controllers/vehicle.controller';
+import { VehicleTypeController } from './controllers/vehicle_type.controller';
+import { UserController } from './controllers/user.controller';
+import { RolesController } from './controllers/roles.controller';
+import { RecordEntryController } from './controllers/record_entry.controller';
+import { PersonController } from './controllers/person.controller';
+import { PersonTypeController } from './controllers/person_type.controller';
+import { GroupController } from './controllers/group.controller';
+import { EntryVehicleController } from './controllers/entry_vehicle.controller';
+import { EntryTypeController } from './controllers/entry_type.controller';
+import { EntryDeviceController } from './controllers/entry_device.controller';
+import { DeviceController } from './controllers/device.controller';
+import { DeviceTypeController } from './controllers/device_type.controller';
+import { CareerController } from './controllers/career.controller';
 
 @Module({
   imports: [
@@ -56,4 +73,10 @@ import { BullModule } from '@nestjs/bull';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(TokenMiddleware)
+      .forRoutes(VehicleController, VehicleTypeController, UserController, RolesController, RecordEntryController, PersonController, PersonTypeController, GroupController, EntryVehicleController, EntryTypeController, EntryDeviceController, DeviceController, DeviceTypeController, CareerController);
+  }
+}

@@ -55,7 +55,7 @@ export class UserService {
         state: true
       },
       relations: ['role'],
-      select: ['id', 'email', 'username', 'state', 'createdAt', 'role']
+      select: ['id', 'email', 'username', 'state', 'createdAt', 'role','password']
     });
   }
   /**

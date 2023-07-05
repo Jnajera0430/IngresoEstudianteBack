@@ -33,7 +33,13 @@ export class AuthController {
   @ApiOkResponse(responseOkAuthUser())
   @ApiUnauthorizedResponse(responseErrorExampleAuthUser())
   async signIn(@Res({ passthrough: true }) response: Response, @Body() userData: AuthUserDto): Promise<Object> {
+    
+    
     const { token, rol } = await this.authService.login(userData);
+    // console.log({
+    //   token,rol
+    // });
+    
     switch (rol) {
       case 'Super usuario' || 'Administrador' || 'Auditor':
         response.cookie("access_token", token, {
@@ -41,6 +47,7 @@ export class AuthController {
           path: '/',
           secure: true,
           maxAge: 86400,
+          //sameSite: "strict",
         });
         break;
       case 'Puesto de servicio':

@@ -19,8 +19,10 @@ export class AuthService {
 
     ) { }
     async login(userData: AuthUserDto): Promise<AuthLogin> {
+        
         const bcrypt: Bcrypt = new Bcrypt()
         const userFound: User = await this.userServices.findOneByEmail(userData.email);
+        
         //Arcodear la pass
         if (!userFound) throw new NotFoundException("email not found");
         if (!await bcrypt.comparePasswords(userData.password, userFound.password)) {
@@ -31,9 +33,9 @@ export class AuthService {
         }
         const payload: TokenDto = { sub: userFound.id, user: userFound }
 
-        for (const idRol of userFound.role) {
-            let rol = roleEnum[`${idRol}`]; 
-            switch (roleEnum[`${idRol}`]) {
+        for (const dataRol of userFound.role) {
+            let rol = roleEnum[`${dataRol.id}`];
+            switch (rol) {
                 case 'Super usuario' || 'Administrador' || 'Auditor':
                     return {
                         token: await this.jwtService.signAsync(payload, {
@@ -41,12 +43,12 @@ export class AuthService {
                         }),
                         rol
                     }
-                case 'Puesto de servicio':
+                case 'Puesto de servicio':                    
                     return {
                         token: await this.jwtService.signAsync(payload, {
                             expiresIn: null,
                         }),
-                        rol 
+                        rol
                     }
             }
         }

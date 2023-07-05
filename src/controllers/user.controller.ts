@@ -26,6 +26,7 @@ export class UserController {
     @ApiResponse(responseOkCreateUser())
     @ApiBadRequestResponse(responseErrorExampleCreateUser400())
     @ApiResponse(responseErrorServer())
+
     createUser(@Req() req: Request, @Body() newUser: CreateUserDto): Promise<User> {
         return this.userService.createUser(newUser);
     }
@@ -38,6 +39,7 @@ export class UserController {
     @ApiResponse(responseOkListUser())
     @ApiBadRequestResponse(responseErrorExampleCreateUser400())
     @ApiResponse(responseErrorServer())
+
     allUser(@Req() req: Request): Promise<User[]> {
         return this.userService.findAll();
     }
@@ -70,7 +72,7 @@ export class UserController {
 
     @Post("upload")
     @UseInterceptors(FileInterceptor('file'))
-    uploadFileUser(@UploadedFile() file:Express.Multer.File){
+    uploadFileUser(@Req() req: Request,@UploadedFile() file:Express.Multer.File){
         return this.userService.readFile(file);
     }
 }

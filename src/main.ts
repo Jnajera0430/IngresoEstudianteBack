@@ -15,10 +15,10 @@ async function bootstrap() {
   app.use(cookieParser());
 
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
+    .setTitle('Ingreso Estudiantes API')
     .setDescription('The cats API description')
     .setVersion('1.0')
-    .addTag('cats')
+    .addTag('Routes')
     .build();
 
   config.components = configComponents()
