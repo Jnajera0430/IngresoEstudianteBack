@@ -1,20 +1,20 @@
-import { Body, Controller, Get, Put, Post, Delete, Req,UseInterceptors,UploadedFile } from '@nestjs/common';
+import { Body, Controller, Get, Put, Post, Delete, Req, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBody, ApiConflictResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { bodyExampleCreateUser, bodyExampleUpdateUser } from 'src/document/body.document';
 import { paramFindUser } from 'src/document/param.document';
 import { responseOkCreateUser, responseOkListUser, responseOkfindUserById } from 'src/document/responses.200';
 import { responseErrorExampleCreateUser400 } from 'src/document/responses.400';
 import { responseErrorServer } from 'src/document/responses.500';
-import { RoleDto } from 'src/dto/roles/rol.dto';
 import { CreateUserDto, UpdateUserDto } from 'src/dto/user/user.dto';
 import { User } from 'src/entitys/user.entity';
 import { UserService } from 'src/services/user.service';
-import {AnyFilesInterceptor, FilesInterceptor,FileInterceptor} from '@nestjs/platform-express'
+import { AnyFilesInterceptor, FilesInterceptor, FileInterceptor } from '@nestjs/platform-express'
+import { Request } from 'express';
 @Controller('user')
 @ApiTags("api-User")
 export class UserController {
     constructor(private readonly userService: UserService,
-    
+
     ) { }
     //documentar la request
     @Post()
@@ -54,6 +54,7 @@ export class UserController {
     @ApiResponse(responseErrorServer())
     @ApiParam(paramFindUser())
     findOneById(@Req() req: Request, id: number): Promise<User> {
+
         return this.userService.findOneById(id);
     }
 
@@ -72,7 +73,7 @@ export class UserController {
 
     @Post("upload")
     @UseInterceptors(FileInterceptor('file'))
-    uploadFileUser(@Req() req: Request,@UploadedFile() file:Express.Multer.File){
+    uploadFileUser(@Req() req: Request, @UploadedFile() file: Express.Multer.File) {
         return this.userService.readFile(file);
     }
 }

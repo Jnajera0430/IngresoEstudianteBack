@@ -1,8 +1,7 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { configuration } from './config/configuration';
 import { ConfigModule, ConfigService } from '@nestjs/config/dist';
 import { UserModule } from './modules/user.module';
 import { RolesModule } from './modules/roles.module';
@@ -21,8 +20,6 @@ import { EntryVehicleModule } from './modules/entry_vehicle.module';
 import { AuthModule } from './middlewares/auth/auth.module';
 import { QueuesModule } from './queues/queues.module';
 import { BullModule } from '@nestjs/bull';
-import * as Glob from 'glob';
-import { AuthController } from './middlewares/auth/auth.controller';
 import { TokenMiddleware } from './middlewares/jwt/token.middleware';
 import { VehicleController } from './controllers/vehicle.controller';
 import { VehicleTypeController } from './controllers/vehicle_type.controller';
@@ -38,6 +35,7 @@ import { EntryDeviceController } from './controllers/entry_device.controller';
 import { DeviceController } from './controllers/device.controller';
 import { DeviceTypeController } from './controllers/device_type.controller';
 import { CareerController } from './controllers/career.controller';
+import { ValidUser } from './middlewares/jwt/validUser.middleware';
 
 @Module({
   imports: [
@@ -78,5 +76,9 @@ export class AppModule implements NestModule {
     consumer
       .apply(TokenMiddleware)
       .forRoutes(VehicleController, VehicleTypeController, UserController, RolesController, RecordEntryController, PersonController, PersonTypeController, GroupController, EntryVehicleController, EntryTypeController, EntryDeviceController, DeviceController, DeviceTypeController, CareerController);
+
+    consumer
+      .apply(ValidUser)
+      .forRoutes(UserController)
   }
 }

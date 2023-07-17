@@ -9,6 +9,14 @@ export class CreateUserDto {
     roles: number[]
 }
 
+export class UserDto {
+    id?:number;
+    email: string;
+    username: string;
+    password: string;
+    role: Role[]
+}
+
 export class TokenDto {
     sub: number;
     user: User;
@@ -21,3 +29,4 @@ export class AuthLogin {
 }
 
 export type UpdateUserDto = Partial<CreateUserDto> 
+export type UserPayload = Partial<UserDto> 

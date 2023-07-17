@@ -6,17 +6,18 @@ import { configComponents } from './document/components.document';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: "*",
+    origin: ["*"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     preflightContinue: false,
-    optionsSuccessStatus: 204
+    optionsSuccessStatus: 204,
+    credentials: false
   });
   app.setGlobalPrefix("api");
   app.use(cookieParser());
 
   const config = new DocumentBuilder()
     .setTitle('Ingreso Estudiantes API')
-    .setDescription('The cats API description')
+    .setDescription('Descripción de Ingreso Estudiantes API')
     .setVersion('1.0')
     .addTag('Routes')
     .build();

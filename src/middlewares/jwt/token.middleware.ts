@@ -1,7 +1,7 @@
 import { Injectable, NestMiddleware } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { NextFunction, Request, Response } from "express";
-import { InvalidTokenException } from "src/exceptions/invalidToken.exception";
+import { InvalidTokenException } from "src/exceptions/customExcepcion";
 
 @Injectable()
 export class TokenMiddleware implements NestMiddleware {
