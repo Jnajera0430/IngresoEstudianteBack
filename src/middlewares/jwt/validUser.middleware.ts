@@ -11,7 +11,7 @@ export class ValidUser implements NestMiddleware {
         private readonly jwtService: JwtService,
     ) { }
     /**
-     * Middleware for virify that the user 
+     * Middleware for virify that the user have role valid
      * @param req 
      * @param res 
      * @param next 

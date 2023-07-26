@@ -10,6 +10,7 @@ import { Role } from 'src/entitys/roles.entity';
 import { FileService } from 'src/queues/files/files.service';
 import { Job } from 'bull';
 import { read } from 'Xlsx'
+import { CellObject, PersonFile } from 'src/dto/person/personFile.dto';
 @Injectable()
 export class UserService {
   /**
@@ -55,7 +56,7 @@ export class UserService {
         state: true
       },
       relations: ['role'],
-      select: ['id', 'email', 'username', 'state', 'createdAt', 'role','password']
+      select: ['id', 'email', 'username', 'state', 'createdAt', 'role', 'password']
     });
   }
   /**
@@ -147,7 +148,6 @@ export class UserService {
   async readFile(file: Express.Multer.File) {
     const workBook = read(file.buffer, {
       type: 'buffer',
-      sheetRows: 15,
       raw: true,
       cellDates: true
     })
@@ -170,18 +170,69 @@ export class UserService {
     const cellC8 = workSheet['C8'].v;
     //fecha fin
     const cellA9 = workSheet['A9'].v;
-    const cellC9 = workSheet['C9'].v;   
+    const cellC9 = workSheet['C9'].v;
 
     const dataObject = {
       [cellA2]: cellC2,
       [cellA3]: cellC3,
-      [cellA4]: parseInt(cellC4,10),
+      [cellA4]: parseInt(cellC4, 10),
       [cellA8]: cellC8,
       [cellA9]: cellC9,
     };
-
-    console.log({
-      dataObject
-    });
+    const cellObject = {
+      1: "A",
+      2: "B",
+      3: "C",
+      4: "D",
+      5: "E",
+    }
+    
+    const sizeOfDatos = parseInt(workSheet["!autofilter"].ref.split("I")[1]);
+    const listPersonFile: PersonFile[] = [];
+    for (let numRow = 14; numRow <= sizeOfDatos; numRow++) {
+      let datoOfPerson: PersonFile={}; 
+      for (const cell of Object.values(cellObject)) {
+        switch (cell) {
+          case "A":
+            datoOfPerson = {
+              ...datoOfPerson,
+              typeDocument: workSheet[cell + numRow].v
+            } 
+            break;
+          case "B":
+            datoOfPerson = {
+              ...datoOfPerson,
+              numDocument:parseInt(workSheet[cell + numRow].v)
+            }
+            break;
+          case "C":
+            datoOfPerson = {
+              ...datoOfPerson,
+              firstName:workSheet[cell + numRow].v
+            }
+            break;
+          case "D":
+            datoOfPerson = {
+              ...datoOfPerson,
+              lastName:workSheet[cell + numRow].v
+            }
+            break;
+          case "E":
+            datoOfPerson = {
+              ...datoOfPerson,
+              state:workSheet[cell + numRow].v
+            }
+            break;
+        }
+      }
+      const validPerson = listPersonFile.some((person: PersonFile) => person?.numDocument === datoOfPerson?.numDocument)
+      if (!validPerson) {
+        listPersonFile.push(datoOfPerson);
+      }
+    }
+    return {
+      dataObject,
+      listPersonFile
+    }
   }
 }
