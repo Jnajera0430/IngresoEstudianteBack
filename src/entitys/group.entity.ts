@@ -15,7 +15,7 @@ export class Group {
     @Column()
     dateEnd: Date
     @Column()
-    state: Number
+    state: boolean
 
     @ManyToOne(() => Career, career => career.groups,{
         cascade: true,

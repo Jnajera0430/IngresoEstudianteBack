@@ -48,6 +48,7 @@ import { MulterModule } from '@nestjs/platform-express';
         return {
           configKey: configService.get('CONFIG_KEY_FILES'),
           processors: files,
+          
         };
       },
       inject: [ConfigService]

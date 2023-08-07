@@ -14,16 +14,13 @@ import { CellObject, PersonFile } from 'src/dto/person/personFile.dto';
 @Injectable()
 export class UserService {
   /**
-   *  
-   * @param configServiceEnv 
-   * Environment variable services
+   * constructor
    * @param userRepository
    * Repository of typeorm of the entity Users 
    * @param rolesServices 
    * Services of Roles 
    */
   constructor(
-    private configServiceEnv: ConfigServiceEnv,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly rolesServices: RolesService,
     private readonly fileManaggerQueue: FileService,
@@ -172,7 +169,7 @@ export class UserService {
     const cellA9 = workSheet['A9'].v;
     const cellC9 = workSheet['C9'].v;
 
-    const dataObject = {
+    const infoOfProgram = {
       [cellA2]: cellC2,
       [cellA3]: cellC3,
       [cellA4]: parseInt(cellC4, 10),
@@ -231,7 +228,7 @@ export class UserService {
       }
     }
     return {
-      dataObject,
+      infoOfProgram,
       listPersonFile
     }
   }

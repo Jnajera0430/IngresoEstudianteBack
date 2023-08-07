@@ -8,7 +8,7 @@ import { RolesModule } from './roles.module';
 import { QueuesModule } from 'src/queues/queues.module';
 
 @Module({
-  imports:[ConfigModuleEnv, TypeOrmModule.forFeature([User]),RolesModule,QueuesModule],
+  imports:[TypeOrmModule.forFeature([User]),RolesModule,QueuesModule],
   providers: [UserService],
   controllers: [UserController],
   exports: [UserService]

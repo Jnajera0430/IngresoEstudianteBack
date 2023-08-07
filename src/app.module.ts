@@ -64,6 +64,8 @@ import { ValidUser } from './middlewares/jwt/validUser.middleware';
         redis: {
           port: configService.get('REDIS_PORT'),
           host: configService.get('REDIS_HOST'),
+          username:configService.get('REDIS_USER'),
+          password:configService.get('REDIS_PASS')
         },
       }),
       inject: [ConfigService],
