@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Role } from 'src/entitys/roles.entity';
@@ -6,7 +6,7 @@ import { RoleDto } from 'src/dto/roles/rol.dto';
 
 
 @Injectable()
-export class RolesService {
+export class RolesService implements OnModuleInit {
     /**
      * Cosntructor of Service
      * @param rolesRepository 
@@ -72,5 +72,30 @@ export class RolesService {
     async createRol(rol: RoleDto): Promise<Role> {
         const rolCreated: Role = this.rolesRepository.create(rol);
         return await this.rolesRepository.save(rolCreated);
+    }
+
+    async onModuleInit() {
+        const roleCount: number = await this.rolesRepository.count();
+        const rolesDefault: RoleDto[] = [
+            {
+                tipo:'Superusuario'
+            },
+            {
+                tipo:'Administrador'
+            },
+            {
+                tipo:'Auditor'
+            },
+            {
+                tipo:'Puesto de servicio'
+            },
+        ]
+        if (roleCount === 0) {
+            for(let role of rolesDefault){
+                this.createRol(role);
+            }
+            console.log('Roles: Created');
+            
+        }
     }
 }

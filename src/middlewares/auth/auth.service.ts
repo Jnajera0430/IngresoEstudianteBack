@@ -32,21 +32,26 @@ export class AuthService {
             );
         }
         const payload: TokenDto = { sub: userFound.id, user: userFound }
-
+        const token = await this.jwtService.signAsync(payload, {
+            expiresIn: 99999,
+        })
+        //console.log(payload.user.role);
+        
         for (const dataRol of userFound.role) {
             let rol = roleEnum[`${dataRol.id}`];
+            
             switch (rol) {
-                case 'Super usuario' || 'Administrador' || 'Auditor':
+                default:
                     return {
                         token: await this.jwtService.signAsync(payload, {
-                            expiresIn: 99999,
+                            expiresIn: "1d",
                         }),
                         rol
                     }
                 case 'Puesto de servicio':                    
                     return {
                         token: await this.jwtService.signAsync(payload, {
-                            expiresIn: null,
+                            expiresIn: "100d",
                         }),
                         rol
                     }

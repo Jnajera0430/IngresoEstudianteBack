@@ -69,7 +69,7 @@ import { ValidUser } from './middlewares/jwt/validUser.middleware';
         },
       }),
       inject: [ConfigService],
-    }), UserModule, RolesModule, PersonModule, GroupModule, CareerModule, PersonTypeModule, RecordEntryModule, EntryTypeModule, EntryDeviceModule, DeviceModule, DeviceTypeModule, VehicleModule, VehicleTypeModule, EntryVehicleModule, AuthModule, QueuesModule,],
+    }), RolesModule, UserModule, PersonModule, GroupModule, CareerModule, PersonTypeModule, RecordEntryModule, EntryTypeModule, EntryDeviceModule, DeviceModule, DeviceTypeModule, VehicleModule, VehicleTypeModule, EntryVehicleModule, AuthModule, QueuesModule,],
   controllers: [AppController],
   providers: [AppService],
 })

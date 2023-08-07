@@ -9,7 +9,7 @@ export class Group {
     @PrimaryGeneratedColumn('increment')
     id: number
     @Column()
-    code: Number
+    code: number
     @Column()
     dateStart: Date
     @Column()

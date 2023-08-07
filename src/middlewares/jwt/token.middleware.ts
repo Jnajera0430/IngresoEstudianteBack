@@ -17,6 +17,7 @@ export class TokenMiddleware implements NestMiddleware {
      */
     async use(req: Request, res: Response, next: NextFunction) {
         const token: string | undefined = req.cookies.access_token
+        
         if (!token || !(await this.verifyToken(token))) {
             throw new InvalidTokenException();
         }

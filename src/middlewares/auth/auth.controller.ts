@@ -32,22 +32,17 @@ export class AuthController {
   @ApiBody(bodyExampleAuthUser())
   @ApiOkResponse(responseOkAuthUser())
   @ApiUnauthorizedResponse(responseErrorExampleAuthUser())
-  async signIn(@Res({ passthrough: true }) response: Response, @Body() userData: AuthUserDto): Promise<Object> {
-    
-    
+  async signIn(@Res({ passthrough: true }) response: Response, @Body() userData: AuthUserDto): Promise<Object> { 
     const { token, rol } = await this.authService.login(userData);
-    // console.log({
-    //   token,rol
-    // });
-    
     switch (rol) {
-      case 'Super usuario' || 'Administrador' || 'Auditor':
+      default:
         response.cookie("access_token", token, {
           httpOnly: true,
           path: '/',
           secure: true,
           maxAge: 86400,
-          //sameSite: "strict",
+          sameSite: "strict",
+          domain:'localhost'
         });
         break;
       case 'Puesto de servicio':
@@ -56,7 +51,9 @@ export class AuthController {
           path: '/',
           secure: true,
           maxAge: null,
-          expires: null
+          expires: null,
+          sameSite: "strict",
+          domain:'localhost'
         });
         break;
     }

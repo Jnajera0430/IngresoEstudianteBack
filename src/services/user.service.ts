@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigServiceEnv } from 'src/config/config.service';
 import { CreateUserDto, UpdateUserDto } from 'src/dto/user/user.dto';
@@ -12,7 +12,7 @@ import { Job } from 'bull';
 import { read } from 'Xlsx'
 import { CellObject, PersonFile } from 'src/dto/person/personFile.dto';
 @Injectable()
-export class UserService {
+export class UserService implements OnModuleInit {
   /**
    * constructor
    * @param userRepository
@@ -91,7 +91,6 @@ export class UserService {
       const userCreated: User = await this.userRepository.save(user);
       return userCreated;
     } catch (error) {
-
       console.log(error);
     }
   }
@@ -183,41 +182,41 @@ export class UserService {
       4: "D",
       5: "E",
     }
-    
+
     const sizeOfDatos = parseInt(workSheet["!autofilter"].ref.split("I")[1]);
     const listPersonFile: PersonFile[] = [];
     for (let numRow = 14; numRow <= sizeOfDatos; numRow++) {
-      let datoOfPerson: PersonFile={}; 
+      let datoOfPerson: PersonFile = {};
       for (const cell of Object.values(cellObject)) {
         switch (cell) {
           case "A":
             datoOfPerson = {
               ...datoOfPerson,
               typeDocument: workSheet[cell + numRow].v
-            } 
+            }
             break;
           case "B":
             datoOfPerson = {
               ...datoOfPerson,
-              numDocument:parseInt(workSheet[cell + numRow].v)
+              numDocument: parseInt(workSheet[cell + numRow].v)
             }
             break;
           case "C":
             datoOfPerson = {
               ...datoOfPerson,
-              firstName:workSheet[cell + numRow].v
+              firstName: workSheet[cell + numRow].v
             }
             break;
           case "D":
             datoOfPerson = {
               ...datoOfPerson,
-              lastName:workSheet[cell + numRow].v
+              lastName: workSheet[cell + numRow].v
             }
             break;
           case "E":
             datoOfPerson = {
               ...datoOfPerson,
-              state:workSheet[cell + numRow].v
+              state: workSheet[cell + numRow].v
             }
             break;
         }
@@ -232,4 +231,43 @@ export class UserService {
       listPersonFile
     }
   }
+
+  async onModuleInit() {
+    const usersDefault: CreateUserDto[] = [
+      {
+        email: "superusuario@superuser.com",
+        username: "Superusuario",
+        password: "superUser123",
+        roles: [1]
+      },
+      {
+        email: "administrador@administrador.com",
+        username: "Administrador",
+        password: "administrador123",
+        roles: [2]
+      },
+      {
+        email: "auditor@Auditor.com",
+        username: "Auditor",
+        password: "auditor123",
+        roles: [3]
+      },
+      {
+        email: "Puestodeservicio@servicio.com",
+        username: "Punto de servicio",
+        password: "servicio123",
+        roles: [4]
+      },
+
+    ]
+    const usersCount = await this.userRepository.count();
+    if (usersCount === 0) {
+      for (let user  of usersDefault) {
+        this.createUser(user);
+      }
+      console.log('Users: created');
+      
+    }
+  }
+
 }

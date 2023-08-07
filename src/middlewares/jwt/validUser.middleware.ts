@@ -31,7 +31,7 @@ export class ValidUser implements NestMiddleware {
     validUser(roles: Role[]): boolean {
         for (let role of roles) {
             switch (roleEnum[`${role.id}`]) {
-                case "Super usuario":
+                case "Superusuario":
                     return true;
                 case "Administrador":
                     return true;
