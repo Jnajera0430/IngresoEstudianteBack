@@ -9,3 +9,12 @@ export class CreateGroup{
     state: boolean
     career?: Career
 }
+
+export class UpdateGroupDto{
+    id:number
+    code?:number
+    dateStart?:Date
+    dateEnd?: Date
+    state?: boolean
+    career?: Career
+}

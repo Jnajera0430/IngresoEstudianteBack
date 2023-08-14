@@ -28,5 +28,13 @@ export class AuthLogin {
     rol: string;
 }
 
-export type UpdateUserDto = Partial<CreateUserDto> 
+export class UpdateUserDto {
+    id: number;
+    email?: string;
+    username?: string;
+    password?: string;
+    roles?: number[];
+}
+
+//export type UpdateUserDto = Partial<CreateUserDto> 
 export type UserPayload = Partial<UserDto> 

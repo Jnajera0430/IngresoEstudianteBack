@@ -40,7 +40,7 @@ export class AuthController {
           httpOnly: true,
           path: '/',
           secure: true,
-          maxAge: 86400,
+          maxAge: 999999,
           sameSite: "strict",
           domain:'localhost'
         });

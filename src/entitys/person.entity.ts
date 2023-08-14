@@ -46,6 +46,9 @@ export class Person{
     })
     @JoinColumn({name:'doctType'})
     doctType: DoctType
+
+    personType: Person
+
     @OneToMany(()=> Device, device => device.person,{
         cascade:true,
         eager:true,

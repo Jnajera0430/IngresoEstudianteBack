@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Put, Post, Delete, Req, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Body, Controller, Get, Put, Post, Delete, Req, UseInterceptors, UploadedFile, Param, Patch } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBody, ApiConflictResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { bodyExampleCreateUser, bodyExampleUpdateUser } from 'src/document/body.document';
 import { paramFindUser } from 'src/document/param.document';
@@ -26,8 +26,7 @@ export class UserController {
     @ApiResponse(responseOkCreateUser())
     @ApiBadRequestResponse(responseErrorExampleCreateUser400())
     @ApiResponse(responseErrorServer())
-
-    createUser(@Req() req: Request, @Body() newUser: CreateUserDto): Promise<User> {
+    postCreateUser(@Req() req: Request, @Body() newUser: CreateUserDto): Promise<User> {
         return this.userService.createUser(newUser);
     }
 
@@ -39,8 +38,7 @@ export class UserController {
     @ApiResponse(responseOkListUser())
     @ApiBadRequestResponse(responseErrorExampleCreateUser400())
     @ApiResponse(responseErrorServer())
-
-    allUser(@Req() req: Request): Promise<User[]> {
+    getAllUser(@Req() req: Request): Promise<User[]> {
         return this.userService.findAll();
     }
 
@@ -53,12 +51,11 @@ export class UserController {
     @ApiBadRequestResponse(responseErrorExampleCreateUser400())
     @ApiResponse(responseErrorServer())
     @ApiParam(paramFindUser())
-    findOneById(@Req() req: Request, id: number): Promise<User> {
-
-        return this.userService.findOneById(id);
+    async getFindOneById(@Req() req: Request,@Param('id') id: number): Promise<User> {
+        return await this.userService.findOneById(id);
     }
 
-    @Put()
+    @Patch()
     @ApiOperation({
         summary: "Update user",
         description: 'Endpoint to update user',
@@ -67,13 +64,13 @@ export class UserController {
     @ApiResponse(responseOkfindUserById())
     @ApiBadRequestResponse(responseErrorExampleCreateUser400())
     @ApiResponse(responseErrorServer())
-    update(@Req() req: Request, @Body() user: UpdateUserDto) {
+    patchUpdate(@Req() req: Request, @Body() user: UpdateUserDto) {
         return this.userService.update(user.id, user);
     }
 
     @Post("upload")
     @UseInterceptors(FileInterceptor('file'))
-    uploadFileUser(@Req() req: Request, @UploadedFile() file: Express.Multer.File) {
+    postUploadFileUser(@Req() req: Request, @UploadedFile() file: Express.Multer.File) {
         return this.userService.readFile(file);
     }
 }
