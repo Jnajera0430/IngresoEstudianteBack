@@ -3,6 +3,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import { configComponents } from './document/components.document';
+import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
@@ -13,7 +14,9 @@ async function bootstrap() {
 
   app.setGlobalPrefix("api");
   app.use(cookieParser());
-
+  app.useGlobalPipes(new ValidationPipe())
+  
+  //config of swagger
   const config = new DocumentBuilder()
     .setTitle('Ingreso Estudiantes API')
     .setDescription('Descripción de Ingreso Estudiantes API')
