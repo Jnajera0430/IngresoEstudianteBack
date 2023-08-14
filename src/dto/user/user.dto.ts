@@ -1,16 +1,28 @@
+import { PartialType } from "@nestjs/swagger";
+import { IsNumber, IsEmail, IsNotEmpty, IsString, IsArray, Length } from "class-validator";
 import { Role } from "src/entitys/roles.entity";
 import { User } from "src/entitys/user.entity";
 
 export class CreateUserDto {
-    id?:number;
+    @IsNumber()
+    id?: number;
+    @IsEmail()
+    @IsNotEmpty()
     email: string;
+    @IsString()
+    @IsNotEmpty()
     username: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @Length(6,20,{message:'The password is invalid'})
     password: string;
+    @IsArray()
     roles: number[]
 }
 
 export class UserDto {
-    id?:number;
+    id?: number;
     email: string;
     username: string;
     password: string;
@@ -28,13 +40,17 @@ export class AuthLogin {
     rol: string;
 }
 
-export class UpdateUserDto {
-    id: number;
-    email?: string;
-    username?: string;
-    password?: string;
-    roles?: number[];
-}
+// export class UpdateUserDto {
+//     id: number;
+//     email?: string;
+//     username?: string;
+//     password?: string;
+//     roles?: number[];
+// }
 
-//export type UpdateUserDto = Partial<CreateUserDto> 
+export class UpdateUserDto extends PartialType(CreateUserDto){
+    @IsNotEmpty()
+    @IsNumber()
+    id?: number;
+} 
 export type UserPayload = Partial<UserDto> 

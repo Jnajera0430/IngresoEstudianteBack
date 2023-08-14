@@ -18,28 +18,32 @@ export class AuthService {
         private configServiceEnv: ConfigServiceEnv,
 
     ) { }
+    /**
+     * Returns the access-token of user logged
+     * @param userData AuthUserDto
+     * @returns Set-cookie 
+     */
     async login(userData: AuthUserDto): Promise<AuthLogin> {
-        
+
         const bcrypt: Bcrypt = new Bcrypt()
         const userFound: User = await this.userServices.findOneByEmail(userData.email);
-        
+
         //Arcodear la pass
         if (!userFound) throw new NotFoundException("email not found");
-        if (!await bcrypt.comparePasswords(userData.password, userFound.password)) {
-            throw new HttpException(
-                'Email or password does not match',
-                HttpStatus.UNAUTHORIZED,
-            );
-        }
+        if (!await bcrypt.comparePasswords(userData.password, userFound.password)) throw new HttpException(
+            'Email or password does not match',
+            HttpStatus.BAD_REQUEST,
+        );
+
         const payload: TokenDto = { sub: userFound.id, user: userFound }
-        const token = await this.jwtService.signAsync(payload, {
-            expiresIn: 99999,
-        })
+        // const token = await this.jwtService.signAsync(payload, {
+        //     expiresIn: 99999,
+        // })
         //console.log(payload.user.role);
-        
+
         for (const dataRol of userFound.role) {
             let rol = roleEnum[`${dataRol.id}`];
-            
+
             switch (rol) {
                 default:
                     return {
@@ -48,7 +52,7 @@ export class AuthService {
                         }),
                         rol
                     }
-                case 'Puesto de servicio':                    
+                case 'Puesto de servicio':
                     return {
                         token: await this.jwtService.signAsync(payload, {
                             expiresIn: "100d",

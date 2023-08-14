@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import {CareerService} from '../services/career.service'
 import { CreateCareerDto, UpdateOrFindCareer } from 'src/dto/career/career.dto';
 
@@ -17,7 +17,7 @@ export class CareerController {
     }
 
     @Get(":id")
-    async getCareerById(@Param('id') id:number){
+    async getCareerById(@Param('id',ParseIntPipe) id:number){
         return await this.careerService.findById(id);
     }
 

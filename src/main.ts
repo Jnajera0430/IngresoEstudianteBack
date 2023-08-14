@@ -4,18 +4,24 @@ import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import { configComponents } from './document/components.document';
 import { ValidationPipe } from '@nestjs/common';
+import * as dotenv from 'dotenv';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://pia.elprogramador.co'],
+    origin: [process.env.HOST_LOCAL, process.env.HOST_FRONT],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
-  });
+  },);
 
+  dotenv.config()
+  //prefijo para la consulta en la api
   app.setGlobalPrefix("api");
+
   app.use(cookieParser());
-  app.useGlobalPipes(new ValidationPipe())
-  
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true,
+  }),)
+
   //config of swagger
   const config = new DocumentBuilder()
     .setTitle('Ingreso Estudiantes API')
@@ -27,6 +33,7 @@ async function bootstrap() {
   config.components = configComponents()
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  await app.listen(3000);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
 }
 bootstrap();

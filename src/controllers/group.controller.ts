@@ -1,9 +1,6 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { CreateGroup, UpdateGroupDto } from 'src/dto/group/group.dto';
-import { Group } from 'src/entitys/group.entity';
 import { GroupService } from 'src/services/group.service';
-import { Repository } from 'typeorm';
 
 @Controller('group')
 export class GroupController {
@@ -22,12 +19,12 @@ export class GroupController {
     }
 
     @Get('byCodeGroup/:code')
-    async getListGroupByCode(@Param('code') code: number) {
+    async getListGroupByCode(@Param('code', ParseIntPipe) code: number) {
         return await this.groupService.listGroupByCode(code);
     }
 
     @Get('byCareer/:id')
-    async getListGroupsByCareer(@Param('id') id: number) {
+    async getListGroupsByCareer(@Param('id', ParseIntPipe) id: number) {
         return await this.groupService.findListGroupByCareer(id);
     }
 
