@@ -7,9 +7,10 @@ import { PersonType } from "src/entitys/person_type.entity";
 import { Device } from 'src/entitys/device.entity';
 import { Vehicle } from 'src/entitys/vehicle.entity';
 import { Person } from 'src/entitys/person.entity';
+import { DoctType } from 'src/entitys/doctType.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Group, PersonType, Device, Vehicle,Person])],
+  imports:[TypeOrmModule.forFeature([Group, PersonType, Device, Vehicle,Person,DoctType])],
   providers: [PersonService],
   controllers: [PersonController]
 })

@@ -1,5 +1,7 @@
 export class CreatePersonTypeDto{
-    name: string
+    id?:number
+    name?: string
+    state?:boolean
 }
 
 export class PersonTypeDto{

@@ -11,47 +11,61 @@ export class CareerService {
         @InjectRepository(Career) private readonly careerRepository: Repository<Career>,
     ) { }
 
-
-    async createCareer(career: CreateCareerDto) {
-        const newCareer = this.careerRepository.create(career);
-        await this.careerRepository.save(newCareer);
-        return newCareer;
-    }
-
-    async findByName(career: UpdateOrFindCareer) {
-        const fichaFound = this.careerRepository.findOne({
-            where: {
-                name: career?.name
-            },
+    
+    async listCareer(){
+        return await this.careerRepository.find({
+            relations:["goups"]
         });
     }
 
-    async findById(career: UpdateOrFindCareer): Promise<Career> {
+    async createCareer(career: CreateCareerDto) {
+        const newCareer = this.careerRepository.create(career);
+        return await this.careerRepository.save(newCareer);
+    }
+
+    async findByName(career: UpdateOrFindCareer) {
+        const fichaFound = await this.careerRepository.findOne({
+            where: {
+                name: career?.name
+            },
+            relations:["groups"]
+        });
+        if(!fichaFound){
+            //se tiene que hacer la excepcion 
+            throw new NotFoundException("Career not found")
+        }
+        return fichaFound;
+    }
+
+    async findById(id: number): Promise<Career> {
         const foundFicha = this.careerRepository.findOne({
             where: {
-                id: career.id
+                id
             },
+            relations:["groups"]
         });
 
         return foundFicha;
     }
 
-    async updateCareer(careerUpdate: UpdateOrFindCareer) {
+    async updateCareer(careerUpdated: UpdateOrFindCareer) {
         const foundCareer: Career = await this.careerRepository.findOne({
             where: {
-                id: careerUpdate.id
-            }
+                id: careerUpdated.id
+            },
+            relations:["groups"]
         });
 
         if (!foundCareer) {
             throw new NotFoundException("Career not found");
         }
 
-        await this.careerRepository.update(careerUpdate.id, careerUpdate);
+        await this.careerRepository.update(careerUpdated.id, careerUpdated);
         return await this.careerRepository.findOne({
             where: {
-                id: careerUpdate.id
-            }
+                id: careerUpdated.id
+            },
+            relations:["groups"]
         });
     }
 }

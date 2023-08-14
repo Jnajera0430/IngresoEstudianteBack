@@ -47,7 +47,8 @@ export class PersonTypeService {
             where: {
                 name: personType.name,
                 state: true
-            }
+            },
+            relations:["persons"]
         });
     }
 
