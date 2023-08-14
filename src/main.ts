@@ -6,11 +6,11 @@ import { configComponents } from './document/components.document';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: "*",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
+    origin: ['http://localhost:5173', 'http://pia.elprogramador.co'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
   });
+
   app.setGlobalPrefix("api");
   app.use(cookieParser());
 
