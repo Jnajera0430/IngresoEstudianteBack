@@ -18,3 +18,10 @@ export const roleEnum={
     3 :'Auditor',
     4 :'Puesto de servicio'
 }
+
+export declare enum RoleEnumByTypeRole{
+    SUPER_USER = 1,
+    ADMINISTRADOR = 2,
+    AUDITOR = 3,
+    PUESTO_DE_SERVICIO = 4
+}

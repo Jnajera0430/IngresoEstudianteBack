@@ -1,4 +1,4 @@
-import { IsNumber, IsString, IsNotEmpty, IsBooleanString, ValidateNested, IsArray } from "class-validator";
+import { IsNumber, IsString, IsNotEmpty, IsBooleanString, ValidateNested, IsArray, isNotEmpty } from "class-validator";
 import { Type } from "class-transformer";
 import { Device } from "src/entitys/device.entity";
 import { DoctType } from "src/entitys/doctType.entity";
@@ -53,6 +53,13 @@ export class CreatePerson extends PartialType(PersonDto) {
 
 }
 
+export class UpdatePerson extends PartialType(CreatePerson){
+    @IsNotEmpty()
+    @IsNumber()
+    id:number
+
+}
+
 // export class CreatePerson {
 //     id?: number;
 //     firtsName: string;
@@ -67,19 +74,19 @@ export class CreatePerson extends PartialType(PersonDto) {
 //     recordEntry?: Record_entry[] | null;
 // }
 
-export class UpdatePerson {
-    id: number;
-    firtsName?: string;
-    lastName?: string;
-    document?: string;
-    state?: boolean;
-    docType?: DoctType | null;
-    personTypes?: PersonType | null;
-    groups?: Group[] | null;
-    device?: Device[] | null;
-    vehicles?: Vehicle[] | null;
-    recordEntry?: Record_entry[] | null;
-}
+// export class UpdatePerson {
+//     id: number;
+//     firtsName?: string;
+//     lastName?: string;
+//     document?: string;
+//     state?: boolean;
+//     docType?: DoctType | null;
+//     personTypes?: PersonType | null;
+//     groups?: Group[] | null;
+//     device?: Device[] | null;
+//     vehicles?: Vehicle[] | null;
+//     recordEntry?: Record_entry[] | null;
+// }
 
-//export type CreatePerson=Partial<PersonDto>
+//export type CreatePersondtpPruba=Partial<PersonDto>
 //export type UpdatePerson = Partial<PersonDto>

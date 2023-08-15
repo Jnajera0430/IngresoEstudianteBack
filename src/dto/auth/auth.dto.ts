@@ -1,6 +1,6 @@
 import { User } from 'src/entitys/user.entity';
 import { Role } from 'src/entitys/roles.entity';
-import { IsEmail, IsNotEmpty, IsNumberString, IsString, Length } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumberString,IsNumber, IsString, Length } from 'class-validator';
 
 export class AuthUserDto {
     @IsEmail()
@@ -13,7 +13,7 @@ export class AuthUserDto {
 }
 
 export class AuthUserRolDto {
-    @IsNumberString()
+    @IsNumber()
     id: number;
     idUser: User;
     idRol: Role;

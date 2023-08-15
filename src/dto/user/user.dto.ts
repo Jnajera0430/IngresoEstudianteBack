@@ -15,7 +15,7 @@ export class CreateUserDto {
 
     @IsNotEmpty()
     @IsString()
-    @Length(6,20,{message:'The password is invalid'})
+    @Length(6, 20, { message: 'The password is invalid' })
     password: string;
     @IsArray()
     roles: number[]
@@ -40,6 +40,13 @@ export class AuthLogin {
     rol: string;
 }
 
+
+export class UpdateUserDto extends PartialType(CreateUserDto) {
+    @IsNotEmpty()
+    @IsNumber()
+    id?: number;
+}
+export class UserPayload extends PartialType(UserDto) { }
 // export class UpdateUserDto {
 //     id: number;
 //     email?: string;
@@ -47,10 +54,3 @@ export class AuthLogin {
 //     password?: string;
 //     roles?: number[];
 // }
-
-export class UpdateUserDto extends PartialType(CreateUserDto){
-    @IsNotEmpty()
-    @IsNumber()
-    id?: number;
-} 
-export type UserPayload = Partial<UserDto> 
