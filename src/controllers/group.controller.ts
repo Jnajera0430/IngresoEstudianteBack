@@ -134,7 +134,7 @@ export class GroupController {
             dateStart: '23-08-2023 - 00:00:00',
             dateEnd: '23-08-2024 - 00:00:00',
             career:{},
-            students:[]
+            "students?":[]
         }
     }))
     @ApiBadRequestResponse(abstracResponseErrorExample({
@@ -144,8 +144,25 @@ export class GroupController {
     async postCreateGroup(@Body() newGroup: CreateGroup) {
         return await this.groupService.createGroup(newGroup);
     }
-
+    
     @Patch()
+    @ApiResponse(abstractResponseOk({
+        status:200,
+        message:'group created',
+        description:'Example of a response when creating a group',
+        data:{
+            id: 846,
+            "code?":123578545,
+            "dateStart?": '23-08-2023 - 00:00:00',
+            "dateEnd?": '23-08-2024 - 00:00:00',
+            "career?":{},
+            "students?":[]
+        }
+    }))
+    @ApiBadRequestResponse(abstracResponseErrorExample({
+        error: 'An unexpected error has occurred'
+    }))
+    @ApiResponse(responseErrorServer())
     async patchUpdateGroup(@Body() group: UpdateGroupDto) {
         return await this.groupService.updateGroup(group);
     }
