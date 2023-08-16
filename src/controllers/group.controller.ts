@@ -146,6 +146,27 @@ export class GroupController {
     }
     
     @Patch()
+    @ApiOperation({
+        summary: "Create a new group",
+        description: 'Endpoint to create a new group',
+    })
+    @ApiBody(abstractBodyExample({
+        type:"CreateGroup",
+        description:'Values required to create a new group',
+        required: true,
+        example1:{
+            summary:'data required to create a group',
+            value:{
+                id: 846,
+                "code?":123578545,
+                "dateStart?": '23-08-2023 - 00:00:00',
+                "dateEnd?": '23-08-2024 - 00:00:00',
+                "career?":{},
+                "students?":[]
+            }
+        }
+
+    }))
     @ApiResponse(abstractResponseOk({
         status:200,
         message:'group created',
