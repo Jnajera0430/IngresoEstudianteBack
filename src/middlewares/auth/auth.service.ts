@@ -7,7 +7,7 @@ import { UserService } from 'src/services/user.service';
 import { RolesService } from 'src/services/roles.service';
 import { ConfigServiceEnv } from 'src/config/config.service';
 import { AuthLogin, TokenDto } from 'src/dto/user/user.dto';
-import { roleEnum } from 'src/dto/roles/rol.dto';
+import { RoleEnumByTypeRole, roleEnum } from 'src/dto/roles/rol.dto';
 
 @Injectable()
 export class AuthService {
@@ -35,29 +35,33 @@ export class AuthService {
             HttpStatus.BAD_REQUEST,
         );
 
-        const payload: TokenDto = { sub: userFound.id, user: userFound }
+        const payload: TokenDto = {
+            sub: userFound.id, user: {
+                email: userFound.email,
+                username: userFound.username,
+                role: userFound.role.map(rol => ({ tipo: rol.tipo })),
+            }
+        }
         // const token = await this.jwtService.signAsync(payload, {
         //     expiresIn: 99999,
         // })
         //console.log(payload.user.role);
 
         for (const dataRol of userFound.role) {
-            let rol = roleEnum[`${dataRol.id}`];
-
-            switch (rol) {
+            switch (dataRol.id) {
                 default:
                     return {
                         token: await this.jwtService.signAsync(payload, {
                             expiresIn: "1d",
                         }),
-                        rol
+                        rol: dataRol
                     }
-                case 'Puesto de servicio':
+                case RoleEnumByTypeRole.PUESTO_DE_SERVICIO:
                     return {
                         token: await this.jwtService.signAsync(payload, {
                             expiresIn: "100d",
                         }),
-                        rol
+                        rol: dataRol
                     }
             }
         }

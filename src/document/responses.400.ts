@@ -1,4 +1,10 @@
-export const responseErrorExampleAuthUser = () => (
+import { ApiResponseOptions } from "@nestjs/swagger"
+
+interface DataBadResponse {
+    error: string
+}
+
+export const responseErrorExampleAuthUser = (): ApiResponseOptions => (
     {
         status: 401,
         content: {
@@ -13,7 +19,7 @@ export const responseErrorExampleAuthUser = () => (
     }
 )
 
-export const responseErrorExampleCreateUser400 = () => (
+export const responseErrorExampleCreateUser400 = (): ApiResponseOptions => (
     {
         description: 'Bad request',
         content: {
@@ -30,3 +36,18 @@ export const responseErrorExampleCreateUser400 = () => (
         }
     }
 )
+
+export const abstracResponseErrorExample = ({error}:DataBadResponse): ApiResponseOptions => ({
+    description: 'Bad request',
+    content: {
+        'application/json': {
+            example: {
+                "status": 400,
+                message: "Bad request",
+                data: {
+                    error
+                }
+            }
+        }
+    }
+})

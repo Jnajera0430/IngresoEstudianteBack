@@ -50,14 +50,21 @@ export class PersonDto {
 }
 
 export class CreatePerson extends PartialType(PersonDto) {
-
+    @IsNotEmpty()
+    @IsString()
+    firtsName: string;
+    @IsNotEmpty()
+    @IsString()
+    lastName: string;
+    @IsNotEmpty()
+    @IsString()
+    document: string;
 }
 
 export class UpdatePerson extends PartialType(CreatePerson){
     @IsNotEmpty()
     @IsNumber()
     id:number
-
 }
 
 // export class CreatePerson {

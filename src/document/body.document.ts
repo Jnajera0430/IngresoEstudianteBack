@@ -1,4 +1,17 @@
-export const bodyExampleAuthUser = () => (
+import { ApiBodyOptions } from "@nestjs/swagger";
+interface exampleInterface{
+  value: Object,
+  summary: string,
+}
+interface bodyInterface {
+  type?: string,
+  description?: string,
+  example1?: exampleInterface | object,
+  required?: boolean,
+  ref?:string
+}
+
+export const bodyExampleAuthUser = ():ApiBodyOptions => (
   {
     type: 'AuthUserDto',
     description: 'Values required for Authenticate',
@@ -20,7 +33,7 @@ export const bodyExampleAuthUser = () => (
   }
 )
 
-export const bodyExampleCreateUser = () => (
+export const bodyExampleCreateUser = ():ApiBodyOptions => (
   {
     type: 'CreateUserDto',
     description: 'Values required for create a user',
@@ -43,7 +56,7 @@ export const bodyExampleCreateUser = () => (
   }
 );
 
-export const bodyExampleUpdateUser = () => (
+export const bodyExampleUpdateUser = ():ApiBodyOptions => (
   {
     type: 'UpdateUserDto',
     description: 'Values required for create a user',
@@ -67,3 +80,36 @@ export const bodyExampleUpdateUser = () => (
     }
   }
 );
+
+export const bodyExampleRoleDto = (required:boolean = false):ApiBodyOptions => (
+  {
+    type: 'RoleDto',
+    description: 'Values required for search or create a role',
+    examples: {
+      example1: {
+        value: {
+          "id?":1234,
+          "tipo": "Puesto de servicio"
+        },
+        summary: 'Example of values required',
+
+      },
+    },
+    required,
+    schema: {
+      $ref: '#/components/schemas/UpdateUserDto'
+    }
+  }
+);
+
+export const abstractBodyExample= ({type,description,example1,required,ref}:bodyInterface):ApiBodyOptions =>({
+  type,
+  description,
+  examples: {
+    example1,
+  },
+  required,
+  schema: {
+    $ref: ref
+  }
+})

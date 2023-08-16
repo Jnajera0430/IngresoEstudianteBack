@@ -1,7 +1,7 @@
 import { Injectable, NestMiddleware } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { NextFunction, Request, Response } from "express";
-import { roleEnum } from "src/dto/roles/rol.dto";
+import { RoleDto, RoleEnumByTypeRole, roleEnum } from "src/dto/roles/rol.dto";
 import { Role } from "src/entitys/roles.entity";
 import { UserUnauthorizedException } from "src/exceptions/customExcepcion";
 
@@ -28,12 +28,12 @@ export class ValidUser implements NestMiddleware {
      * @param roles Role [ ]
      * @returns boolean
      */
-    validUser(roles: Role[]): boolean {
+    validUser(roles: RoleDto[]): boolean {
         for (let role of roles) {
-            switch (roleEnum[`${role.id}`]) {
-                case "Superusuario":
+            switch (role.id) {
+                case RoleEnumByTypeRole.SUPER_USER:
                     return true;
-                case "Administrador":
+                case RoleEnumByTypeRole.ADMINISTRADOR:
                     return true;
             }
         }

@@ -1,4 +1,6 @@
-export const responseErrorServer=()=>(
+import { ApiResponseOptions } from "@nestjs/swagger";
+
+export const responseErrorServer=():ApiResponseOptions=>(
     {
         status: 500,
         description: 'Error internal server',

@@ -22,6 +22,7 @@ import { Response } from 'express';
 import { bodyExampleAuthUser } from 'src/document/body.document';
 import { responseOkAuthUser } from 'src/document/responses.200';
 import { responseErrorExampleAuthUser } from 'src/document/responses.400';
+import { RoleEnumByTypeRole } from 'src/dto/roles/rol.dto';
 
 @Controller('auth')
 @ApiTags('Auth-user')
@@ -29,7 +30,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly jwtServices: JwtService,
-  ) {}
+  ) { }
   @HttpCode(HttpStatus.OK)
   @Post('login')
   @ApiOperation({
@@ -44,23 +45,32 @@ export class AuthController {
     @Body() userData: AuthUserDto,
   ): Promise<void> {
     const { token, rol } = await this.authService.login(userData);
-    // switch (rol) {
-    //   default:
-    //     response.setHeader('Set-Cookie', [
-    //       `access_token=${token}; HttpOnly; Path=/; Max-Age=86400; SameSite=Strict; Secure;`,
-    //     ]);
-    //     break;
-    //   case 'Puesto de servicio':
-    //     response.setHeader('Set-Cookie', [
-    //       `access_token=${token}; HttpOnly; Path=/; SameSite=Strict; Secure;`,
-    //     ]);
-    //     break;
-    // }
-    response.setHeader('Set-Cookie', [
-      `access_token=${token}; HttpOnly; Path=/; Max-Age=86400; SameSite=None; Secure;`,
-    ]);
-
+    switch (rol.id) {
+      case RoleEnumByTypeRole.PUESTO_DE_SERVICIO:
+        response.setHeader('Set-Cookie', [
+          `access_token=${token}; HttpOnly; Path=/; SameSite=None; Secure;`,
+        ]);
+        return;
+      default:
+        response.setHeader('Set-Cookie', [
+          `access_token=${token}; HttpOnly; Path=/; Max-Age=86400; SameSite=None; Secure;`,
+        ]);
+        return;
+    }
   }
+  
+  // switch (rol) {
+  //   default:
+  //     response.setHeader('Set-Cookie', [
+  //       `access_token=${token}; HttpOnly; Path=/; Max-Age=86400; SameSite=Strict; Secure;`,
+  //     ]);
+  //     break;
+  //   case 'Puesto de servicio':
+  //     response.setHeader('Set-Cookie', [
+  //       `access_token=${token}; HttpOnly; Path=/; SameSite=Strict; Secure;`,
+  //     ]);
+  //     break;
+  // }
   /*
     registrar usuario e iniciar session
     @HttpCode(HttpStatus.OK)

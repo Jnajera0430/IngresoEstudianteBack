@@ -1,4 +1,14 @@
-export const responseOkAuthUser = () => ({
+import { ApiResponseOptions } from "@nestjs/swagger"
+
+interface ResponseInterface{
+  message?: String,
+  status?: number,
+  description?:string,
+  ref?:string,
+  data?:string | Object
+}
+
+export const responseOkAuthUser = (): ApiResponseOptions => ({
   status: 200,
   content: {
     'application/json': {
@@ -23,7 +33,7 @@ export const responseOkAuthUser = () => ({
   }
 })
 
-export const responseOkCreateUser = () => (
+export const responseOkCreateUser = (): ApiResponseOptions => (
   {
     status: 201,
     description: 'user created',
@@ -54,7 +64,7 @@ export const responseOkCreateUser = () => (
   }
 )
 
-export const responseOkListUser = () => (
+export const responseOkListUser = (): ApiResponseOptions => (
   {
     status: 200,
     description: 'Users list with your type of roles',
@@ -134,7 +144,7 @@ export const responseOkListUser = () => (
   }
 )
 
-export const responseOkfindUserById = () => (
+export const responseOkfindUserById = (): ApiResponseOptions => (
   {
     status: 200,
     description: 'Users list with your type of roles',
@@ -165,3 +175,75 @@ export const responseOkfindUserById = () => (
     }
   }
 )
+
+export const responseOkListRoles = (): ApiResponseOptions => (
+  {
+    status: 200,
+    description: 'Users list with your type of roles',
+    content: {
+      'application/json': {
+        schema: {
+          $ref: '#/components/schemas/CreateUserDto'
+        },
+        example: {
+          "status": 200,
+          message: "list users",
+          data: [
+            {
+              "id": 1,
+              "tipo": "Super usuario"
+            },
+            {
+              "id": 2,
+              "tipo": "Administrador"
+            },
+            {
+              "id": 3,
+              "tipo": "Auditor"
+            }
+          ]
+        }
+      }
+    }
+  }
+)
+
+export const responseOkfindRolByType = ({message,status}:ResponseInterface): ApiResponseOptions => (
+  {
+    status,
+    description: 'Example response of roles',
+    content: {
+      'application/json': {
+        schema: {
+          $ref: '#/components/schemas/RoleDto'
+        },
+        example: {
+          status,
+          message,
+          data:
+          {
+            "id": 1,
+            "tipo": "Puesto de servicio"
+          }
+        }
+      }
+    }
+  }
+)
+
+export const abstractResponseOk = ({message,status,description,data,ref}: ResponseInterface) =>({
+  status,
+  description,
+  content: {
+    'application/json': {
+      schema: {
+        $ref: `#/components/schemas/${ref}`
+      },
+      example: {
+        status,
+        message,
+        data
+      }
+    }
+  }
+})

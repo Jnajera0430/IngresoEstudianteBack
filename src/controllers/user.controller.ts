@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Put, Post, Delete, Req, UseInterceptors, UploadedFile, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Put, Post, Delete, Req, UseInterceptors, UploadedFile, Param, Patch, ParseIntPipe } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBody, ApiConflictResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { bodyExampleCreateUser, bodyExampleUpdateUser } from 'src/document/body.document';
 import { paramFindUser } from 'src/document/param.document';
@@ -51,7 +51,7 @@ export class UserController {
     @ApiBadRequestResponse(responseErrorExampleCreateUser400())
     @ApiResponse(responseErrorServer())
     @ApiParam(paramFindUser())
-    async getFindOneById(@Req() req: Request,@Param('id') id: number): Promise<User> {
+    async getFindOneById(@Req() req: Request,@Param('id',ParseIntPipe) id: number): Promise<User> {
         return await this.userService.findOneById(id);
     }
 
