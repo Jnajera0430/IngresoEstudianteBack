@@ -11,6 +11,7 @@ import { FileService } from 'src/queues/files/files.service';
 import { Job } from 'bull';
 import { read } from 'Xlsx'
 import { CellObject, PersonFile } from 'src/dto/person/personFile.dto';
+import { Express } from 'express';
 @Injectable()
 export class UserService implements OnModuleInit {
   /**
@@ -231,6 +232,12 @@ export class UserService implements OnModuleInit {
       listPersonFile
     }
   }
+  async readFiles(files: Express.Multer.File[]) {
+    const size = files.length;
+    for(let file of files){
+      this.readFile(file);
+    }
+  }
 
   async onModuleInit() {
     const usersDefault: CreateUserDto[] = [
@@ -262,12 +269,13 @@ export class UserService implements OnModuleInit {
     ]
     const usersCount = await this.userRepository.count();
     if (usersCount === 0) {
-      for (let user  of usersDefault) {
+      for (let user of usersDefault) {
         this.createUser(user);
       }
       console.log('Users: created');
-      
+
     }
   }
+
 
 }

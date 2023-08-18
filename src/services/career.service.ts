@@ -14,7 +14,7 @@ export class CareerService {
     
     async listCareer(){
         return await this.careerRepository.find({
-            relations:["goups"]
+            relations:["groups"]
         });
     }
 

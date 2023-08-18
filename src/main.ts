@@ -24,8 +24,8 @@ async function bootstrap() {
 
   //config of swagger
   const config = new DocumentBuilder()
-    .setTitle('Ingreso Estudiantes API')
-    .setDescription('Descripción de Ingreso Estudiantes API')
+    .setTitle('PIA API')
+    .setDescription('Api documentation')
     .setVersion('1.0')
     .addTag('Routes')
     .build();

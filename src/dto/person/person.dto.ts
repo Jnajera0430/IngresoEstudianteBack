@@ -59,6 +59,14 @@ export class CreatePerson extends PartialType(PersonDto) {
     @IsNotEmpty()
     @IsString()
     document: string;
+    @IsNotEmpty()
+    @ValidateNested()
+    @Type(() => DoctType)
+    docType: DoctType;
+    @IsNotEmpty()
+    @ValidateNested()
+    @Type(() => PersonType)
+    personTypes: PersonType;
 }
 
 export class UpdatePerson extends PartialType(CreatePerson){

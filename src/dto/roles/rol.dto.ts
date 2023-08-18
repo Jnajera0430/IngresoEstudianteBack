@@ -30,3 +30,9 @@ export class RoleEnumByTypeRole {
     static AUDITOR = 3;
     static PUESTO_DE_SERVICIO = 4;
 }
+export class RoleEnumByType {
+    static SUPER_USER = 'Superusuario';
+    static ADMINISTRADOR = 'Administrador';
+    static AUDITOR = 'Auditor';
+    static PUESTO_DE_SERVICIO = 'Puesto de servicio';
+}

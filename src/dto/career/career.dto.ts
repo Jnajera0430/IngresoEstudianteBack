@@ -22,10 +22,7 @@ export class UpdateOrFindCareer extends PartialType(CreateCareerDto){
 }
 
 // export class UpdateOrFindCareer{
-//     @IsNumber()
 //     id?:number;
-//     @IsString()
 //     name?: string;
-//     @IsArray()
 //     group?: Group[];
 // }

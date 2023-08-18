@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Put, Post, Delete, Req, UseInterceptors, UploadedFile, Param, Patch, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Get, Put, Post, Delete, Req, UseInterceptors, UploadedFile, Param, Patch, ParseIntPipe, UploadedFiles } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBody, ApiConflictResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { bodyExampleCreateUser, bodyExampleUpdateUser } from 'src/document/body.document';
 import { paramFindUser } from 'src/document/param.document';
@@ -9,7 +9,7 @@ import { CreateUserDto, UpdateUserDto } from 'src/dto/user/user.dto';
 import { User } from 'src/entitys/user.entity';
 import { UserService } from 'src/services/user.service';
 import { AnyFilesInterceptor, FilesInterceptor, FileInterceptor } from '@nestjs/platform-express'
-import { Request } from 'express';
+import { Request, Express } from 'express';
 @Controller('user')
 @ApiTags("api-User")
 export class UserController {
@@ -51,7 +51,7 @@ export class UserController {
     @ApiBadRequestResponse(responseErrorExampleCreateUser400())
     @ApiResponse(responseErrorServer())
     @ApiParam(paramFindUser())
-    async getFindOneById(@Req() req: Request,@Param('id',ParseIntPipe) id: number): Promise<User> {
+    async getFindOneById(@Req() req: Request, @Param('id', ParseIntPipe) id: number): Promise<User> {
         return await this.userService.findOneById(id);
     }
 
@@ -64,13 +64,18 @@ export class UserController {
     @ApiResponse(responseOkfindUserById())
     @ApiBadRequestResponse(responseErrorExampleCreateUser400())
     @ApiResponse(responseErrorServer())
-    patchUpdate(@Req() req: Request, @Body() user: UpdateUserDto) {
+    async patchUpdate(@Req() req: Request, @Body() user: UpdateUserDto) {
         return this.userService.update(user.id, user);
     }
 
     @Post("upload")
     @UseInterceptors(FileInterceptor('file'))
-    postUploadFileUser(@Req() req: Request, @UploadedFile() file: Express.Multer.File) {
-        return this.userService.readFile(file);
+    async postUploadFileUser(@Req() req: Request, @UploadedFile() file: Express.Multer.File) {
+        return await this.userService.readFile(file);
+    }
+    @Post("uploadFiles")
+    @UseInterceptors(FilesInterceptor('files'))
+    async postUploadFilesUser(@Req() req: Request, @UploadedFiles() files: Express.Multer.File[]) {
+        return await this.userService.readFiles(files);
     }
 }
