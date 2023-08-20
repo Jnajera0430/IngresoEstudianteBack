@@ -34,10 +34,17 @@ pipeline{
                 }
             }
         }
+        stage("Copy"){
+            steps{
+                script {
+                    sh 'cp -r ./dist/* ~/shared/nginx/api'
+                }
+            }
+        }
         stage("Start"){
             steps{
                 script {
-                    sh 'pm2 start dist/main.js --name=pia_backend'
+                    sh 'pm2 start ~/shared/nginx/api/main.js --name=pia_backend'
                 }
             }
         }
