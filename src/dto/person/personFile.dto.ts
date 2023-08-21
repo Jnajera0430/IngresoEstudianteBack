@@ -1,11 +1,13 @@
 import { IsNotEmpty, IsObject } from "class-validator";
+import { PersonDto } from "./person.dto";
+import { PartialType } from "@nestjs/swagger";
 
-export class PersonFile{
-    typeDocument?: string;
-    numDocument?: number;
-    firstName?: string;
-    lastName?: string;
-    state?: string;
+export class PersonFile extends PartialType(PersonDto){
+    // typeDocument?: string;
+    // numDocument?: number;
+    // firstName?: string;
+    // lastName?: string;
+    // state?: string;
 }
 
 export class GetInfoFile {

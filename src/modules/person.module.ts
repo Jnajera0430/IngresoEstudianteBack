@@ -12,6 +12,7 @@ import { DoctType } from 'src/entitys/doctType.entity';
 @Module({
   imports:[TypeOrmModule.forFeature([Group, PersonType, Device, Vehicle,Person,DoctType])],
   providers: [PersonService],
-  controllers: [PersonController]
+  controllers: [PersonController],
+  exports: [PersonService]
 })
 export class PersonModule {}

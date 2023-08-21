@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, ValidationPipe } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -56,33 +61,49 @@ import { ValidUser } from './middlewares/jwt/validUser.middleware';
         synchronize: true,
       }),
 
-      inject: [ConfigService]
-    })
-    , BullModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        redis: {
-          port: configService.get('REDIS_PORT'),
-          host: configService.get('REDIS_HOST'),
-          username: configService.get('REDIS_USER'),
-          password: configService.get('REDIS_PASS')
-        },
-      }),
       inject: [ConfigService],
-    }), RolesModule, UserModule, PersonModule, GroupModule, CareerModule, PersonTypeModule, RecordEntryModule, EntryTypeModule, EntryDeviceModule, DeviceModule, DeviceTypeModule, VehicleModule, VehicleTypeModule, EntryVehicleModule, AuthModule, QueuesModule,],
-  controllers: [AppController],
-  providers: [
-    AppService
+    }),
+    RolesModule,
+    UserModule,
+    PersonModule,
+    GroupModule,
+    CareerModule,
+    PersonTypeModule,
+    RecordEntryModule,
+    EntryTypeModule,
+    EntryDeviceModule,
+    DeviceModule,
+    DeviceTypeModule,
+    VehicleModule,
+    VehicleTypeModule,
+    EntryVehicleModule,
+    AuthModule,
+    QueuesModule,
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(TokenMiddleware)
-      .forRoutes(VehicleController, VehicleTypeController, UserController, RolesController, RecordEntryController, PersonController, PersonTypeController, GroupController, EntryVehicleController, EntryTypeController, EntryDeviceController, DeviceController, DeviceTypeController, CareerController);
+      .forRoutes(
+        VehicleController,
+        VehicleTypeController,
+        UserController,
+        RolesController,
+        RecordEntryController,
+        PersonController,
+        PersonTypeController,
+        GroupController,
+        EntryVehicleController,
+        EntryTypeController,
+        EntryDeviceController,
+        DeviceController,
+        DeviceTypeController,
+        CareerController,
+      );
 
-    consumer
-      .apply(ValidUser)
-      .forRoutes(UserController)
+    consumer.apply(ValidUser).forRoutes(UserController);
   }
 }

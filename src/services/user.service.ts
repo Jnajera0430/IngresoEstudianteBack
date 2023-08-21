@@ -12,19 +12,21 @@ import { Job } from 'bull';
 import { read } from 'Xlsx'
 import { CellObject, PersonFile } from 'src/dto/person/personFile.dto';
 import { Express } from 'express';
+import { QueuesService } from 'src/queues/queues.service';
 @Injectable()
 export class UserService implements OnModuleInit {
   /**
    * constructor
    * @param userRepository
-   * Repository of typeorm of the entity Users 
-   * @param rolesServices 
-   * Services of Roles 
+   * Repository of typeorm of the entity Users
+   * @param rolesServices
+   * Services of Roles
    */
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly rolesServices: RolesService,
     private readonly fileManaggerQueue: FileService,
+    private readonly queueService: QueuesService,
   ) { }
 
   /**
@@ -44,7 +46,7 @@ export class UserService implements OnModuleInit {
   /**
    * find user for email
    * @param emailIngresado
-   * parameter of type string 
+   * parameter of type string
    * @returns Promise
    */
   async findOneByEmail(emailIngresado: string): Promise<User> {
@@ -59,9 +61,9 @@ export class UserService implements OnModuleInit {
   }
   /**
    * find user for id
-   * @param id 
+   * @param id
    * parameter of type number
-   * @returns Promise 
+   * @returns Promise
    */
   async findOneById(id: number): Promise<User> {
     return await this.userRepository.findOne({
@@ -76,7 +78,7 @@ export class UserService implements OnModuleInit {
 
   /**
    * Function for create a new user
-   * @param newUser 
+   * @param newUser
    * Parametre of type CreateUserDto
    * @returns Promise
    */
@@ -97,8 +99,8 @@ export class UserService implements OnModuleInit {
   }
   /**
    * Delete user for id
-   * @param id 
-   * Parameter id of type number 
+   * @param id
+   * Parameter id of type number
    * @returns Promise
    */
   async delete(id: number): Promise<DeleteResult> {
@@ -117,9 +119,9 @@ export class UserService implements OnModuleInit {
   }
   /**
    * Update user for id
-   * @param id 
+   * @param id
    * Parameter id of type number
-   * @param user 
+   * @param user
    * Parameter user of type UpdateUserDto
    * @returns Promise
    */
@@ -193,19 +195,19 @@ export class UserService implements OnModuleInit {
           case "A":
             datoOfPerson = {
               ...datoOfPerson,
-              typeDocument: workSheet[cell + numRow].v
+              docType: workSheet[cell + numRow].v
             }
             break;
           case "B":
             datoOfPerson = {
               ...datoOfPerson,
-              numDocument: parseInt(workSheet[cell + numRow].v)
+              document: workSheet[cell + numRow].v
             }
             break;
           case "C":
             datoOfPerson = {
               ...datoOfPerson,
-              firstName: workSheet[cell + numRow].v
+              firtsName: workSheet[cell + numRow].v
             }
             break;
           case "D":
@@ -217,20 +219,21 @@ export class UserService implements OnModuleInit {
           case "E":
             datoOfPerson = {
               ...datoOfPerson,
-              state: workSheet[cell + numRow].v
+              state: workSheet[cell + numRow].v === 'EN FORMACION' ? true : false
             }
             break;
         }
       }
-      const validPerson = listPersonFile.some((person: PersonFile) => person?.numDocument === datoOfPerson?.numDocument)
+      const validPerson = listPersonFile.some((person: PersonFile) => person?.document === datoOfPerson?.document)
       if (!validPerson) {
         listPersonFile.push(datoOfPerson);
       }
     }
-    return {
+    const data = {
       infoOfProgram,
       listPersonFile
     }
+    return this.queueService.addTask(data);
   }
   async readFiles(files: Express.Multer.File[]) {
     const size = files.length;

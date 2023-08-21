@@ -19,7 +19,7 @@ export class PersonDto {
     lastName: string;
     @IsNotEmpty()
     @IsString()
-    document: string;
+    document: number;
     @IsNotEmpty()
     @IsBooleanString()
     state: boolean;
@@ -58,7 +58,7 @@ export class CreatePerson extends PartialType(PersonDto) {
     lastName: string;
     @IsNotEmpty()
     @IsString()
-    document: string;
+    document: number;
     @IsNotEmpty()
     @ValidateNested()
     @Type(() => DoctType)
