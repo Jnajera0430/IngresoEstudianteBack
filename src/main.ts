@@ -1,27 +1,39 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import* as cookieParser from 'cookie-parser';
-import fastifyCookie from '@fastify/cookie';
+import * as cookieParser from 'cookie-parser';
+import { configComponents } from './document/components.document';
+import { ValidationPipe } from '@nestjs/common';
+import * as dotenv from 'dotenv';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: "*",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    preflightContinue: false,
-    optionsSuccessStatus: 204
-  });
-  app.setGlobalPrefix("api");
+    origin: [process.env.HOST_LOCAL, process.env.HOST_FRONT],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
+  },);
+
+  dotenv.config()
+  //prefijo para la consulta en la api
+  // app.setGlobalPrefix("api");
+
   app.use(cookieParser());
-  
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true,
+  }),)
+
+  //config of swagger
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('PIA API')
+    .setDescription('Api documentation')
     .setVersion('1.0')
-    .addTag('cats')
+    .addTag('Routes')
     .build();
+
+  config.components = configComponents()
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  await app.listen(3000);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
 }
 bootstrap();

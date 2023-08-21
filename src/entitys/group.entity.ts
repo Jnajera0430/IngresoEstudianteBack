@@ -9,18 +9,18 @@ export class Group {
     @PrimaryGeneratedColumn('increment')
     id: number
     @Column()
-    code: Number
+    code: number
     @Column()
     dateStart: Date
     @Column()
     dateEnd: Date
     @Column()
-    state: Number
+    state: boolean
 
     @ManyToOne(() => Career, career => career.groups,{
         cascade: true,
         eager: true,
-        nullable: false,
+        nullable: true,
         onDelete:"CASCADE",
         onUpdate:"CASCADE"
     })

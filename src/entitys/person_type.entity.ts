@@ -11,4 +11,7 @@ export class PersonType{
 
     @OneToMany(()=>Person, person=>person.personTypes)
     person: Person[]
+
+    @Column({type:"boolean", default:true})
+    state: boolean
 }

@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { AppService } from './app.service';
 
 @Controller()
-@ApiTags('app-controller')
+@ApiTags('app')
 export class AppController {
   constructor(private readonly appService: AppService) { }
 
@@ -11,7 +11,7 @@ export class AppController {
   @ApiOperation({
     description: 'Ejemplo get'
   })
-  getHello(): string {
+  getHello() {
     return this.appService.getHello();
   }
 }

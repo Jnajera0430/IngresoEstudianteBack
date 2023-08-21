@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Record_entry } from "./record_entry.entity";
 
 
 @Entity({name: 'entry_type'})
@@ -7,4 +8,8 @@ export class EntryType{
     id: number
     @Column()
     name: string
+
+    @OneToOne(()=>Record_entry,recordEntry=>recordEntry.entryType)
+    @JoinColumn({name:'recordEntry'})
+    recordEntry: Record_entry
 }

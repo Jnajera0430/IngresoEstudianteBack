@@ -7,7 +7,7 @@ import { UserService } from 'src/services/user.service';
 import { RolesService } from 'src/services/roles.service';
 import { ConfigServiceEnv } from 'src/config/config.service';
 import { AuthLogin, TokenDto } from 'src/dto/user/user.dto';
-import { roleEnum } from 'src/dto/roles/rol.dto';
+import { RoleEnumByTypeRole, roleEnum } from 'src/dto/roles/rol.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,35 +18,50 @@ export class AuthService {
         private configServiceEnv: ConfigServiceEnv,
 
     ) { }
+    /**
+     * Returns the access-token of user logged
+     * @param userData AuthUserDto
+     * @returns Set-cookie 
+     */
     async login(userData: AuthUserDto): Promise<AuthLogin> {
+
         const bcrypt: Bcrypt = new Bcrypt()
         const userFound: User = await this.userServices.findOneByEmail(userData.email);
+
         //Arcodear la pass
         if (!userFound) throw new NotFoundException("email not found");
-        if (!await bcrypt.comparePasswords(userData.password, userFound.password)) {
-            throw new HttpException(
-                'Email or password does not match',
-                HttpStatus.UNAUTHORIZED,
-            );
-        }
-        const payload: TokenDto = { sub: userFound.id, user: userFound }
+        if (!await bcrypt.comparePasswords(userData.password, userFound.password)) throw new HttpException(
+            'Email or password does not match',
+            HttpStatus.BAD_REQUEST,
+        );
 
-        for (const idRol of userFound.role) {
-            let rol = roleEnum[`${idRol}`]; 
-            switch (roleEnum[`${idRol}`]) {
-                case 'Super usuario' || 'Administrador' || 'Auditor':
+        const payload: TokenDto = {
+            sub: userFound.id, user: {
+                email: userFound.email,
+                username: userFound.username,
+                role: userFound.role.map(rol => ({ tipo: rol.tipo })),
+            }
+        }
+        // const token = await this.jwtService.signAsync(payload, {
+        //     expiresIn: 99999,
+        // })
+        //console.log(payload.user.role);
+
+        for (const dataRol of userFound.role) {
+            switch (dataRol.id) {
+                default:
                     return {
                         token: await this.jwtService.signAsync(payload, {
-                            expiresIn: 99999,
+                            expiresIn: "1d",
                         }),
-                        rol
+                        rol: dataRol
                     }
-                case 'Puesto de servicio':
+                case RoleEnumByTypeRole.PUESTO_DE_SERVICIO:
                     return {
                         token: await this.jwtService.signAsync(payload, {
-                            expiresIn: null,
+                            expiresIn: "100d",
                         }),
-                        rol 
+                        rol: dataRol
                     }
             }
         }
