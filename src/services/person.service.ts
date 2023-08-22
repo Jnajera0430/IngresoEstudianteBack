@@ -18,8 +18,8 @@ export class PersonService implements OnModuleInit {
     ) { }
     /**
      * Receives a parameter of type CreatePerson
-     * @param person 
-     * Return new Person    
+     * @param person
+     * Return new Person
      * @returns Promise<Person>
      */
     async createPerson(person: CreatePerson): Promise<Person> {
@@ -40,8 +40,8 @@ export class PersonService implements OnModuleInit {
     }
     /**
      * Receives a parameter id of type number
-     * @param id 
-     * Finds a Person and returned the matching one 
+     * @param id
+     * Finds a Person and returned the matching one
      * @returns Promise<Person>
      */
     async getPersonById(id: number): Promise<Person> {
@@ -55,8 +55,22 @@ export class PersonService implements OnModuleInit {
     }
 
     /**
+     * Receives a parameter id of type number
+     * @param document
+     * Finds a Person and returned the matching one
+     * @returns Promise<Person>
+     */
+    async getPersonByDocument(document: number): Promise<Person> {
+        return await this.personRepository.findOne({
+            where: {
+                document: document
+            }
+        })
+    }
+
+    /**
      * Receives a parameter of type UpdatePerso
-     * @param person 
+     * @param person
      * Returns a person with yours data updates
      * @returns Promise
      */

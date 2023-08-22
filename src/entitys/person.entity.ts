@@ -18,11 +18,11 @@ export class Person{
     lastName: String
 
     @Column()
-    document: Number
+    document: number
 
     @Column({type: "boolean", default: true})
     state: boolean
-    
+
     @ManyToMany(()=>Group, group=> group.students,{
         cascade:true,
         eager:true,
@@ -30,7 +30,7 @@ export class Person{
     })
     @JoinTable({name: "person_group"})
     groups: Group[]
-    
+
     @ManyToOne(()=> PersonType, personType => personType.person,{
         cascade:true,
         eager:true,
@@ -62,7 +62,7 @@ export class Person{
         nullable:true
     })
     vehicles: Vehicle[]
-    
+
     @OneToMany(()=>Record_entry,recordEntry=>recordEntry.person,{
         cascade:true,
         eager:true,

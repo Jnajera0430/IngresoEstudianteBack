@@ -15,7 +15,7 @@ async function bootstrap() {
 
   dotenv.config()
   //prefijo para la consulta en la api
-  app.setGlobalPrefix("api");
+  // app.setGlobalPrefix("api");
 
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({

@@ -1,69 +1,52 @@
+import { FILE_UPLOAD_QUEUE } from '../constants/queues';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
 import { QueuesService } from './queues.service';
-import { MyQueueProcesosr } from './consumers/MyQueues.worker';
 import { join } from 'path';
-import * as glob from 'glob'
+import * as glob from 'glob';
 import { FileService } from './files/files.service';
 import { MulterModule } from '@nestjs/platform-express';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { ExpressAdapter } from '@bull-board/express';
+import { BullAdapter } from '@bull-board/api/BullAdapter';
+import { FilesConsumer } from './consumers/files.consumer';
+import { UserModule } from 'src/modules/user.module';
+import { PersonModule } from 'src/modules/person.module';
+import { PersonService } from 'src/services/person.service';
+
 @Module({
   imports: [
-    BullModule.registerQueueAsync({
-      imports: [ConfigModule],
-      name: 'myQueue', // Asegúrate de que el nombre coincida con el utilizado en @InjectQueue
-      useFactory: async (configService: ConfigService) => {
-        const pattern = join(__dirname, '/**/*.worker{.ts,.js}');
-        const files = await new Promise<string[]>((resolve, reject) => {
-          glob(pattern, (err, files) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(files);
-            }
-          });
-        });
-
-        return {
-          configKey: configService.get('gasda'),
-          processors: files,
-        };
-      },
-      inject: [ConfigService]
-    },{
-      imports: [ConfigModule],
-      name: 'files', // Asegúrate de que el nombre coincida con el utilizado en @InjectQueue
-      useFactory: async (configService: ConfigService) => {
-        const pattern = join(__dirname, '/**/*.processorFile{.ts,.js}');
-        const files = await new Promise<string[]>((resolve, reject) => {
-          glob(pattern, (err, files) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(files);
-            }
-          });
-        });
-
-        return {
-          configKey: configService.get('CONFIG_KEY_FILES'),
-          processors: files,
-          
-        };
-      },
-      inject: [ConfigService]
-    }),
     MulterModule.registerAsync({
-      imports:[ConfigModule],
-      useFactory:async ()=>({
-        preservePath:true,
-        storage: true
+      imports: [ConfigModule],
+      useFactory: async () => ({
+        preservePath: true,
+        storage: true,
       }),
-      inject:[ConfigService]
-    })
-
+      inject: [ConfigService],
+    }),
+    BullModule.forRoot({
+      redis: {
+        host: 'dev.elprogramador.co',
+        port: 6379,
+        username: 'default',
+        password: 'r3d!s-(P1A)S3CuR3_P@ssw0rd',
+      },
+    }),
+    BullModule.registerQueue({
+      name: FILE_UPLOAD_QUEUE,
+    }),
+    BullBoardModule.forRoot({
+      route: '/queues',
+      adapter: ExpressAdapter, // Or FastifyAdapter from `@bull-board/fastify`
+    }),
+    BullBoardModule.forFeature({
+      name: FILE_UPLOAD_QUEUE,
+      adapter: BullAdapter, //or use BullAdapter if you're using bull instead of bullMQ
+    }),
+    PersonModule,
   ],
-  providers: [QueuesService,FileService, MyQueueProcesosr],
-  exports: [QueuesService,FileService]
+  providers: [QueuesService, FileService, FilesConsumer],
+  exports: [QueuesService, FileService],
 })
-export class QueuesModule { }
+export class QueuesModule {}
