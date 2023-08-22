@@ -14,6 +14,8 @@ import { FilesConsumer } from './consumers/files.consumer';
 import { UserModule } from 'src/modules/user.module';
 import { PersonModule } from 'src/modules/person.module';
 import { PersonService } from 'src/services/person.service';
+import { configuration } from 'src/config/configuration';
+
 
 @Module({
   imports: [
@@ -25,13 +27,10 @@ import { PersonService } from 'src/services/person.service';
       }),
       inject: [ConfigService],
     }),
-    BullModule.forRoot({
-      redis: {
-        host: 'dev.elprogramador.co',
-        port: 6379,
-        username: 'default',
-        password: 'r3d!s-(P1A)S3CuR3_P@ssw0rd',
-      },
+    BullModule.forRootAsync({
+      useFactory: ()=>({
+        redis:configuration().redis,
+      })
     }),
     BullModule.registerQueue({
       name: FILE_UPLOAD_QUEUE,

@@ -10,9 +10,10 @@ import { Role } from 'src/entitys/roles.entity';
 import { FileService } from 'src/queues/files/files.service';
 import { Job } from 'bull';
 import { read } from 'Xlsx'
-import { CellObject, PersonFile } from 'src/dto/person/personFile.dto';
+import { CellObject, DataOfFileExcel, InfoOfProgram, PersonFile } from 'src/dto/person/personFile.dto';
 import { Express } from 'express';
 import { QueuesService } from 'src/queues/queues.service';
+import { PersonTypeEnumDto } from 'src/dto/person/personDocType';
 @Injectable()
 export class UserService implements OnModuleInit {
   /**
@@ -145,11 +146,19 @@ export class UserService implements OnModuleInit {
 
 
   async readFile(file: Express.Multer.File) {
+
     const workBook = read(file.buffer, {
       type: 'buffer',
       raw: true,
       cellDates: true
     })
+    const cellObject = {
+      1: "A",
+      2: "B",
+      3: "C",
+      4: "D",
+      5: "E",
+    }
     const sheetName = workBook.SheetNames[0];
     const workSheet = workBook.Sheets[sheetName];
     //fecha del reporte
@@ -171,37 +180,36 @@ export class UserService implements OnModuleInit {
     const cellA9 = workSheet['A9'].v;
     const cellC9 = workSheet['C9'].v;
 
-    const infoOfProgram = {
-      [cellA2]: cellC2,
-      [cellA3]: cellC3,
-      [cellA4]: parseInt(cellC4, 10),
-      [cellA8]: cellC8,
-      [cellA9]: cellC9,
+    const infoOfProgram:InfoOfProgram = {
+      fechaDelReporte: cellC2,
+      fichaDeCaracterización: cellC3,
+      career: {
+        name: cellC6
+      },
+      codigo: parseInt(cellC4, 10),
+      fechaInicio: cellC8,
+      fechaFin: cellC9,
     };
-    const cellObject = {
-      1: "A",
-      2: "B",
-      3: "C",
-      4: "D",
-      5: "E",
-    }
 
     const sizeOfDatos = parseInt(workSheet["!autofilter"].ref.split("I")[1]);
-    const listPersonFile: PersonFile[] = [];
+    const listPeopleFile: PersonFile[] = [];
     for (let numRow = 14; numRow <= sizeOfDatos; numRow++) {
-      let datoOfPerson: PersonFile = {};
+      let datoOfPerson: PersonFile;
       for (const cell of Object.values(cellObject)) {
         switch (cell) {
           case "A":
             datoOfPerson = {
               ...datoOfPerson,
-              docType: workSheet[cell + numRow].v
+              docType: {
+                name: workSheet[cell + numRow].v === PersonTypeEnumDto.CC ? 'Cedula' :
+                  (workSheet[cell + numRow].v === PersonTypeEnumDto.TI) ? 'Tarjeta de identidad' : 'Otro'
+              }
             }
             break;
           case "B":
             datoOfPerson = {
               ...datoOfPerson,
-              document: workSheet[cell + numRow].v
+              document: parseInt(workSheet[cell + numRow].v)
             }
             break;
           case "C":
@@ -224,22 +232,23 @@ export class UserService implements OnModuleInit {
             break;
         }
       }
-      const validPerson = listPersonFile.some((person: PersonFile) => person?.document === datoOfPerson?.document)
+      const validPerson = listPeopleFile.some((person: PersonFile) => person?.document === datoOfPerson?.document)
       if (!validPerson) {
-        listPersonFile.push(datoOfPerson);
+        listPeopleFile.push(datoOfPerson);
       }
     }
-    const data = {
+    const data:DataOfFileExcel = {
       infoOfProgram,
-      listPersonFile
+      listPeopleFile
     }
     return this.queueService.addTask(data);
   }
+
   async readFiles(files: Express.Multer.File[]) {
     const size = files.length;
     const arrayDatosOfReport = []
-    for(let file of files){
-      const datosOfReport =  this.readFile(file);
+    for (let file of files) {
+      const datosOfReport = this.readFile(file);
       arrayDatosOfReport.push(datosOfReport);
     }
     return arrayDatosOfReport;

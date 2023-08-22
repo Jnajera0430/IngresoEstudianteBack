@@ -6,20 +6,25 @@ import { IsBoolean, IsNotEmpty, IsNumber, IsString } from "class-validator"
 //     state?:boolean
 // }
 
-export class PersonTypeDto{
-    @IsNotEmpty()
+export class PersonTypeDto {
     @IsNumber()
-    id:number
-    @IsNotEmpty()
+    id: number
     @IsString()
     name: string
-    @IsNotEmpty()
     @IsBoolean()
-    state:boolean
+    state: boolean
 }
 
-export class CreatePersonTypeDto extends PartialType(PersonTypeDto){
+export class CreatePersonTypeDto extends PartialType(PersonTypeDto) {
     @IsNotEmpty()
     @IsString()
     name: string
+}
+
+export class PersonTypeEnum {
+    static APRENDIZ = 'Aprendiz';
+    static DOCENTE = 'Docente';
+    static SEGURIDAD = 'Seguridad';
+    static ADMINISTRATIVO = 'Administrativo';
+    static VISITANTE = 'Visitante';
 }

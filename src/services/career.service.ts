@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateCareerDto, UpdateOrFindCareer } from 'src/dto/career/career.dto';
+import { CreateCareerDto, FindCareerDto, UpdateOrFindCareer } from 'src/dto/career/career.dto';
 import { Career } from 'src/entitys/career.entity';
 import { Group } from 'src/entitys/group.entity';
 import { Repository } from 'typeorm';
@@ -23,7 +23,7 @@ export class CareerService {
         return await this.careerRepository.save(newCareer);
     }
 
-    async findByName(career: UpdateOrFindCareer) {
+    async findByName(career: FindCareerDto) {
         const fichaFound = await this.careerRepository.findOne({
             where: {
                 name: career?.name

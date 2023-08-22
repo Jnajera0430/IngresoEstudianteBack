@@ -13,3 +13,9 @@ export class UserUnauthorizedException extends HttpException{
         super('The user is not authorized to do this action', HttpStatus.UNAUTHORIZED);
     }
 }
+
+export class ValueNotFound extends HttpException{
+    constructor(message:string){
+        super(message,HttpStatus.NOT_FOUND);
+    }
+}

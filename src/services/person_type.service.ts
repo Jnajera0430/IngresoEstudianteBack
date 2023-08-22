@@ -33,7 +33,8 @@ export class PersonTypeService {
         return await this.personTypeRepository.find({
             where:{
                 state: true
-            }
+            },
+            relations:['persons']
         });
     }
     /**

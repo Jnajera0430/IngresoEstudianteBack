@@ -2,10 +2,11 @@ import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreatePerson, UpdatePerson } from 'src/dto/person/person.dto';
 import { CreatePersonDocTypeDto } from 'src/dto/person/personDocType';
-import { CreatePersonTypeDto } from 'src/dto/person/personType.dto';
+import { CreatePersonTypeDto, PersonTypeEnum } from 'src/dto/person/personType.dto';
 import { DoctType } from 'src/entitys/doctType.entity';
 import { Person } from 'src/entitys/person.entity';
 import { PersonType } from 'src/entitys/person_type.entity';
+import { ValueNotFound } from 'src/exceptions/customExcepcion';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -25,6 +26,30 @@ export class PersonService implements OnModuleInit {
     async createPerson(person: CreatePerson): Promise<Person> {
         const newPerson = this.personRepository.create(person);
         return await this.personRepository.save(newPerson);
+    }
+
+    /**
+     * Receives a parameter of type CreatePerson
+     * @param person
+     * Return new Person
+     * @returns Promise<Person>
+     */
+    async createPersonAprendiz(person: CreatePerson): Promise<Person> {
+        const newAprendiz = this.personRepository.create(person);
+        const [docType, personType] = await Promise.all([
+            this.docTypeRepository.findOne({ where: { name: person.docType.name } }),
+            this.personTypeRepository.findOne({ where: { name: PersonTypeEnum.APRENDIZ } }),
+        ]);
+        if (!docType) {
+            throw new ValueNotFound(`Document type not found: ${person.docType.name}`);
+        }
+
+        if (!personType) {
+            throw new ValueNotFound(`Person type not found: ${PersonTypeEnum.APRENDIZ}`);
+        }
+        newAprendiz.doctType = docType;
+        newAprendiz.personTypes = personType;
+        return await this.personRepository.save(newAprendiz);
     }
     /**
      * Finds all Persons and returns the list of Persons if the status is true.

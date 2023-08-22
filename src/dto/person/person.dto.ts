@@ -7,6 +7,8 @@ import { PersonType } from "src/entitys/person_type.entity";
 import { Record_entry } from "src/entitys/record_entry.entity";
 import { Vehicle } from "src/entitys/vehicle.entity";
 import { PartialType } from "@nestjs/swagger";
+import { PersonDocumentTypeDto } from "./personDocType";
+import { PersonTypeDto } from "./personType.dto";
 
 export class PersonDto {
     @IsNumber()
@@ -29,12 +31,12 @@ export class PersonDto {
     groups?: Group[];
     @IsNotEmpty()
     @ValidateNested()
-    @Type(() => DoctType)
-    docType: DoctType;
+    @Type(() => PersonDocumentTypeDto)
+    docType: PersonDocumentTypeDto;
     @IsNotEmpty()
     @ValidateNested()
-    @Type(() => PersonType)
-    personTypes: PersonType;
+    @Type(() => PersonTypeDto)
+    personTypes: PersonTypeDto;
     @ValidateNested()
     @IsArray()
     @Type(() => Array<Device>)
@@ -61,15 +63,15 @@ export class CreatePerson extends PartialType(PersonDto) {
     document: number;
     @IsNotEmpty()
     @ValidateNested()
-    @Type(() => DoctType)
-    docType: DoctType;
+    @Type(() => PersonDocumentTypeDto)
+    docType: PersonDocumentTypeDto;
     @IsNotEmpty()
     @ValidateNested()
-    @Type(() => PersonType)
-    personTypes: PersonType;
+    @Type(() => PersonTypeDto)
+    personTypes: PersonTypeDto;
 }
 
-export class UpdatePerson extends PartialType(CreatePerson){
+export class UpdatePerson extends PartialType(PersonDto){
     @IsNotEmpty()
     @IsNumber()
     id:number
