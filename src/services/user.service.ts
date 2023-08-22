@@ -234,9 +234,12 @@ export class UserService implements OnModuleInit {
   }
   async readFiles(files: Express.Multer.File[]) {
     const size = files.length;
+    const arrayDatosOfReport = []
     for(let file of files){
-      this.readFile(file);
+      const datosOfReport =  this.readFile(file);
+      arrayDatosOfReport.push(datosOfReport);
     }
+    return arrayDatosOfReport;
   }
 
   async onModuleInit() {
