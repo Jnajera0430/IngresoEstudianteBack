@@ -2,10 +2,30 @@ import { PartialType } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsNumber, IsBoolean, IsDateString, IsNotEmpty, ValidateNested } from "class-validator";
 import { Career } from "src/entitys/career.entity";
+import { CareerDto } from "../career/career.dto";
 
-export class CreateGroup {
+export class GroupDto {
     @IsNumber()
     id?: number
+    @IsNotEmpty()
+    @IsNumber()
+    code: number
+
+    @IsDateString()
+    dateStart: Date
+
+    @IsDateString()
+    dateEnd: Date
+    @IsBoolean()
+    state?: boolean
+
+    @ValidateNested()
+    @Type(() => Career)
+    career: CareerDto
+}
+
+
+export class CreateGroup extends PartialType(GroupDto) {
     @IsNotEmpty()
     @IsNumber()
     code: number
@@ -20,10 +40,10 @@ export class CreateGroup {
     @IsNotEmpty()
     @ValidateNested()
     @Type(() => Career)
-    career: Career
+    career: CareerDto
 }
 
-export class UpdateGroupDto extends PartialType(CreateGroup){
+export class UpdateGroupDto extends PartialType(CreateGroup) {
     @IsNotEmpty()
     @IsNumber()
     id: number;

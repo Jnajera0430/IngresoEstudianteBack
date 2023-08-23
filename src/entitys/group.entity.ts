@@ -8,26 +8,26 @@ export class Group {
 
     @PrimaryGeneratedColumn('increment')
     id: number
-    @Column()
+    @Column({ unique: true })
     code: number
-    @Column()
+    @Column({ type: 'date' })
     dateStart: Date
-    @Column()
+    @Column({ type: 'date' })
     dateEnd: Date
-    @Column()
+    @Column({ default: true, })
     state: boolean
 
-    @ManyToOne(() => Career, career => career.groups,{
+    @ManyToOne(() => Career, career => career.groups, {
         cascade: true,
         eager: true,
         nullable: true,
-        onDelete:"CASCADE",
-        onUpdate:"CASCADE"
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE"
     })
     career: Career
 
-    @ManyToMany(()=> Person, person=> person.groups,{
-        nullable:true
+    @ManyToMany(() => Person, person => person.groups, {
+        nullable: true
     })
     @JoinTable()
     students: Person[]

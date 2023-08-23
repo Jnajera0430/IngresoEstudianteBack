@@ -129,6 +129,14 @@ export class PersonService implements OnModuleInit {
         return await this.personTypeRepository.save(newPersonType);
     }
 
+    async getPersonTypeByType(type: string) {
+        return await this.personTypeRepository.findOne({
+            where: {
+                name: type
+            }
+        })
+    }
+
     async createPersonDocType(docType: CreatePersonDocTypeDto) {
         const newDocType = this.docTypeRepository.create(docType);
         return await this.docTypeRepository.save(newDocType);

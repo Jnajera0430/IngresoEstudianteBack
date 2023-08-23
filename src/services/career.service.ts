@@ -28,12 +28,12 @@ export class CareerService {
             where: {
                 name: career?.name
             },
-            relations:["groups"]
+            //relations:["groups"]
         });
-        if(!fichaFound){
-            //se tiene que hacer la excepcion 
-            throw new NotFoundException("Career not found")
-        }
+        // if(!fichaFound){
+        //     //se tiene que hacer la excepcion 
+        //     throw new NotFoundException("Career not found")
+        // }
         return fichaFound;
     }
 

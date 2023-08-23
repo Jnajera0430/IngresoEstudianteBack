@@ -1,7 +1,7 @@
 import { FILE_UPLOAD_QUEUE } from '../constants/queues';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { BullModule } from '@nestjs/bull';
+import { BullModule,BullQueueEvent } from '@nestjs/bull';
 import { QueuesService } from './queues.service';
 import { join } from 'path';
 import * as glob from 'glob';
@@ -15,6 +15,8 @@ import { UserModule } from 'src/modules/user.module';
 import { PersonModule } from 'src/modules/person.module';
 import { PersonService } from 'src/services/person.service';
 import { configuration } from 'src/config/configuration';
+import { CareerModule } from 'src/modules/career.module';
+import { GroupModule } from 'src/modules/group.module';
 
 
 @Module({
@@ -44,6 +46,8 @@ import { configuration } from 'src/config/configuration';
       adapter: BullAdapter, //or use BullAdapter if you're using bull instead of bullMQ
     }),
     PersonModule,
+    CareerModule,
+    GroupModule
   ],
   providers: [QueuesService, FileService, FilesConsumer],
   exports: [QueuesService, FileService],

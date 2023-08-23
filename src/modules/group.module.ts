@@ -9,6 +9,7 @@ import { CareerModule } from './career.module';
 @Module({
   imports:[TypeOrmModule.forFeature([Person,Career,Group]),CareerModule],
   providers: [GroupService],
-  controllers: [GroupController]
+  controllers: [GroupController],
+  exports:[GroupService]
 })
 export class GroupModule {}
