@@ -41,6 +41,7 @@ import { DeviceController } from './controllers/device.controller';
 import { DeviceTypeController } from './controllers/device_type.controller';
 import { CareerController } from './controllers/career.controller';
 import { ValidUser } from './middlewares/jwt/validUser.middleware';
+import { SocketModule } from './ws/socket.module';
 
 @Module({
   imports: [
@@ -79,6 +80,7 @@ import { ValidUser } from './middlewares/jwt/validUser.middleware';
     EntryVehicleModule,
     AuthModule,
     QueuesModule,
+    SocketModule
   ],
   controllers: [AppController],
   providers: [AppService],
