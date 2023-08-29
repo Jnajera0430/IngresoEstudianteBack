@@ -3,34 +3,37 @@ import { Person } from "src/entitys/person.entity";
 import { VehicleType } from "src/entitys/vehicle_type.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({name: 'vehicles'})
-export class Vehicle{
+@Entity({ name: 'vehicles' })
+export class Vehicle {
     @PrimaryGeneratedColumn('increment')
-    id: bigint
+    id: number
 
-    @Column({ type: 'timestamp' })
+    @Column()
+    registration: string
+
+    @Column({ type: 'timestamp', nullable: true })
     dateOfEntry: Date
 
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'timestamp', nullable: true })
     dateOfOut: Date
 
-    @ManyToOne(()=>Person, person=>person.vehicles)
-    @JoinColumn({name:'person'})
+    @ManyToOne(() => Person, person => person.vehicles)
+    @JoinColumn({ name: 'person' })
     person: Person
 
-    @OneToOne(()=>VehicleType,tipo => tipo.vehicle,{
-        cascade:true,
+    @OneToOne(() => VehicleType, tipo => tipo.vehicle, {
+        cascade: true,
         eager: true,
-        nullable:true
+        nullable: true
     })
-    @JoinColumn({name: 'vehicleType'})
+    @JoinColumn({ name: 'vehicleType' })
     vehicleType: VehicleType
 
-    @OneToMany(()=>EntryVehicle, entryVehicle=>entryVehicle.vehicle,{
-        cascade:true,
+    @OneToMany(() => EntryVehicle, entryVehicle => entryVehicle.vehicle, {
+        cascade: true,
         eager: true,
-        nullable:true
+        nullable: true
     })
-    entryVehicle:EntryVehicle[]
+    entryVehicle: EntryVehicle[]
 
 }

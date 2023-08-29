@@ -19,3 +19,9 @@ export class CreateDeviceTypeDto extends PartialType(DeviceTypeDto){
     @IsString()
     brand: string;
 }
+
+export class UpdateDeviceTypeDto extends PartialType(DeviceTypeDto){
+    @IsNotEmpty()
+    @IsNumber()
+    id: number;
+}

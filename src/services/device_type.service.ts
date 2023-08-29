@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateDeviceTypeDto, DeviceTypeDto } from 'src/dto/device/deviceType.dto';
+import { CreateDeviceTypeDto, DeviceTypeDto, UpdateDeviceTypeDto } from 'src/dto/device/deviceType.dto';
 import { DeviceType } from 'src/entitys/device_type.entity';
 import { ValueNotFound } from 'src/exceptions/customExcepcion';
 import { Repository } from 'typeorm';
@@ -34,7 +34,12 @@ export class DeviceTypeService implements OnModuleInit {
         return deviceFound;
     }
 
-    async editDeviceType(deviceType: any) {
+    /**
+     * 
+     * @param deviceType  UpdateDeviceTypeDto 
+     * @returns Device
+     */
+    async editDeviceType(deviceType: UpdateDeviceTypeDto) {
         const deviceFound = await this.deviceTypeRepository.findOne({
             where: {
                 id: deviceType.id
@@ -59,7 +64,7 @@ export class DeviceTypeService implements OnModuleInit {
     async onModuleInit() {
         const listDeviceType: CreateDeviceTypeDto[] = [
             {
-                brand: 'Portatil'
+                brand: 'Laptop'
             },
             {
                 brand: 'Tablet'

@@ -30,3 +30,9 @@ export class CreateDeviceDto extends PartialType(DeviceDto){
     @Type(()=>DeviceTypeDto)
     deviceType: DeviceTypeDto;
 }
+
+export class UpdateDeviceDto extends PartialType(DeviceDto){
+    @IsNotEmpty()
+    @IsNumber()
+    id:number;
+}

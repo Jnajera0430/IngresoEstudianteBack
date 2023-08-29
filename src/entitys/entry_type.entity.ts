@@ -7,7 +7,7 @@ export class EntryType{
     @PrimaryGeneratedColumn('increment')
     id: number
     @Column()
-    name: string
+    type: string
 
     @OneToOne(()=>Record_entry,recordEntry=>recordEntry.entryType)
     @JoinColumn({name:'recordEntry'})

@@ -10,7 +10,7 @@ export class EntryVehicle {
     @Column()
     inside: boolean
 
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'timestamp', nullable:true })
     out: Date
 
     @ManyToOne(()=>Vehicle,vehicle=>vehicle)

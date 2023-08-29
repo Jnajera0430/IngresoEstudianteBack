@@ -4,7 +4,7 @@ import { Vehicle } from "./vehicle.entity";
 @Entity({name: 'vehicle_type'})
 export class VehicleType{
     @PrimaryGeneratedColumn('increment')
-    id: bigint
+    id: number
 
     @Column()
     vendor: string
