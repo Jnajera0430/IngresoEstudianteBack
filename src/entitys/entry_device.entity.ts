@@ -1,5 +1,6 @@
-import { Record_entry } from "src/entitys/record_entry.entity";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Record_entry } from "src/entitys/record_entry_and_out.entity";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Device } from "./device.entity";
 
 @Entity({name: 'entry_device'})
 export class EntryDevice{
@@ -19,5 +20,9 @@ export class EntryDevice{
         name: 'recordEntry'
     })
     recordEntry: Record_entry
+
+    @ManyToOne(()=>Device,device=>device)
+    @JoinColumn({name: 'device'})
+    device: Device
 
 }

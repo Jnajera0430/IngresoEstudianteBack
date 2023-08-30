@@ -1,4 +1,4 @@
-import { Record_entry } from "src/entitys/record_entry.entity";
+import { Record_entry } from "src/entitys/record_entry_and_out.entity";
 import { Vehicle } from "src/entitys/vehicle.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 

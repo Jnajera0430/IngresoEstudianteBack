@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateEntryTypeDto, UpdateEntryTypeDto } from 'src/dto/recordsEntry/entryType.dto';
 import { EntryType } from 'src/entitys/entry_type.entity';
-import { ValueNotFound } from 'src/exceptions/customExcepcion';
+import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class EntryTypeService implements OnModuleInit {
             }
         });
         if (!entryTypeFound) {
-            throw new ValueNotFound('That type not found');
+            throw new ValueNotFoundException('That type not found');
         }
         const [_, entryTypeUpdated] = await Promise.all([
             this.entryTypeRepository.update(entryTypeFound.id, entryType),

@@ -14,7 +14,7 @@ import { PersonModule } from './modules/person.module';
 import { GroupModule } from './modules/group.module';
 import { CareerModule } from './modules/career.module';
 import { PersonTypeModule } from './modules/person_type.module';
-import { RecordEntryModule } from './modules/record_entry.module';
+import { RecordEntryModule } from './modules/record_entry_and_out.module';
 import { EntryTypeModule } from './modules/entry_type.module';
 import { EntryDeviceModule } from './modules/entry_device.module';
 import { DeviceModule } from './modules/device.module';

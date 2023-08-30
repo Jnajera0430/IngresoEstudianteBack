@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateVehicleDto, UpdateVehicleDto } from 'src/dto/vehicle/vehicle.dto';
 import { Vehicle } from 'src/entitys/vehicle.entity';
-import { ValueNotFound } from 'src/exceptions/customExcepcion';
+import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
 import { Repository } from 'typeorm';
 import { VehicleTypeService } from './vehicle_type.service';
 import { PersonService } from './person.service';
@@ -19,7 +19,7 @@ export class VehicleService {
 		const newVehicle = this.vehicleRepository.create(vehicle);
 		const vehicleTypeFound = await this.vehicleTypeService.findVehicleTypeByVendor(vehicle.vehicleType.vendor);
 		if(!vehicleTypeFound){
-			throw new ValueNotFound('Vehicle type not found')
+			throw new ValueNotFoundException('Vehicle type not found')
 		}
 		newVehicle.vehicleType = vehicleTypeFound;
 		return await this.vehicleRepository.save(newVehicle);
@@ -32,10 +32,10 @@ export class VehicleService {
 			this.personService.getPersonById(vehicle.person.id)
 		])
 		if(!vehicleTypeFound){
-			throw new ValueNotFound('Vehicle type not found')
+			throw new ValueNotFoundException('Vehicle type not found')
 		}
 		if(!personFound){
-			throw new ValueNotFound('Person not found')
+			throw new ValueNotFoundException('Person not found')
 		}
 		newVehicle.vehicleType = vehicleTypeFound;
 		return await this.vehicleRepository.save(newVehicle);
@@ -49,7 +49,7 @@ export class VehicleService {
 		});
 
 		if (!vehiclefound) {
-			throw new ValueNotFound(`Vehicle not found ${vehicle.id}`);
+			throw new ValueNotFoundException(`Vehicle not found ${vehicle.id}`);
 		}
 
 		const [_, vehicleUpdated] = await Promise.all([
@@ -64,10 +64,10 @@ export class VehicleService {
 		return vehicleUpdated;
 	}
 
-	async findVehicleByRegistration(id: number):Promise<Vehicle> {
+	async findVehicleByBadge(badge: string):Promise<Vehicle> {
 		return await this.vehicleRepository.findOne({
 			where: {
-				id
+				badge: badge
 			},
 			relations: ['person', 'vehicleType', 'entryVehicle']
 		});

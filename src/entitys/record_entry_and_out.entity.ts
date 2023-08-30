@@ -3,6 +3,7 @@ import { Person } from "src/entitys/person.entity";
 import { EntryType } from "src/entitys/entry_type.entity";
 import { EntryVehicle } from "./entry_vehicle.entity";
 import { EntryDevice } from "./entry_device.entity";
+import { EntryPerson } from "./entry_person.entity";
 @Entity({name: 'record_entry'})
 export class Record_entry{
     @PrimaryGeneratedColumn('increment')
@@ -29,6 +30,15 @@ export class Record_entry{
     })
     @JoinColumn({name: 'deviceEntry'})
     deviceEntry: EntryDevice
+
+    @OneToOne(()=>EntryPerson,personEntry=>personEntry.recordEntry,{
+        cascade:true,
+        eager:true,
+        nullable:true
+    })
+    @JoinColumn({name: 'personEntry'})
+    personEntry: EntryPerson
+
     @OneToOne(()=>EntryType,entryType=>entryType.recordEntry,{
         cascade:true,
         eager:true,

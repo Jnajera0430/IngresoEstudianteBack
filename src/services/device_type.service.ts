@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeviceTypeDto, DeviceTypeDto, UpdateDeviceTypeDto } from 'src/dto/device/deviceType.dto';
 import { DeviceType } from 'src/entitys/device_type.entity';
-import { ValueNotFound } from 'src/exceptions/customExcepcion';
+import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -47,7 +47,7 @@ export class DeviceTypeService implements OnModuleInit {
         });
 
         if (!deviceFound) {
-            throw new ValueNotFound(`Device type is not found, ${deviceType.id}`);
+            throw new ValueNotFoundException(`Device type is not found, ${deviceType.id}`);
         }
 
         await this.deviceTypeRepository.update(deviceFound.id, deviceType);

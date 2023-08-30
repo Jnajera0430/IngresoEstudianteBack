@@ -11,7 +11,7 @@ export class VehicleDto {
     id: number;
 
     @IsString()
-    registration: string
+    badge: string
 
     @IsDateString()
     dateOfEntry: Date;

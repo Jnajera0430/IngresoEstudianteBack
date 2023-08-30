@@ -6,7 +6,7 @@ import { CreatePersonTypeDto, PersonTypeEnum } from 'src/dto/person/personType.d
 import { DoctType } from 'src/entitys/doctType.entity';
 import { Person } from 'src/entitys/person.entity';
 import { PersonType } from 'src/entitys/person_type.entity';
-import { ValueNotFound } from 'src/exceptions/customExcepcion';
+import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -41,11 +41,11 @@ export class PersonService implements OnModuleInit {
             this.personTypeRepository.findOne({ where: { name: PersonTypeEnum.APRENDIZ } }),
         ]);
         if (!docType) {
-            throw new ValueNotFound(`Document type not found: ${person.docType.name}`);
+            throw new ValueNotFoundException(`Document type not found: ${person.docType.name}`);
         }
 
         if (!personType) {
-            throw new ValueNotFound(`Person type not found: ${PersonTypeEnum.APRENDIZ}`);
+            throw new ValueNotFoundException(`Person type not found: ${PersonTypeEnum.APRENDIZ}`);
         }
         newAprendiz.doctType = docType;
         newAprendiz.personTypes = personType;

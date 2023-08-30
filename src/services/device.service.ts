@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeviceDto, UpdateDeviceDto } from 'src/dto/device/device.dto';
-import { PersonDto } from 'src/dto/person/person.dto';
+import { FindPersonDto, PersonDto } from 'src/dto/person/person.dto';
 import { Device } from 'src/entitys/device.entity';
-import { ValueNotFound } from 'src/exceptions/customExcepcion';
+import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
 import { Repository } from 'typeorm';
 import { DeviceTypeService } from './device_type.service';
 import { PersonService } from './person.service';
@@ -24,7 +24,7 @@ export class DeviceService {
         const newDevice = this.deviceRepository.create(device);
         const devicetypeFound = await this.deviceTypeService.findDeviceTypeByBrand(device.deviceType.brand);
         if (!devicetypeFound) {
-            throw new ValueNotFound('Device type not found');
+            throw new ValueNotFoundException('Device type not found');
         }
         newDevice.deviceType = devicetypeFound;
         return await this.deviceRepository.save(newDevice);
@@ -42,11 +42,11 @@ export class DeviceService {
             this.personService.getPersonById(device.person.id)
         ]);
         if (!devicetypeFound) {
-            throw new ValueNotFound('Device type not found');
+            throw new ValueNotFoundException('Device type not found');
         }
 
         if (!personFound) {
-            throw new ValueNotFound('Person not found');
+            throw new ValueNotFoundException('Person not found');
         }
         newDevice.deviceType = devicetypeFound;
         newDevice.person = personFound;
@@ -65,7 +65,7 @@ export class DeviceService {
             }
         });
         if (!deviceFound) {
-            throw new ValueNotFound(`Device not found, ${device.id}`);
+            throw new ValueNotFoundException(`Device not found, ${device.id}`);
         }
         const [_, deviceFoundUpdated] = await Promise.all([
             this.deviceRepository.update(deviceFound.id, device),
@@ -78,6 +78,12 @@ export class DeviceService {
         return deviceFoundUpdated
     }
 
+    async findAllDevice(){
+        return this.deviceRepository.find({
+            relations: ['person', 'deviceType','entryDevice']
+        })
+    }
+
     /**
      * 
      * @param id number
@@ -88,10 +94,10 @@ export class DeviceService {
             where: {
                 id
             },
-            relations: ['person', 'deviceType']
+            relations: ['person', 'deviceType','entryDevice']
         });
         if (!deviceFound) {
-            throw new ValueNotFound(`Device not found, ${id}`);
+            throw new ValueNotFoundException(`Device not found, ${id}`);
         }
 
         return deviceFound;
@@ -102,16 +108,17 @@ export class DeviceService {
      * @param person PersonDto
      * @returns 
      */
-    async findDeviceByPerson(person: PersonDto): Promise<Device> {
+    async findDeviceByPerson(person: FindPersonDto): Promise<Device> {
         const deviceFound = await this.deviceRepository.findOne({
             where: {
                 person: {
                     id: person.id
                 }
-            }
+            },
+            relations: ['person', 'deviceType','entryDevice']
         });
         if (!deviceFound) {
-            throw new ValueNotFound(`Device not found by person with this id: , ${person.id}`);
+            throw new ValueNotFoundException(`Device not found by person with this id: , ${person.id}`);
         }
 
         return deviceFound;

@@ -1,6 +1,7 @@
 import { DeviceType } from "src/entitys/device_type.entity";
 import { Person } from "src/entitys/person.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { EntryDevice } from "./entry_device.entity";
 
 @Entity({ name: 'devices' })
 export class Device {
@@ -22,4 +23,11 @@ export class Device {
     })
     @JoinColumn({name:'deviceType'})
     deviceType: DeviceType
+
+    @OneToMany(() => EntryDevice, entryDevice => entryDevice.device, {
+        cascade: true,
+        eager: true,
+        nullable: true
+    })
+    entryDevice: EntryDevice[]
 }

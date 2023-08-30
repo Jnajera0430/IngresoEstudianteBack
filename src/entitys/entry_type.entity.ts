@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Record_entry } from "./record_entry.entity";
+import { Record_entry } from "./record_entry_and_out.entity";
 
 
 @Entity({name: 'entry_type'})

@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateVehicleTypeDto, UpdateVehicleType } from 'src/dto/vehicle/vehicleType.dto';
 import { VehicleType } from 'src/entitys/vehicle_type.entity';
-import { ValueNotFound } from 'src/exceptions/customExcepcion';
+import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class VehicleTypeService implements OnModuleInit{
             }
         });
         if (!vehicleTypeFound) {
-            throw new ValueNotFound(`Vehicle type not found ${vehicleType.id}`);
+            throw new ValueNotFoundException(`Vehicle type not found ${vehicleType.id}`);
         }
 
         const [_, vehicleTypeUpdated] = await Promise.all([

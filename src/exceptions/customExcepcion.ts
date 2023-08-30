@@ -3,9 +3,14 @@ import { HttpException, HttpStatus } from "@nestjs/common";
  * 
  */
 export class InvalidTokenException extends HttpException{
-    constructor(){
-        super('Invalid credentials', HttpStatus.UNAUTHORIZED);
+    constructor(message?:string){
+        if(!message){
+            super('Invalid credentials', HttpStatus.UNAUTHORIZED);
+        }else{
+            super(message,HttpStatus.UNAUTHORIZED)
+        }
     }
+    
 }
 
 export class UserUnauthorizedException extends HttpException{
@@ -14,7 +19,7 @@ export class UserUnauthorizedException extends HttpException{
     }
 }
 
-export class ValueNotFound extends HttpException{
+export class ValueNotFoundException extends HttpException{
     constructor(message:string){
         super(message,HttpStatus.NOT_FOUND);
     }

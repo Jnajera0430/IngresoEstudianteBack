@@ -33,11 +33,18 @@ export class RecordEntryDto {
     entryType: EntryTypeDto;
 }
 
-export class RecordsEntryOfPerson extends PartialType(RecordEntryDto) {
+export class RecordsEntryOfPersonDto extends PartialType(RecordEntryDto) {
     @IsNotEmpty()
     @IsDate()
     checkIn: Date;
 
+    @IsNotEmpty()
+    @ValidateNested()
+    @Type(() => PersonDto)
+    person: PersonDto;
+}
+
+export class FindRecordEntryOfPersonDto extends PartialType(RecordEntryDto){
     @IsNotEmpty()
     @ValidateNested()
     @Type(() => PersonDto)

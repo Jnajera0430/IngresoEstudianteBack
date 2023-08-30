@@ -9,7 +9,7 @@ export class Vehicle {
     id: number
 
     @Column()
-    registration: string
+    badge: string
 
     @Column({ type: 'timestamp', nullable: true })
     dateOfEntry: Date

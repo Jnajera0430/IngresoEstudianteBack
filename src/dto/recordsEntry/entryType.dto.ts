@@ -1,7 +1,8 @@
 import { PartialType } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsNotEmpty, IsNumber, IsString, ValidateNested } from "class-validator";
-import { Record_entry } from "src/entitys/record_entry.entity";
+import { Record_entry } from "src/entitys/record_entry_and_out.entity";
+import { RecordEntryDto } from "./recordEntry.dto";
 
 export class EntryTypeDto {
     @IsNumber()
@@ -9,8 +10,8 @@ export class EntryTypeDto {
     @IsString()
     type: string;
     @ValidateNested()
-    @Type(() => Record_entry)
-    recordEntry: Record_entry;
+    @Type(() => RecordEntryDto)
+    recordEntry: RecordEntryDto;
 }
 
 export class CreateEntryTypeDto extends PartialType(EntryTypeDto) {
