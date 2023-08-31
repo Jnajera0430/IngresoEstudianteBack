@@ -94,7 +94,7 @@ export class AppModule implements NestModule {
         VehicleTypeController,
         UserController,
         RolesController,
-        RecordEntryController,
+        //RecordEntryController,
         PersonController,
         PersonTypeController,
         GroupController,

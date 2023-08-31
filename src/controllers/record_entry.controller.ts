@@ -1,9 +1,11 @@
 import { Body, Controller, Get, Post, Param } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { FindPersonDocumentDto, FindPersonDto, PersonDto } from 'src/dto/person/person.dto';
 import { FindRecordEntryOfPersonDto } from 'src/dto/recordsEntry/recordEntry.dto';
 import { RecordEntryService } from 'src/services/record_entry_and_out.service';
 
 @Controller('records')
+@ApiTags('Api-records')
 export class RecordEntryController {
     constructor(
         private readonly recordEntryService: RecordEntryService

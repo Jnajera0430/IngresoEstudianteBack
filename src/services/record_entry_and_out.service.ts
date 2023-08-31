@@ -21,7 +21,9 @@ export class RecordEntryService {
      * @returns Promise -> Record_Entry
      */
     async checkInEntryOfPerson(recordEntry: RecordsEntryOfPersonDto): Promise<Record_entry> {
+        
         const personFound = await this.personService.getPersonByDocument(recordEntry.person.document);
+        console.log(personFound);
         if (!personFound) {
             throw new ValueNotFoundException('This person is not in our records.');
         }
