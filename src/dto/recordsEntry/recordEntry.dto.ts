@@ -7,29 +7,18 @@ import { Type } from "class-transformer";
 import { PartialType } from "@nestjs/swagger";
 
 export class RecordEntryDto {
-    @IsNumber()
     id?: number;
 
-    @IsDate()
     checkIn: Date;
 
-    @IsDate()
     checkOut: Date;
 
-    @ValidateNested()
-    @Type(() => FindPersonDocumentDto)
     person: FindPersonDocumentDto;
 
-    @ValidateNested()
-    @Type(() => EntryVehicle)
     vehicleEntry: EntryVehicle;
 
-    @ValidateNested()
-    @Type(() => EntryDevice)
     deviceEntry: EntryDevice;
 
-    @ValidateNested()
-    @Type(() => EntryTypeDto)
     entryType: EntryTypeDto;
 }
 
