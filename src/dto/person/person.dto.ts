@@ -9,6 +9,7 @@ import { Vehicle } from "src/entitys/vehicle.entity";
 import { PartialType } from "@nestjs/swagger";
 import { PersonDocumentTypeDto } from "./personDocType";
 import { PersonTypeDto } from "./personType.dto";
+import { Person } from "src/entitys/person.entity";
 
 export class PersonDto {
     @IsNumber()
@@ -85,6 +86,12 @@ export class FindPersonDto extends PartialType(PersonDto){
     @IsNotEmpty()
     @IsNumber()
     id:number
+}
+
+export class FindPersonDocumentDto extends PartialType(PersonDto){
+    @IsNotEmpty()
+    @IsNumber()
+    document:number
 }
 
 

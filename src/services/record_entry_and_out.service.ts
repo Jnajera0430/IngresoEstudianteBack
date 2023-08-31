@@ -6,6 +6,7 @@ import { PersonService } from './person.service';
 import { FindRecordEntryOfPersonDto, RecordsEntryOfPersonDto } from 'src/dto/recordsEntry/recordEntry.dto';
 import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
 import { EntryTypeService } from './entry_type.service';
+import { FindPersonDocumentDto, FindPersonDto, PersonDto } from 'src/dto/person/person.dto';
 
 @Injectable()
 export class RecordEntryService {
@@ -42,12 +43,12 @@ export class RecordEntryService {
      * @param recordEntry FindRecordEntryOfPersonDto
      * @returns 
      */
-    async recordCheckOutOfPerson(recordEntry: FindRecordEntryOfPersonDto):Promise<Record_entry> {
+    async recordCheckOutOfPerson(recordEntry: FindRecordEntryOfPersonDto): Promise<Record_entry> {
         const today = new Date();
         recordEntry.checkOut = today;
         const result = await this.recordEntryRepository.update(recordEntry.id, recordEntry);
-        if(result.affected == 0){
-            throw new ValueNotFoundException('The record not found, contact the database manager.'); 
+        if (result.affected == 0) {
+            throw new ValueNotFoundException('The record not found, contact the database manager.');
         }
 
         return this.recordEntryRepository.create(recordEntry);
@@ -58,9 +59,9 @@ export class RecordEntryService {
      * @param recordEntry FindRecordEntryOfPersonDto
      * @returns 
      */
-    async findInRecordEntryPersonIn(recordEntry: FindRecordEntryOfPersonDto): Promise<Record_entry> {
+    async findInRecordEntryPersonIn(person: FindPersonDocumentDto): Promise<Record_entry> {
         const today = new Date();
-        const personFound = await this.personService.getPersonByDocument(recordEntry.person.document);
+        const personFound = await this.personService.getPersonByDocument(person.document);
         if (!personFound) {
             throw new ValueNotFoundException('This person is not in our records.');
         }
@@ -74,7 +75,33 @@ export class RecordEntryService {
                     new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59),
                 ),
             },
-            relations:['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
+            relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
+        });
+    }
+
+    async findAllRecord() {
+        return await this.recordEntryRepository.find({
+            relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
+        });
+    }
+
+    async findRecordById(id: number) {
+        return await this.recordEntryRepository.findOne({
+            where: {
+                id
+            },
+            relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
+        });
+    }
+
+    async findAllRecordsByPerson(person: FindPersonDocumentDto):Promise<Record_entry[]> {
+        return await this.recordEntryRepository.find({
+            where: {
+                person: {
+                    document: person.document
+                }
+            },
+            relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
         });
     }
 
