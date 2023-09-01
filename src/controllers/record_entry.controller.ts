@@ -13,7 +13,8 @@ export class RecordEntryController {
 
     @Post()
     async postRecordPerson(@Body() recordEntry: FindRecordEntryOfPersonDto) {
-        const recordFound = await this.recordEntryService.findInRecordEntryPersonIn(recordEntry.person);
+        
+        const recordFound = await this.recordEntryService.findInRecordEntryByPersonInside(recordEntry.person);
         if (!recordFound) {
             return await this.recordEntryService.checkInEntryOfPerson(recordEntry);
         }

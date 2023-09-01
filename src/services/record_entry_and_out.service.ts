@@ -81,13 +81,44 @@ export class RecordEntryService {
         });
     }
 
-    async findAllRecord() {
+
+    /**
+     * 
+     * @param recordEntry FindRecordEntryOfPersonDto
+     * @returns 
+     */
+    async findInRecordEntryByPersonInside(person: FindPersonDocumentDto): Promise<Record_entry> {
+        
+        const today = new Date();
+        const personFound = await this.personService.getPersonByDocument(person.document);
+        console.log({personFound});
+        return await this.recordEntryRepository.findOne({
+            where: {
+                person: {
+                    document: personFound.document
+                },
+                checkIn: Between(
+                    new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0),
+                    new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59),
+                ),
+            },
+            relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
+        });
+    }
+
+
+
+    /**
+     * 
+     * @returns 
+     */
+    async findAllRecord():Promise<Record_entry[]> {
         return await this.recordEntryRepository.find({
             relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
         });
     }
 
-    async findRecordById(id: number) {
+    async findRecordById(id: number):Promise<Record_entry> {
         return await this.recordEntryRepository.findOne({
             where: {
                 id

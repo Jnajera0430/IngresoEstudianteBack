@@ -12,47 +12,26 @@ import { PersonTypeDto } from "./personType.dto";
 import { Person } from "src/entitys/person.entity";
 
 export class PersonDto {
-    @IsNumber()
     id?: number;
    
-    @IsString()
     firtsName: string;
 
-    @IsString()
     lastName: string;
 
-    @IsString()
     document: number;
 
-    @IsBooleanString()
     state: boolean;
 
-    @ValidateNested()
-    @IsArray()
-    @Type(() => Array<Group>)
     groups?: Group[];
 
-    @ValidateNested()
-    @Type(() => PersonDocumentTypeDto)
     docType: PersonDocumentTypeDto;
 
-    @ValidateNested()
-    @Type(() => PersonTypeDto)
     personTypes: PersonTypeDto;
 
-    @ValidateNested()
-    @IsArray()
-    @Type(() => Array<Device>)
     device?: Device[];
 
-    @ValidateNested()
-    @IsArray()
-    @Type(() => Array<Vehicle>)
     vehicles?: Vehicle[];
     
-    @ValidateNested()
-    @IsArray()
-    @Type(() => Array<Record_entry>)
     recordEntry?: Record_entry[];
 }
 

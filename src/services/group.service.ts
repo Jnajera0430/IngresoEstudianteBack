@@ -44,6 +44,15 @@ export class GroupService {
         })
     }
 
+    async getGroupByCode(code: number) {
+        return [ await this.groupReposotory.findOne({
+            where: {
+                code: code
+            },
+            relations: ["career", "students"]
+        })]
+    }
+
     async findListGroupByCareer(idCareer: number) {
         return await this.groupReposotory.find({
             where: {

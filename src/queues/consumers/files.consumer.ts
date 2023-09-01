@@ -2,6 +2,7 @@ import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job, DoneCallback } from 'bull';
 import { FILE_ONE_UPLOAD_WORKER, FILE_UPLOAD_QUEUE } from 'src/constants/queues';
+import { CreatePerson } from 'src/dto/person/person.dto';
 import { DataOfFileExcel } from 'src/dto/person/personFile.dto';
 import { PersonTypeEnum } from 'src/dto/person/personType.dto';
 import { dateFormaterExcel } from 'src/middlewares/excel/dateFormat';
@@ -27,19 +28,20 @@ export class FilesConsumer {
       const infoOfProgram = job.data.infoOfProgram
       let [careerFound, groupFound, personType] = await Promise.all([
         this.careerService.findByName(infoOfProgram.career),
-        this.GroupService.listGroupByCode(infoOfProgram.codigo),
+        this.GroupService.getGroupByCode(infoOfProgram.codigo),
         this.personService.getPersonTypeByType(PersonTypeEnum.APRENDIZ)
       ]);
+      
       if (!careerFound) {
         careerFound = await this.careerService.createCareer(infoOfProgram.career);
       }
-      if (!groupFound) {
-        groupFound = await this.GroupService.createGroup({
+      if (!groupFound[0]) {
+        groupFound = [await this.GroupService.createGroup({
           code: infoOfProgram.codigo,
           dateStart: dateFormaterExcel(infoOfProgram.fechaInicio),
           dateEnd: dateFormaterExcel(infoOfProgram.fechaFin),
           career: careerFound
-        });
+        })];
       }
       job.progress(0);
       let progressCount = 0;
@@ -47,10 +49,13 @@ export class FilesConsumer {
         const progress = (progressCount++) / people.length;
         job.progress(progress * 100);
         const personFound = await this.personService.getPersonByDocument(person.document);
-        if (!personFound) {
-          personFound.groups.push(groupFound);
-          personFound.personTypes = personType;
-          this.personService.createPersonAprendiz(person);
+        let newPerson = new CreatePerson(person);
+        newPerson = Object.assign(person,newPerson);       
+        if (!personFound) {          
+          newPerson.groups = groupFound;
+          newPerson.personTypes = personType;
+          console.log({newPerson});
+          this.personService.createPersonAprendiz(newPerson);
         }
       }
       job.progress(100);

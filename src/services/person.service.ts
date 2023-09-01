@@ -85,12 +85,13 @@ export class PersonService implements OnModuleInit {
      * Finds a Person and returned the matching one
      * @returns Promise<Person>
      */
-    async getPersonByDocument(document: number): Promise<Person> {
+    async getPersonByDocument(document: number): Promise<Person> | null {
+        //console.log({document});       
         return await this.personRepository.findOne({
             where: {
-                document: document
+                document
             }
-        })
+        });
     }
 
     /**

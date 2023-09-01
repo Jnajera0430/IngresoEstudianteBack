@@ -9,9 +9,9 @@ import { PartialType } from "@nestjs/swagger";
 export class RecordEntryDto {
     id?: number;
 
-    checkIn: Date;
+    checkIn?: Date;
 
-    checkOut: Date;
+    checkOut?: Date;
 
     person: FindPersonDocumentDto;
 
@@ -29,7 +29,7 @@ export class RecordsEntryOfPersonDto extends PartialType(RecordEntryDto) {
     person: FindPersonDocumentDto;
 }
 
-export class FindRecordEntryOfPersonDto extends PartialType(RecordEntryDto){
+export class FindRecordEntryOfPersonDto extends PartialType(RecordEntryDto) {
     @IsNotEmpty()
     @ValidateNested()
     @Type(() => FindPersonDocumentDto)

@@ -17,7 +17,7 @@ export class Person {
     @Column()
     lastName: String
 
-    @Column()
+    @Column({unique: true})
     document: number
 
     @Column({ type: "boolean", default: true })
