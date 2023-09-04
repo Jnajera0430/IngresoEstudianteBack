@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { abstractBodyExample } from 'src/document/body.document';
 import { abstractResponseOk } from 'src/document/responses.200';
 import { abstracResponseErrorExample } from 'src/document/responses.400';
 import { responseErrorServer } from 'src/document/responses.500';
 import { CreatePerson, UpdatePerson } from 'src/dto/person/person.dto';
+import { ICustomResponse, customResponse } from 'src/services/customResponse.service';
 import { PersonService } from 'src/services/person.service';
 
 @Controller('person')
@@ -42,25 +43,6 @@ export class PersonController {
                 device: [],
                 vehicles: [],
                 recordEntry: []
-            },
-            {
-                id: 1212,
-                firtsName: 'Lazlo Gabriel',
-                lastName: 'Caputo Arias',
-                docType: {
-                    id: 1,
-                    type: 'CC'
-                },
-                document: 1002148455,
-                state: true,
-                personTypes: {
-                    id: 1,
-                    name: 'Aprendiz'
-                },
-                groups: [],
-                device: [],
-                vehicles: [],
-                recordEntry: []
             }
         ]
     }))
@@ -68,8 +50,12 @@ export class PersonController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async getListPerson() {
-        return await this.personService.getPeople();
+    async getListPerson(): Promise<ICustomResponse> {
+        return customResponse({
+            status: HttpStatus.OK,
+            message: 'List of people registred',
+            data: await this.personService.getPeople()
+        });
     }
 
     @Get(':id')
@@ -105,8 +91,12 @@ export class PersonController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async getPersonById(@Param('id', ParseIntPipe) id: number) {
-        return await this.personService.getPersonById(id);
+    async getPersonById(@Param('id', ParseIntPipe) id: number): Promise<ICustomResponse> {
+        return customResponse({
+            status: HttpStatus.OK,
+            message: 'Person by id.',
+            data: await this.personService.getPersonById(id)
+        });
     }
 
     @Post()
@@ -158,8 +148,12 @@ export class PersonController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async postCreatePerson(newPerson: CreatePerson) {
-        return await this.personService.createPerson(newPerson);
+    async postCreatePerson(newPerson: CreatePerson): Promise<ICustomResponse> {
+        return customResponse({
+            status: HttpStatus.CREATED,
+            message: 'Person has been created',
+            data: await this.personService.createPerson(newPerson)
+        });
     }
 
     @Patch()
@@ -216,7 +210,11 @@ export class PersonController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async patchUpdatePerson(@Body() person: UpdatePerson) {
-        return await this.personService.updatePerson(person);
+    async patchUpdatePerson(@Body() person: UpdatePerson):Promise<ICustomResponse> {
+        return customResponse({
+            status: HttpStatus.CREATED,
+            message: 'Person has been created',
+            data: await this.personService.updatePerson(person)
+        });
     }
 }

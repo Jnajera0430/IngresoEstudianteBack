@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { CareerService } from '../services/career.service'
 import { CreateCareerDto, UpdateOrFindCareer } from 'src/dto/career/career.dto';
 import { ApiBadRequestResponse, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -6,6 +6,8 @@ import { abstractResponseOk } from 'src/document/responses.200';
 import { abstracResponseErrorExample } from 'src/document/responses.400';
 import { responseErrorServer } from 'src/document/responses.500';
 import { abstractBodyExample } from 'src/document/body.document';
+import { ICustomResponse, customResponse } from 'src/services/customResponse.service';
+import { debug } from 'console';
 
 @Controller('career')
 @ApiTags('Api-Career')
@@ -44,8 +46,17 @@ export class CareerController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async getListCareer() {
-        return await this.careerService.listCareer();
+    async getListCareer(): Promise<ICustomResponse> {
+        try {
+            return customResponse({
+                status: HttpStatus.OK,
+                message: 'List career',
+                data: await this.careerService.listCareer()
+            });
+        } catch (error) {
+            debug(error);
+            return error;
+        }
     }
 
     @Post()
@@ -80,8 +91,17 @@ export class CareerController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async postCreateCareer(@Body() newCareer: CreateCareerDto) {
-        return await this.careerService.createCareer(newCareer);
+    async postCreateCareer(@Body() newCareer: CreateCareerDto): Promise<ICustomResponse> {
+        try {
+            return customResponse({
+                status: HttpStatus.CREATED,
+                message: 'Career created',
+                data: await this.careerService.createCareer(newCareer)
+            });
+        } catch (error) {
+            debug(error);
+            return error;
+        }
     }
 
     @Get(":id")
@@ -93,7 +113,7 @@ export class CareerController {
         status: 200,
         message: 'Career found',
         description: 'Example response of career object',
-        data:{
+        data: {
             id: 2123,
             name: 'Analisis y Desarrollo de software',
             group: []
@@ -103,8 +123,17 @@ export class CareerController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async getCareerById(@Param('id', ParseIntPipe) id: number) {
-        return await this.careerService.findById(id);
+    async getCareerById(@Param('id', ParseIntPipe) id: number): Promise<ICustomResponse> {
+        try {
+            return customResponse({
+                status: HttpStatus.OK,
+                message: 'Career ',
+                data: await this.careerService.findById(id)
+            });
+        } catch (error) {
+            debug(error);
+            return error;
+        }
     }
 
     @Patch()
@@ -140,7 +169,16 @@ export class CareerController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async patchUpdateCareer(@Body() career: UpdateOrFindCareer) {
-        return await this.careerService.updateCareer(career);
+    async patchUpdateCareer(@Body() career: UpdateOrFindCareer): Promise<ICustomResponse> {
+        try {
+            return customResponse({
+                status: HttpStatus.CREATED,
+                message: 'List career',
+                data: await this.careerService.updateCareer(career)
+            });
+        } catch (error) {
+            debug(error);
+            return error;
+        }
     }
 }
