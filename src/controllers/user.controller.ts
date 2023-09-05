@@ -2,9 +2,7 @@ import {
   Body,
   Controller,
   Get,
-  Put,
   Post,
-  Delete,
   Req,
   UseInterceptors,
   UploadedFile,
@@ -12,11 +10,11 @@ import {
   Patch,
   ParseIntPipe,
   UploadedFiles,
+  HttpStatus
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
-  ApiConflictResponse,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -38,18 +36,18 @@ import { CreateUserDto, UpdateUserDto } from 'src/dto/user/user.dto';
 import { User } from 'src/entitys/user.entity';
 import { UserService } from 'src/services/user.service';
 import {
-  AnyFilesInterceptor,
   FilesInterceptor,
   FileInterceptor,
 } from '@nestjs/platform-express';
 import { Request, Express } from 'express';
-import { QueuesService } from 'src/queues/queues.service';
+import { ICustomResponse, customResponse } from 'src/services/customResponse.service';
+import { debug } from 'console';
 @Controller('user')
 @ApiTags('api-User')
 export class UserController {
   constructor(
     private readonly userService: UserService
-  ) {}
+  ) { }
   //documentar la request
   @Post()
   @ApiOperation({
@@ -60,11 +58,20 @@ export class UserController {
   @ApiResponse(responseOkCreateUser())
   @ApiBadRequestResponse(responseErrorExampleCreateUser400())
   @ApiResponse(responseErrorServer())
-  postCreateUser(
+  async postCreateUser(
     @Req() req: Request,
     @Body() newUser: CreateUserDto,
-  ): Promise<User> {
-    return this.userService.createUser(newUser);
+  ): Promise<ICustomResponse> {
+    try {
+      return customResponse({
+        status: HttpStatus.CREATED,
+        message: 'User has been created',
+        data: await this.userService.createUser(newUser)
+      });
+    } catch (error) {
+      debug(error);
+      return error;
+    }
   }
 
   @Get()
@@ -75,8 +82,17 @@ export class UserController {
   @ApiResponse(responseOkListUser())
   @ApiBadRequestResponse(responseErrorExampleCreateUser400())
   @ApiResponse(responseErrorServer())
-  getAllUser(@Req() req: Request): Promise<User[]> {
-    return this.userService.findAll();
+  async getAllUser(@Req() req: Request): Promise<ICustomResponse> {
+    try {
+      return customResponse({
+        status: HttpStatus.OK,
+        message: 'List users',
+        data: await this.userService.findAll()
+      });
+    } catch (error) {
+      debug(error);
+      return error;     
+    }
   }
 
   @Get(':id')
@@ -91,8 +107,17 @@ export class UserController {
   async getFindOneById(
     @Req() req: Request,
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<User> {
-    return await this.userService.findOneById(id);
+  ): Promise<ICustomResponse> {
+    try {
+      return customResponse({
+        status: HttpStatus.OK,
+        message: 'User found by id.',
+        data: await this.userService.findOneById(id)
+      });
+    } catch (error) {
+      debug(error);
+      return error;
+    }
   }
 
   @Patch()
@@ -104,8 +129,17 @@ export class UserController {
   @ApiResponse(responseOkfindUserById())
   @ApiBadRequestResponse(responseErrorExampleCreateUser400())
   @ApiResponse(responseErrorServer())
-  async patchUpdate(@Req() req: Request, @Body() user: UpdateUserDto) {
-    return this.userService.update(user.id, user);
+  async patchUpdate(@Req() req: Request, @Body() user: UpdateUserDto):Promise<ICustomResponse> {
+    try {
+      return customResponse({
+        status: HttpStatus.CREATED,
+        message: 'User has been updated.',
+        data: await this.userService.update(user.id, user)
+      })
+    } catch (error) {
+      debug(error);
+      return error;
+    }
   }
 
   @Post('upload')
@@ -113,8 +147,13 @@ export class UserController {
   async postUploadFileUser(
     @Req() req: Request,
     @UploadedFile() file: Express.Multer.File,
-  ) {  
-    return await this.userService.readFile(file);
+  ) {
+    try {
+      return await this.userService.readFile(file);
+    } catch (error) {
+      debug(error);
+      return error;
+    }
   }
   @Post('uploadFiles')
   @UseInterceptors(FilesInterceptor('files'))
@@ -122,6 +161,11 @@ export class UserController {
     @Req() req: Request,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    return await this.userService.readFiles(files);
+    try {
+      return await this.userService.readFiles(files);
+    } catch (error) {
+      debug(error);
+      return error;
+    }
   }
 }

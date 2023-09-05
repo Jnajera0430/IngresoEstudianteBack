@@ -39,22 +39,58 @@ export class RecordEntryController {
     }
 
     @Get()
-    async getAllRecords() {
-        return await this.recordEntryService.findAllRecord();
+    async getAllRecords():Promise<ICustomResponse> {
+        try {
+            return customResponse({
+                status: HttpStatus.OK,
+                message: 'List records.',
+                data: await this.recordEntryService.findAllRecord()
+            });
+        } catch (error) {
+            debug(error);
+            return error;
+        }
     }
 
     @Get(':id')
-    async getRecordById(@Param('id') id: number) {
-        return await this.recordEntryService.findRecordById(id);
+    async getRecordById(@Param('id') id: number): Promise<ICustomResponse> {
+        try {
+            return customResponse({
+                status: HttpStatus.OK,
+                message: 'Record found by id.',
+                data: await this.recordEntryService.findRecordById(id)
+            });
+        } catch (error) {
+            debug(error);
+            return error;
+        }
     }
 
     @Get('person')
-    async getAllRecordByperson(@Body() person: FindPersonDocumentDto) {
-        return await this.recordEntryService.findAllRecordsByPerson(person);
+    async getAllRecordByperson(@Body() person: FindPersonDocumentDto):Promise<ICustomResponse> {
+        try {
+            return customResponse({
+                status: HttpStatus.OK,
+                message: 'Record found by person id.',
+                data: await this.recordEntryService.findAllRecordsByPerson(person)
+            });
+        } catch (error) {
+            debug(error);
+            return error;
+        }
     }
 
     @Get('person/in')
-    async getRecordOfPersonInside(@Body() person: FindPersonDocumentDto) {
-        return await this.recordEntryService.findInRecordEntryPersonIn(person);
+    async getRecordOfPersonInside(@Body() person: FindPersonDocumentDto):Promise<ICustomResponse> {
+        try {
+            return customResponse({
+                status: HttpStatus.OK,
+                message: 'List records of people inside.',
+                data: await this.recordEntryService.findInRecordEntryPersonIn(person)
+            });
+        } catch (error) {
+            debug(error);
+            return error;
+        }
     }
 }

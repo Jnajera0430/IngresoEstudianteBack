@@ -184,7 +184,7 @@ export class GroupController {
         try {
             return customResponse({
                 status: HttpStatus.CREATED,
-                message: 'Group created.',
+                message: 'Group has been created.',
                 data: await this.groupService.createGroup(newGroup)
             });
         } catch (error) {

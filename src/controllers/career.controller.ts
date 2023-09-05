@@ -95,7 +95,7 @@ export class CareerController {
         try {
             return customResponse({
                 status: HttpStatus.CREATED,
-                message: 'Career created',
+                message: 'Career has been created',
                 data: await this.careerService.createCareer(newCareer)
             });
         } catch (error) {
@@ -127,7 +127,7 @@ export class CareerController {
         try {
             return customResponse({
                 status: HttpStatus.OK,
-                message: 'Career ',
+                message: 'Career found by id.',
                 data: await this.careerService.findById(id)
             });
         } catch (error) {
@@ -173,7 +173,7 @@ export class CareerController {
         try {
             return customResponse({
                 status: HttpStatus.CREATED,
-                message: 'List career',
+                message: 'Career has been updated.',
                 data: await this.careerService.updateCareer(career)
             });
         } catch (error) {

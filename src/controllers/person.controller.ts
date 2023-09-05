@@ -94,7 +94,7 @@ export class PersonController {
     async getPersonById(@Param('id', ParseIntPipe) id: number): Promise<ICustomResponse> {
         return customResponse({
             status: HttpStatus.OK,
-            message: 'Person by id.',
+            message: 'Person found by id.',
             data: await this.personService.getPersonById(id)
         });
     }
@@ -151,7 +151,7 @@ export class PersonController {
     async postCreatePerson(newPerson: CreatePerson): Promise<ICustomResponse> {
         return customResponse({
             status: HttpStatus.CREATED,
-            message: 'Person has been created',
+            message: 'Person has been created.',
             data: await this.personService.createPerson(newPerson)
         });
     }
@@ -213,7 +213,7 @@ export class PersonController {
     async patchUpdatePerson(@Body() person: UpdatePerson):Promise<ICustomResponse> {
         return customResponse({
             status: HttpStatus.CREATED,
-            message: 'Person has been created',
+            message: 'Person has been updated.',
             data: await this.personService.updatePerson(person)
         });
     }

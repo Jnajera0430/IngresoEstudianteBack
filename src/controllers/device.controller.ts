@@ -18,7 +18,7 @@ export class DeviceController {
         try {
             return customResponse({
                 status:HttpStatus.OK,
-                message: 'List career',
+                message: 'List device.',
                 data: await this.deviceService.findAllDevice()
             });
         } catch (error) {
@@ -32,7 +32,7 @@ export class DeviceController {
         try {
             return customResponse({
                 status:HttpStatus.OK,
-                message: 'List career',
+                message: 'Device found by person id.',
                 data: await this.deviceService.findDeviceByPerson(person)
             });
         } catch (error) {
@@ -46,7 +46,7 @@ export class DeviceController {
         try {
             return customResponse({
                 status:HttpStatus.CREATED,
-                message: 'List career',
+                message: 'Device has been updated',
                 data: await this.deviceService.updateDevice(device)
             });
         } catch (error) {
