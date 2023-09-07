@@ -26,10 +26,9 @@ export class FilesConsumer {
     try {
       const people = job.data.listPeopleFile;
       const infoOfProgram = job.data.infoOfProgram
-      let [careerFound, groupFound, personType] = await Promise.all([
+      let [careerFound, groupFound] = await Promise.all([
         this.careerService.findByName(infoOfProgram.career),
         this.GroupService.getGroupByCode(infoOfProgram.codigo),
-        this.personService.getPersonTypeByType(PersonTypeEnum.APRENDIZ)
       ]);
       
       if (!careerFound) {
@@ -53,8 +52,8 @@ export class FilesConsumer {
         newPerson = Object.assign(person,newPerson);       
         if (!personFound) {          
           newPerson.groups = groupFound;
-          newPerson.personTypes = personType;
-          console.log({newPerson});
+          // newPerson.personTypes = personType;
+          // console.log({newPerson});
           this.personService.createPersonAprendiz(newPerson);
         }
       }

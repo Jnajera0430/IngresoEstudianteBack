@@ -4,13 +4,8 @@ import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { Device } from "src/entitys/device.entity";
 
 export class DeviceTypeDto {
-    @IsNumber()
     id: number;
-
-    @IsString()
     brand: string;
-
-    @Type(()=>Device)
     device: Device;
 }
 

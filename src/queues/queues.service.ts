@@ -20,7 +20,7 @@ export class QueuesService {
     // this.myQueue.process((job: Job, done: DoneCallback) =>
     //   this.myQueueWorker.processFile(data, job, done),
     // );
-
+    console.log('llego');
     return await this.fileManageQueue.add(FILE_ONE_UPLOAD_WORKER, data);
   }
 

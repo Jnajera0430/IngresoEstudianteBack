@@ -28,7 +28,7 @@ export class Person {
         eager: true,
         nullable: true
     })
-    @JoinTable({ name: "person_group" })
+    @JoinTable()
     groups: Group[]
 
     @ManyToOne(() => PersonType, personType => personType.person, {
@@ -39,7 +39,7 @@ export class Person {
     @JoinColumn({ name: 'personTypes' })
     personTypes: PersonType
 
-    @OneToOne(() => DoctType, doctType => doctType.person, {
+    @ManyToOne(() => DoctType, {
         cascade: true,
         eager: true,
         nullable: true

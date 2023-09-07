@@ -4,20 +4,15 @@ import { Type } from "class-transformer";
 import { DeviceTypeDto } from "./deviceType.dto";
 import { PartialType } from "@nestjs/swagger";
 
-export class DeviceDto{
-    @IsNumber()
+export class DeviceDto{   
     id:number;
-
-    @IsDate()
+    
     dateOfEntry: Date;
-
-    @IsDate()
+    
     dateOfOut: Date;
-
-    @Type(()=>PersonDto)
+    
     person: PersonDto;
 
-    @Type(()=>DeviceTypeDto)
     deviceType: DeviceTypeDto
 }
 

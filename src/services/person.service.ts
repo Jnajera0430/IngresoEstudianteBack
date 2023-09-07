@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import {Transaction, getManager} from "typeorm";
 import { CreatePerson, UpdatePerson } from 'src/dto/person/person.dto';
 import { CreatePersonDocTypeDto } from 'src/dto/person/personDocType';
 import { CreatePersonTypeDto, PersonTypeEnum } from 'src/dto/person/personType.dto';
@@ -31,9 +32,10 @@ export class PersonService implements OnModuleInit {
     /**
      * Receives a parameter of type CreatePerson
      * @param person
-     * Return new Person
+     * Returns new Person
      * @returns Promise<Person>
      */
+    
     async createPersonAprendiz(person: CreatePerson): Promise<Person> {
         const newAprendiz = this.personRepository.create(person);
         const [docType, personType] = await Promise.all([
@@ -49,6 +51,7 @@ export class PersonService implements OnModuleInit {
         }
         newAprendiz.doctType = docType;
         newAprendiz.personTypes = personType;
+        
         return await this.personRepository.save(newAprendiz);
     }
     /**

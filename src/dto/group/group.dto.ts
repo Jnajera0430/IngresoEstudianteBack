@@ -5,22 +5,17 @@ import { Career } from "src/entitys/career.entity";
 import { CareerDto } from "../career/career.dto";
 
 export class GroupDto {
-    @IsNumber()
+
     id?: number
-    @IsNotEmpty()
-    @IsNumber()
+
     code: number
 
-    @IsDateString()
     dateStart: Date
 
-    @IsDateString()
     dateEnd: Date
-    @IsBoolean()
+
     state?: boolean
 
-    @ValidateNested()
-    @Type(() => Career)
     career: CareerDto
 }
 

@@ -15,8 +15,8 @@ export class GroupService {
 
     async createGroup(group: CreateGroup): Promise<Group> {
         const newGroup = this.groupReposotory.create(group);
-        const career: Career = await this.careerService.findById(group.career.id);
-        newGroup.career = career;
+        // const career: Career = await this.careerService.findById(group.career.id);
+        // newGroup.career = career;
         return await this.groupReposotory.save(newGroup);
     }
 

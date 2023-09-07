@@ -113,7 +113,7 @@ export class UserController {
   async postUploadFileUser(
     @Req() req: Request,
     @UploadedFile() file: Express.Multer.File,
-  ) {  
+  ) {      
     return await this.userService.readFile(file);
   }
   @Post('uploadFiles')
