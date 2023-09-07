@@ -10,14 +10,16 @@ export class EntryVehicle {
     @Column()
     inside: boolean
 
-    @Column({ type: 'timestamp', nullable:true })
+    @Column({ type: 'timestamp', nullable: true })
     out: Date
 
-    @ManyToOne(()=>Vehicle,vehicle=>vehicle)
-    @JoinColumn({name: 'vehicle'})
+    @ManyToOne(() => Vehicle, vehicle => vehicle, {
+        cascade: true,
+        eager: true,
+        nullable: true
+    })
+    @JoinColumn({ name: 'vehicle' })
     vehicle: Vehicle
 
-    @OneToOne(()=>Record_entry,recordEntry=>recordEntry.vehicleEntry)
-    @JoinColumn({name:'recordEntry'})
     recordEntry: Record_entry
 }

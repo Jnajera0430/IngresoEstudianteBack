@@ -21,7 +21,11 @@ export class EntryDevice{
     })
     recordEntry: Record_entry
 
-    @ManyToOne(()=>Device,device=>device)
+    @ManyToOne(()=>Device,device=>device,{
+        cascade: true,
+        eager: true,
+        nullable: true
+    })
     @JoinColumn({name: 'device'})
     device: Device
 

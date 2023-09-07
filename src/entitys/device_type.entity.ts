@@ -9,10 +9,6 @@ export class DeviceType{
     @Column()
     brand: string
 
-    @OneToOne(()=>Device, device=>device.deviceType,{
-        nullable:true
-    })
-    @JoinColumn({name: 'deviceType'})
     device: Device
 
 }

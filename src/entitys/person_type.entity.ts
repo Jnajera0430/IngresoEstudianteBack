@@ -9,7 +9,6 @@ export class PersonType{
     @Column()
     name:string
 
-    @OneToMany(()=>Person, person=>person.personTypes)
     person: Person[]
 
     @Column({type:"boolean", default:true})

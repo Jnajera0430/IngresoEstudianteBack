@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { debug } from 'console';
 import { abstractBodyExample } from 'src/document/body.document';
 import { abstractResponseOk } from 'src/document/responses.200';
 import { abstracResponseErrorExample } from 'src/document/responses.400';
 import { responseErrorServer } from 'src/document/responses.500';
 import { CreateGroup, UpdateGroupDto } from 'src/dto/group/group.dto';
+import { ICustomResponse, customResponse } from 'src/services/customResponse.service';
 import { GroupService } from 'src/services/group.service';
 
 @Controller('group')
@@ -28,8 +30,18 @@ export class GroupController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async getListAllGroups() {
-        return await this.groupService.listAllGroups();
+    async getListAllGroups(): Promise<ICustomResponse> {
+        try {
+            return customResponse({
+                status:HttpStatus.OK,
+                message: 'List Group.',
+                data: await this.groupService.listAllGroups()
+            });
+
+        } catch (error) {
+            debug(error);
+            return error;
+        }
     }
 
     @Get('byActive')
@@ -46,8 +58,17 @@ export class GroupController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async getListGroupActive() {
-        return await this.groupService.listAllActiveGroups();
+    async getListGroupActive():Promise<ICustomResponse> {
+        try {
+            return customResponse({
+                status: HttpStatus.OK,
+                message: 'List of groups active.',
+                data: await this.groupService.listAllActiveGroups()
+            })
+        } catch (error) {
+            debug(error);
+            return error;
+        }
     }
 
     @Get('byCodeGroup/:code')
@@ -72,8 +93,17 @@ export class GroupController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async getListGroupByCode(@Param('code', ParseIntPipe) code: number) {
-        return await this.groupService.listGroupByCode(code);
+    async getListGroupByCode(@Param('code', ParseIntPipe) code: number):Promise<ICustomResponse> {
+        try {
+            return customResponse({
+                status: HttpStatus.OK,
+                message:'List of group by code.',
+                data: await this.groupService.listGroupByCode(code)
+            });
+        } catch (error) {
+            debug(error);
+            return error;
+        }
     }
 
     @Get('byCareer/:id')
@@ -98,8 +128,17 @@ export class GroupController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async getListGroupsByCareer(@Param('id', ParseIntPipe) id: number) {
-        return await this.groupService.findListGroupByCareer(id);
+    async getListGroupsByCareer(@Param('id', ParseIntPipe) id: number):Promise<ICustomResponse> {
+        try {
+            return customResponse({
+                status: HttpStatus.OK,
+                message: 'List of groups by career.',
+                data: await this.groupService.findListGroupByCareer(id)
+            })
+        } catch (error) {
+            debug(error);
+            return error;
+        }
     }
 
     @Post()
@@ -126,7 +165,7 @@ export class GroupController {
     }))
     @ApiResponse(abstractResponseOk({
         status:200,
-        message:'group created',
+        message:'group created.',
         description:'Example of a response when creating a group',
         data:{
             id: 846,
@@ -141,8 +180,17 @@ export class GroupController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async postCreateGroup(@Body() newGroup: CreateGroup) {
-        return await this.groupService.createGroup(newGroup);
+    async postCreateGroup(@Body() newGroup: CreateGroup):Promise<ICustomResponse> {
+        try {
+            return customResponse({
+                status: HttpStatus.CREATED,
+                message: 'Group has been created.',
+                data: await this.groupService.createGroup(newGroup)
+            });
+        } catch (error) {
+            debug(error);
+            return error;
+        }
     }
     
     @Patch()
@@ -169,7 +217,7 @@ export class GroupController {
     }))
     @ApiResponse(abstractResponseOk({
         status:200,
-        message:'group created',
+        message:'group created.',
         description:'Example of a response when creating a group',
         data:{
             id: 846,
@@ -184,7 +232,16 @@ export class GroupController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async patchUpdateGroup(@Body() group: UpdateGroupDto) {
-        return await this.groupService.updateGroup(group);
+    async patchUpdateGroup(@Body() group: UpdateGroupDto):Promise<ICustomResponse> {
+        try {
+            return customResponse({
+                status: HttpStatus.ACCEPTED,
+                message: 'The group has been updated.',
+                data: await this.groupService.updateGroup(group)
+            });    
+        } catch (error) {
+            debug(error);
+            return error
+        }
     }
 }

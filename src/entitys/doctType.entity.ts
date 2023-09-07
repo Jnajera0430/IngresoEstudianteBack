@@ -8,4 +8,6 @@ export class DoctType{
 
     @Column()
     name: string
+
+    person: Person
 }

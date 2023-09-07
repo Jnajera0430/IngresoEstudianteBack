@@ -9,10 +9,5 @@ export class Career {
     @Column()
     name: string
 
-    @OneToMany(() => Group, group => group.career,{
-        eager: false,
-        onDelete:"CASCADE",
-        onUpdate:"CASCADE"
-    })
     groups: Group[]
 }

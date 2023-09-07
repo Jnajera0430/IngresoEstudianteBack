@@ -39,7 +39,7 @@ export class Person {
     @JoinColumn({ name: 'personTypes' })
     personTypes: PersonType
 
-    @ManyToOne(() => DoctType, {
+    @ManyToOne(() => DoctType,(doctType)=>doctType.person, {
         cascade: true,
         eager: true,
         nullable: true

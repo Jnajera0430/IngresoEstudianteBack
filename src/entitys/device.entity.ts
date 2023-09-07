@@ -13,7 +13,6 @@ export class Device {
     @Column({ type: 'timestamp' })
     dateOfOut: Date
 
-    @ManyToOne(()=>Person, person=>person.device)
     person: Person
 
     @OneToOne(()=>DeviceType,(type)=>type.device,{
@@ -24,10 +23,5 @@ export class Device {
     @JoinColumn({name:'deviceType'})
     deviceType: DeviceType
 
-    @OneToMany(() => EntryDevice, entryDevice => entryDevice.device, {
-        cascade: true,
-        eager: true,
-        nullable: true
-    })
     entryDevice: EntryDevice[]
 }

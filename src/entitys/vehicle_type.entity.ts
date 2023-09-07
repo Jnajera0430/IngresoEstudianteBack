@@ -9,7 +9,5 @@ export class VehicleType{
     @Column()
     vendor: string
 
-    @OneToOne(()=> Vehicle,vehicle=>vehicle.vehicleType)
-    @JoinColumn({name:'vehicle'})
     vehicle: Vehicle
 }
