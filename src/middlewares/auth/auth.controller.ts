@@ -48,17 +48,17 @@ export class AuthController {
     switch (rol.id) {
       case RoleEnumByTypeRole.PUESTO_DE_SERVICIO:
         response.setHeader('Set-Cookie', [
-          `access_token=${token}; HttpOnly; Path=/; SameSite=None; Secure;`,
+          `access_token=${token};`,
         ]);
         return;
       default:
         response.setHeader('Set-Cookie', [
-          `access_token=${token}; HttpOnly; Path=/; Max-Age=86400; SameSite=None; Secure;`,
+          `access_token=${token}; Path=/; Max-Age=86400;`,
         ]);
         return;
     }
   }
-  
+
   // switch (rol) {
   //   default:
   //     response.setHeader('Set-Cookie', [

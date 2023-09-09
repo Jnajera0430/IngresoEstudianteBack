@@ -21,7 +21,7 @@ export class AuthService {
     /**
      * Returns the access-token of user logged
      * @param userData AuthUserDto
-     * @returns Set-cookie 
+     * @returns Set-cookie
      */
     async login(userData: AuthUserDto): Promise<AuthLogin> {
 
@@ -51,15 +51,25 @@ export class AuthService {
             switch (dataRol.id) {
                 default:
                     return {
+                        rol: dataRol,
+                        status: HttpStatus.OK,
+                        message: "ok",
                         token: await this.jwtService.signAsync(payload, {
+                            expiresIn: "100d",
+                        }),
+                        data: await this.jwtService.signAsync(payload, {
                             expiresIn: "1d",
                         }),
-                        rol: dataRol
                     }
                 case RoleEnumByTypeRole.PUESTO_DE_SERVICIO:
                     return {
+                        status: HttpStatus.OK,
+                        message: "ok",
                         token: await this.jwtService.signAsync(payload, {
                             expiresIn: "100d",
+                        }),
+                        data: await this.jwtService.signAsync(payload, {
+                            expiresIn: "1d",
                         }),
                         rol: dataRol
                     }

@@ -1,16 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { BullQueueProcessor, InjectQueue } from '@nestjs/bull';
 import { DoneCallback, Job, Queue } from 'bull';
-import { FILE_ONE_UPLOAD_WORKER, FILE_UPLOAD_QUEUE } from 'src/constants/queues';
+import {
+  FILE_ONE_UPLOAD_WORKER,
+  FILE_UPLOAD_QUEUE,
+} from 'src/constants/queues';
 import { FilesConsumer } from './consumers/files.consumer';
 import { DataOfFileExcel } from 'src/dto/person/personFile.dto';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class QueuesService {
   constructor(
     @InjectQueue(FILE_UPLOAD_QUEUE) private readonly fileManageQueue: Queue,
     private readonly fileWorker: FilesConsumer,
-  ) { }
+  ) {}
 
   /**
    * Worker
@@ -42,6 +46,30 @@ export class QueuesService {
     this.fileManageQueue.on('completed', (job: Job, result) => {
       console.log(`id: ${job.id} - task completed`, { result });
     });
+  }
+
+  logger = new Logger(FilesConsumer.name);
+
+  async getActivesProgressByUserID(userID: number = 0) {
+    const elmLength = await this.fileManageQueue.getActiveCount();
+    this.logger.debug(elmLength);
+    if (elmLength > 0) {
+      const activeJobs = await this.fileManageQueue.getActive();
+      let jobs = []
+      activeJobs.map(async (job) => {
+        const p = await (await this.fileManageQueue.getJob(job.id)).progress()
+        this.logger.debug(p);
+        jobs.push({
+          id: ''
+        })
+      });
+      return jobs;
+    }
+    return {
+      message: 'No hay tareas activas',
+      status: 404,
+      data: []
+    }
   }
 
 }

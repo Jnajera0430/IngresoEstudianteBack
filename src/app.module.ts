@@ -42,6 +42,7 @@ import { DeviceTypeController } from './controllers/device_type.controller';
 import { CareerController } from './controllers/career.controller';
 import { ValidUser } from './middlewares/jwt/validUser.middleware';
 import { SocketModule } from './ws/socket.module';
+import { SSEController } from './controllers/server_side_events';
 
 @Module({
   imports: [
@@ -106,6 +107,6 @@ export class AppModule implements NestModule {
         CareerController,
       );
 
-    consumer.apply(ValidUser).forRoutes(UserController);
+    consumer.apply().forRoutes(UserController, SSEController);
   }
 }

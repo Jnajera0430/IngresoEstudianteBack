@@ -42,8 +42,11 @@ export class TokenDto {
 }
 
 export class AuthLogin {
-    token: string;
+    token?: string;
     rol: Role;
+    status: number;
+    message: string;
+    data: string;
 }
 
 
