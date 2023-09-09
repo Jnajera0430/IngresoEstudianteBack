@@ -20,7 +20,12 @@ interface Configuracion {
     PORT: number,
     jwt: JWT,
     database: Database,
-    redis: Redis
+    redis: Redis,
+    DB_HOST: string
+    DB_USER: string
+    DB_PASS: string
+    DB_NAME: string
+    DB_PORT: number
 }
 
 export const configuration = (): Configuracion => ({
@@ -37,6 +42,11 @@ export const configuration = (): Configuracion => ({
         DB_NAME: process.env.DB_NAME,
         DB_PORT: parseInt(process.env.DB_PORT)
     },
+    DB_HOST: process.env.DB_HOST,
+    DB_USER: process.env.DB_USER,
+    DB_PASS: process.env.DB_PASS,
+    DB_NAME: process.env.DB_NAME,
+    DB_PORT: parseInt(process.env.DB_PORT),
     redis: {
         host: process.env.REDIS_HOST,
         port: parseInt(process.env.REDIS_PORT) || 6379,
