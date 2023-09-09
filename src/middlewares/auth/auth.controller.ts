@@ -30,7 +30,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly jwtServices: JwtService,
-  ) { }
+  ) {}
   @HttpCode(HttpStatus.OK)
   @Post('login')
   @ApiOperation({
@@ -43,19 +43,23 @@ export class AuthController {
   async signIn(
     @Res({ passthrough: true }) response: Response,
     @Body() userData: AuthUserDto,
-  ): Promise<void> {
+  ): Promise<any> {
     const { token, rol } = await this.authService.login(userData);
     switch (rol.id) {
       case RoleEnumByTypeRole.PUESTO_DE_SERVICIO:
         response.setHeader('Set-Cookie', [
-          `access_token=${token};`,
+          `access_token=${token} httponly; Path=/; Max-Age=86400;`,
         ]);
-        return;
+        return {
+          access_token: token,
+        };
       default:
         response.setHeader('Set-Cookie', [
-          `access_token=${token}; Path=/; Max-Age=86400;`,
+          `access_token=${token}; httponly; Path=/; Max-Age=86400;`,
         ]);
-        return;
+        return {
+          access_token: token,
+        };
     }
   }
 

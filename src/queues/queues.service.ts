@@ -65,11 +65,7 @@ export class QueuesService {
       });
       return jobs;
     }
-    return {
-      message: 'No hay tareas activas',
-      status: 404,
-      data: []
-    }
+    return false;
   }
 
 }
