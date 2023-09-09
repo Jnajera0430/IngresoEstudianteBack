@@ -49,23 +49,58 @@ export class QueuesService {
   }
 
   logger = new Logger(FilesConsumer.name);
+  jobs = [];
 
   async getActivesProgressByUserID(userID: number = 0) {
-    const elmLength = await this.fileManageQueue.getActiveCount();
-    this.logger.debug(elmLength);
-    if (elmLength > 0) {
-      const activeJobs = await this.fileManageQueue.getActive();
-      let jobs = []
-      activeJobs.map(async (job) => {
-        const p = await (await this.fileManageQueue.getJob(job.id)).progress()
-        this.logger.debug(p);
-        jobs.push({
-          id: ''
-        })
-      });
-      return jobs;
-    }
-    return false;
-  }
+    const activeJobs = await this.fileManageQueue.getActive();
+    const waitingJobs = await this.fileManageQueue.getWaiting();
 
+    // remove element in this.jobs when not exist in activeJobs and waiting == false
+    const remove = this.jobs.filter(
+      (job) =>
+        !activeJobs.find((j) => j.id === job.id) && job.waiting === false,
+    );
+    this.jobs = this.jobs.filter((job) => !remove.includes(job));
+
+    this.logger.debug(activeJobs.filter(item => this.jobs.includes(item)));
+
+    // this.logger.debug(elmLength);
+    if (activeJobs.length > 0) {
+      this.jobs = this.jobs.filter((job) =>
+        activeJobs.find((j) => j.id === job.id),
+      );
+      activeJobs.map(async (job) => {
+        const exist = this.jobs.find((j) => j.id === job.id);
+        if (exist) {
+          exist.waiting = false;
+          if (exist.progress == (await job.progress())) {
+          } else {
+            exist.progress = await job.progress();
+          }
+        } else {
+          this.jobs.push({
+            id: job.id,
+            progress: await job.progress(),
+            waiting: false,
+          });
+        }
+      });
+    }
+    if (waitingJobs.length > 0) {
+      // add waiting jobs
+      waitingJobs.map(async (job) => {
+        const exist = this.jobs.find((j) => j.id === job.id);
+        if (exist) {
+          console.log('exist', await job.isWaiting());
+        } else {
+          this.jobs.push({
+            id: job.id,
+            progress: await job.progress(),
+            waiting: true,
+          });
+        }
+      });
+    }
+    return this.jobs;
+  }
 }

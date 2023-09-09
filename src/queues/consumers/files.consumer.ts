@@ -50,7 +50,7 @@ export class FilesConsumer {
        this.logger.debug('debug');
       for (let person of people) {
         this.logger.debug('log');
-        await sleep(5000);
+        await sleep(100);
         const progress = (progressCount++) / people.length;
         job.progress(progress * 100);
         const personFound = await this.personService.getPersonByDocument(person.document);
