@@ -8,6 +8,7 @@ export class EntryType{
     id: number
     @Column()
     type: string
-    
+    @OneToOne(()=>Record_entry)
+    @JoinColumn({name:'record_entryType'})
     recordEntry: Record_entry
 }

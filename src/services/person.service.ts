@@ -63,7 +63,7 @@ export class PersonService implements OnModuleInit {
             where: {
                 state: true
             },
-            relations: ["groups", "personTypes", "device", "vehicles", "recorEntry", 'doctType']
+            //relations: ["groups", "personTypes", "device", "vehicles", "recorEntry", 'doctType']
         });
     }
     /**
