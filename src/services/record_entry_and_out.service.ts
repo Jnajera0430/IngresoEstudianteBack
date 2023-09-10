@@ -21,16 +21,14 @@ export class RecordEntryService {
      * @returns Promise -> Record_Entry
      */
     async checkInEntryOfPerson(recordEntry: RecordsEntryOfPersonDto): Promise<Record_entry> {
-        
         const personFound = await this.personService.getPersonByDocument(recordEntry.person.document);
-        console.log(personFound);
-        if (!personFound) {
+        if (!personFound) 
             throw new ValueNotFoundException('This person is not in our records.');
-        }
+        
         const entryTypeFound = await this.entryTypeService.findEntryTypeByName(personFound.personTypes.name);
-        if (!entryTypeFound) {
+        if (!entryTypeFound) 
             throw new ValueNotFoundException('Input record type is not defined.');
-        }
+        
         // Se crea un nuevo objeto
         const newRecordEntry = this.recordEntryRepository.create(recordEntry);
         newRecordEntry.person = personFound;
@@ -87,11 +85,10 @@ export class RecordEntryService {
      * @param recordEntry FindRecordEntryOfPersonDto
      * @returns 
      */
-    async findInRecordEntryByPersonInside(person: FindPersonDocumentDto): Promise<Record_entry> {
-        
+    async findInRecordEntryByPersonInside(person: FindPersonDocumentDto): Promise<Record_entry> {     
         const today = new Date();
         const personFound = await this.personService.getPersonByDocument(person.document);
-        console.log({personFound});
+        if(!personFound)return null;
         return await this.recordEntryRepository.findOne({
             where: {
                 person: {

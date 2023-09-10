@@ -21,5 +21,7 @@ export class EntryVehicle {
     @JoinColumn({ name: 'vehicle' })
     vehicle: Vehicle
 
+    @OneToOne(()=>Record_entry,recordEntry=>recordEntry.vehicleEntry)
+    @JoinColumn()
     recordEntry: Record_entry
 }

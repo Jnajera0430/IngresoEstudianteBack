@@ -23,10 +23,11 @@ export class RecordEntryController {
                     status: HttpStatus.ACCEPTED,
                     message: 'This person has been inside',
                     data: await this.recordEntryService.checkInEntryOfPerson(recordEntry)
-                })
+                });
             }
-            const data = new FindRecordEntryOfPersonDto(recordFound);
-            console.log({ data });
+            console.log({ recordFound });
+            let data = new FindRecordEntryOfPersonDto(recordFound);
+            data = Object.assign(recordFound,data);
             return customResponse({
                 status: HttpStatus.ACCEPTED,
                 message: 'Your process has been successfull',

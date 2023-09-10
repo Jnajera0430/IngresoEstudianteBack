@@ -17,15 +17,17 @@ export class Vehicle {
     @Column({ type: 'timestamp', nullable: true })
     dateOfOut: Date
 
+    @ManyToOne(()=>Person, person=>person.vehicles)
+    @JoinColumn()
     person: Person
 
-    @OneToOne(() => VehicleType, tipo => tipo.vehicle, {
+    @ManyToOne(() => VehicleType, tipo => tipo.vehicle, {
         cascade: true,
         eager: true,
         nullable: true
     })
     @JoinColumn({ name: 'vehicleType'})
     vehicleType: VehicleType
-    
+    @OneToMany(()=>EntryVehicle,entryVehicle=>entryVehicle.vehicle)
     entryVehicle: EntryVehicle[]
 }

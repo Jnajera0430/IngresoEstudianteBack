@@ -3,6 +3,7 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { User } from './user.entity';
 
@@ -17,5 +18,6 @@ export class Role {
   @ManyToMany(() => User, (user) => user.role, {
     nullable: true,
   })
+  @JoinTable()
   users: User[];
 }

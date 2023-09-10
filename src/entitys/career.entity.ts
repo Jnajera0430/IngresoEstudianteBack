@@ -1,5 +1,5 @@
 import { Group } from "src/entitys/group.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'careers' })
 export class Career {
@@ -9,5 +9,7 @@ export class Career {
     @Column()
     name: string
 
+    @OneToMany(()=>Group,group=>group.career)
+    @JoinColumn()
     groups: Group[]
 }

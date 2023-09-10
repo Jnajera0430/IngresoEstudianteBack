@@ -12,7 +12,7 @@ export class Record_entry{
     @Column({type: 'timestamp'})
     checkIn: Date
 
-    @Column({type: 'timestamp'})
+    @Column({type: 'timestamp',nullable:true})
     checkOut: Date
 
     @ManyToOne(()=>Person, person=>person.recorEntry)
@@ -46,6 +46,4 @@ export class Record_entry{
     })
     @JoinColumn({name:'entryType'})
     entryType: EntryType
-
-
 }

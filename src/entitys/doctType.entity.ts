@@ -9,5 +9,7 @@ export class DoctType{
     @Column()
     name: string
 
+    @OneToMany(()=>Person,person=>person.doctType)
+    @JoinColumn()
     person: Person
 }

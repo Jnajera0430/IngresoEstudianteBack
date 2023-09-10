@@ -28,6 +28,7 @@ export class User {
 
   @Column({type: "boolean",default:true,})
   state: boolean;
+  
   @ManyToMany(() => Role, (rol) => rol.users, {
     nullable: true,
   })
