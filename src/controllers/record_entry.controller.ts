@@ -21,16 +21,16 @@ export class RecordEntryController {
             if (!recordFound) {
                 return customResponse({
                     status: HttpStatus.ACCEPTED,
-                    message: 'This person has been inside',
+                    message: 'The entry has been registered',
                     data: await this.recordEntryService.checkInEntryOfPerson(recordEntry)
                 });
             }
-            console.log({ recordFound });
+            
             let data = new FindRecordEntryOfPersonDto(recordFound);
             data = Object.assign(recordFound,data);
             return customResponse({
                 status: HttpStatus.ACCEPTED,
-                message: 'Your process has been successfull',
+                message: 'Their process has been successful',
                 data: await this.recordEntryService.recordCheckOutOfPerson(data)
             });
         } catch (error) {
