@@ -65,12 +65,17 @@ export class PersonService implements OnModuleInit {
         pageOptionsDto?:PageOptionsDto
     ): Promise<PageDto<Person>> {
         const queryBuilder = this.personRepository.createQueryBuilder('person');
-
-        queryBuilder.
-            orderBy('person.createdAt')
+        queryBuilder
+            .leftJoinAndSelect('person.groups', 'groups')
+            .leftJoinAndSelect('person.personTypes', 'personTypes')
+            .leftJoinAndSelect('person.device', 'device')
+            .leftJoinAndSelect('person.vehicles', 'vehicles')
+            .leftJoinAndSelect('person.recorEntry', 'recorEntry')
+            .leftJoinAndSelect('person.doctType', 'doctType')
+            .orderBy('person.createdAt')
             .skip(pageOptionsDto.skip)
             .take(pageOptionsDto.take)
-
+            
         const itemCount = await queryBuilder.getCount();
         const { entities } = await queryBuilder.getRawAndEntities();
         const pageMeta = new PageMetaDto({itemCount, pageOptionsDto});
