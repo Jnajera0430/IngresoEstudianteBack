@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {Transaction, getManager} from "typeorm";
-import { CreatePerson, UpdatePerson } from 'src/dto/person/person.dto';
+import { CreatePerson, PersonDto, UpdatePerson } from 'src/dto/person/person.dto';
 import { CreatePersonDocTypeDto } from 'src/dto/person/personDocType';
 import { CreatePersonTypeDto, PersonTypeEnum } from 'src/dto/person/personType.dto';
 import { DoctType } from 'src/entitys/doctType.entity';
@@ -9,6 +9,9 @@ import { Person } from 'src/entitys/person.entity';
 import { PersonType } from 'src/entitys/person_type.entity';
 import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
 import { Repository } from 'typeorm';
+import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
+import { PageMetaDto } from 'src/dto/page/pageMeta.dto';
+import { PageDto } from 'src/dto/page/page.dto';
 
 @Injectable()
 export class PersonService implements OnModuleInit {
@@ -58,13 +61,28 @@ export class PersonService implements OnModuleInit {
      * Finds all Persons and returns the list of Persons if the status is true.
      * @returns Promise
      */
-    async getPeople(): Promise<Person[]> {
-        return await this.personRepository.find({
-            where: {
-                state: true
-            },
-            //relations: ["groups", "personTypes", "device", "vehicles", "recorEntry", 'doctType']
-        });
+    async getPeople(
+        pageOptionsDto?:PageOptionsDto
+    ): Promise<PageDto<Person>> {
+        const queryBuilder = this.personRepository.createQueryBuilder('person');
+
+        queryBuilder.
+            orderBy('person.createdAt')
+            .skip(pageOptionsDto.skip)
+            .take(pageOptionsDto.take)
+
+        const itemCount = await queryBuilder.getCount();
+        const { entities } = await queryBuilder.getRawAndEntities();
+        const pageMeta = new PageMetaDto({itemCount, pageOptionsDto});
+        return new PageDto(entities,pageMeta);
+        // return await this.personRepository.find({
+        //     where: {
+        //         state: true
+        //     },
+        //     relations: ["groups", "personTypes", "device", "vehicles", "recorEntry", 'doctType'],
+        //     skip: (1 -1)  * 1,
+        //     take: 1
+        // });
     }
     /**
      * Receives a parameter id of type number

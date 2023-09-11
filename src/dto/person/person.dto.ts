@@ -6,32 +6,43 @@ import { Group } from "src/entitys/group.entity";
 import { PersonType } from "src/entitys/person_type.entity";
 import { Record_entry } from "src/entitys/record_entry_and_out.entity";
 import { Vehicle } from "src/entitys/vehicle.entity";
-import { PartialType } from "@nestjs/swagger";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { PersonDocumentTypeDto } from "./personDocType";
 import { PersonTypeDto } from "./personType.dto";
 import { Person } from "src/entitys/person.entity";
 
 export class PersonDto {
+    @ApiProperty()
     id?: number;
-   
+
+    @ApiProperty()
     firtsName: string;
 
+    @ApiProperty()
     lastName: string;
 
+    @ApiProperty()
     document: number;
 
+    @ApiProperty()
     state: boolean;
 
+    @ApiProperty()
     groups?: Group[];
 
+    @ApiProperty()
     docType: PersonDocumentTypeDto;
 
+    @ApiProperty()
     personTypes: PersonTypeDto;
 
+    @ApiProperty()
     device?: Device[];
 
+    @ApiProperty()
     vehicles?: Vehicle[];
     
+    @ApiProperty()
     recordEntry?: Record_entry[];
 }
 

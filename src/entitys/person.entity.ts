@@ -5,9 +5,10 @@ import { Vehicle } from "src/entitys/vehicle.entity";
 import { DoctType } from "src/entitys/doctType.entity";
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, OneToOne, JoinTable, ManyToOne, JoinColumn } from "typeorm";
 import { Record_entry } from "./record_entry_and_out.entity";
+import { AbstractEntity } from "./abstractEntity.entity";
 
 @Entity({ name: 'person' })
-export class Person {
+export class Person extends AbstractEntity{
     @PrimaryGeneratedColumn('increment')
     id: number
 

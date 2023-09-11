@@ -1,10 +1,12 @@
-import { Body, Controller, Get, HttpStatus, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { abstractBodyExample } from 'src/document/body.document';
+import { ApiPaginatedResponse } from 'src/document/paginatedResponse.document';
 import { abstractResponseOk } from 'src/document/responses.200';
 import { abstracResponseErrorExample } from 'src/document/responses.400';
 import { responseErrorServer } from 'src/document/responses.500';
-import { CreatePerson, UpdatePerson } from 'src/dto/person/person.dto';
+import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
+import { CreatePerson, PersonDto, UpdatePerson } from 'src/dto/person/person.dto';
 import { ICustomResponse, customResponse } from 'src/services/customResponse.service';
 import { PersonService } from 'src/services/person.service';
 
@@ -20,41 +22,46 @@ export class PersonController {
         summary: "people list",
         description: 'Endpoint to list all people',
     })
-    @ApiResponse(abstractResponseOk({
-        status: 200,
-        message: 'List people',
-        description: 'Example response of list of people',
-        data: [
-            {
-                id: 1212,
-                firtsName: 'Lazlo Gabriel',
-                lastName: 'Caputo Arias',
-                docType: {
-                    id: 1,
-                    type: 'CC'
-                },
-                document: 1002148455,
-                state: true,
-                personTypes: {
-                    id: 1,
-                    name: 'Aprendiz'
-                },
-                groups: [],
-                device: [],
-                vehicles: [],
-                recordEntry: []
-            }
-        ]
-    }))
+    // @ApiResponse(abstractResponseOk({
+    //     status: 200,
+    //     message: 'List people',
+    //     description: 'Example response of list of people',
+    //     data: [
+    //         {
+    //             id: 1212,
+    //             firtsName: 'Lazlo Gabriel',
+    //             lastName: 'Caputo Arias',
+    //             docType: {
+    //                 id: 1,
+    //                 type: 'CC'
+    //             },
+    //             document: 1002148455,
+    //             state: true,
+    //             personTypes: {
+    //                 id: 1,
+    //                 name: 'Aprendiz'
+    //             },
+    //             groups: [],
+    //             device: [],
+    //             vehicles: [],
+    //             recordEntry: []
+    //         }
+    //     ]
+    // }))
+    @ApiPaginatedResponse(PersonDto)
     @ApiBadRequestResponse(abstracResponseErrorExample({
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async getListPerson(): Promise<ICustomResponse> {
+    async getListPeople(
+        @Query() pageOptionsDto:PageOptionsDto
+    ): Promise<ICustomResponse> {
+        const {data,meta} = await this.personService.getPeople(pageOptionsDto)
         return customResponse({
             status: HttpStatus.OK,
             message: 'List of people registred',
-            data: await this.personService.getPeople()
+            data,
+            meta
         });
     }
 
