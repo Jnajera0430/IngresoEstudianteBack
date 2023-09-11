@@ -2,7 +2,7 @@ import { PartialType } from "@nestjs/swagger"
 import { IsBoolean, IsNotEmpty, IsNumber, IsString } from "class-validator"
 import { PersonType } from "src/entitys/person_type.entity"
 
-export class PersonTypeDto extends PartialType(PersonType){
+export class PersonTypeDto {
     id?: number
     name?: string
     state?: boolean

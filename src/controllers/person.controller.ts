@@ -7,7 +7,8 @@ import { abstracResponseErrorExample } from 'src/document/responses.400';
 import { responseErrorServer } from 'src/document/responses.500';
 import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
 import { CreatePerson, PersonDto, UpdatePerson } from 'src/dto/person/person.dto';
-import { ICustomResponse, customResponse } from 'src/services/customResponse.service';
+import { ICustomResponse } from 'src/intefaces/customResponse.interface';
+import { customResponse } from 'src/services/customResponse.service';
 import { PersonService } from 'src/services/person.service';
 
 @Controller('person')

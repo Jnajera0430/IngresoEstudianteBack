@@ -1,13 +1,5 @@
-/**
- * Interface
- * 
- */
-export interface ICustomResponse {
-    status?: number,
-    message?: string,
-    data?: any | Promise<any>,
-    meta?: any | Promise<any>
-}
+import { ICustomResponse } from "src/intefaces/customResponse.interface";
+
 /**
  * 
  * @param param Object of type ICustomResponse

@@ -3,7 +3,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { debug } from 'console';
 import { FindPersonDocumentDto, FindPersonDto, PersonDto } from 'src/dto/person/person.dto';
 import { FindRecordEntryOfPersonDto } from 'src/dto/recordsEntry/recordEntry.dto';
-import { ICustomResponse, customResponse } from 'src/services/customResponse.service';
+import { ICustomResponse } from 'src/intefaces/customResponse.interface';
+import { customResponse } from 'src/services/customResponse.service';
 import { RecordEntryService } from 'src/services/record_entry_and_out.service';
 
 @Controller('records')

@@ -6,8 +6,9 @@ import { abstractResponseOk } from 'src/document/responses.200';
 import { abstracResponseErrorExample } from 'src/document/responses.400';
 import { responseErrorServer } from 'src/document/responses.500';
 import { abstractBodyExample } from 'src/document/body.document';
-import { ICustomResponse, customResponse } from 'src/services/customResponse.service';
+import { customResponse } from 'src/services/customResponse.service';
 import { debug } from 'console';
+import { ICustomResponse } from 'src/intefaces/customResponse.interface';
 
 @Controller('career')
 @ApiTags('Api-Career')

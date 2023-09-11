@@ -6,7 +6,8 @@ import { abstractResponseOk } from 'src/document/responses.200';
 import { abstracResponseErrorExample } from 'src/document/responses.400';
 import { responseErrorServer } from 'src/document/responses.500';
 import { CreateGroup, UpdateGroupDto } from 'src/dto/group/group.dto';
-import { ICustomResponse, customResponse } from 'src/services/customResponse.service';
+import { ICustomResponse } from 'src/intefaces/customResponse.interface';
+import { customResponse } from 'src/services/customResponse.service';
 import { GroupService } from 'src/services/group.service';
 
 @Controller('group')

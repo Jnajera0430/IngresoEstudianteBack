@@ -40,8 +40,9 @@ import {
   FileInterceptor,
 } from '@nestjs/platform-express';
 import { Request, Express } from 'express';
-import { ICustomResponse, customResponse } from 'src/services/customResponse.service';
+import { customResponse } from 'src/services/customResponse.service';
 import { debug } from 'console';
+import { ICustomResponse } from 'src/intefaces/customResponse.interface';
 @Controller('user')
 @ApiTags('api-User')
 export class UserController {

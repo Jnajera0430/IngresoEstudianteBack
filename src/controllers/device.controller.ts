@@ -3,7 +3,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { debug } from 'console';
 import { UpdateDeviceDto } from 'src/dto/device/device.dto';
 import { FindPersonDto, PersonDto } from 'src/dto/person/person.dto';
-import { ICustomResponse, customResponse } from 'src/services/customResponse.service';
+import { ICustomResponse } from 'src/intefaces/customResponse.interface';
+import { customResponse } from 'src/services/customResponse.service';
 import { DeviceService } from 'src/services/device.service';
 
 @Controller('device')

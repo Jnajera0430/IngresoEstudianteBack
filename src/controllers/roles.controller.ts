@@ -7,7 +7,8 @@ import { responseErrorExampleCreateUser400 } from 'src/document/responses.400';
 import { responseErrorServer } from 'src/document/responses.500';
 import { bodyExampleRoleDto } from 'src/document/body.document';
 import { debug } from 'console';
-import { ICustomResponse, customResponse } from 'src/services/customResponse.service';
+import { customResponse } from 'src/services/customResponse.service';
+import { ICustomResponse } from 'src/intefaces/customResponse.interface';
 @Controller('roles')
 @ApiTags('Api-Roles')
 export class RolesController {
