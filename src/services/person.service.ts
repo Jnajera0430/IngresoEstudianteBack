@@ -72,7 +72,7 @@ export class PersonService implements OnModuleInit {
             .leftJoinAndSelect('person.vehicles', 'vehicles')
             .leftJoinAndSelect('person.recorEntry', 'recorEntry')
             .leftJoinAndSelect('person.doctType', 'doctType')
-            .orderBy('person.createdAt')
+            .orderBy('person.createdAt', pageOptionsDto.order)
             .skip(pageOptionsDto.skip)
             .take(pageOptionsDto.take)
             
