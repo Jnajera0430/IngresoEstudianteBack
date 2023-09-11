@@ -8,7 +8,8 @@ export class PersonType{
 
     @Column()
     name:string
-    @OneToMany(()=>Person, person=>person.personTypes)
+    
+    @OneToMany(()=>Person,person=>person.personTypes)
     @JoinColumn()
     person: Person[]
 

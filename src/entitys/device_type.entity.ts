@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Device } from "./device.entity";
 
 @Entity({name:'device_type'})
@@ -8,7 +8,9 @@ export class DeviceType{
 
     @Column()
     brand: string
-
+    
+    @OneToMany(()=>Device,device=>device.deviceType)
+    @JoinColumn()
     device: Device
 
 }

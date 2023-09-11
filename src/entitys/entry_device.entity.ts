@@ -16,9 +16,7 @@ export class EntryDevice{
     @OneToOne(()=>Record_entry,(recordEntry)=>recordEntry.deviceEntry,{
         nullable: true,
     })
-    @JoinColumn({
-        name: 'recordEntry'
-    })
+    @JoinColumn()
     recordEntry: Record_entry
 
     @ManyToOne(()=>Device,device=>device,{

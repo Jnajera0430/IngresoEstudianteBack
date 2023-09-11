@@ -9,5 +9,7 @@ export class EntryType{
     @Column()
     type: string
     
+    @OneToOne(()=>Record_entry,recordEntry=>recordEntry.entryType)
+    @JoinColumn()
     recordEntry: Record_entry
 }

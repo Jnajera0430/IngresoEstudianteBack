@@ -59,6 +59,7 @@ export class Person {
         eager: true,
         nullable: true
     })
+    @JoinColumn()
     vehicles: Vehicle[]
 
     @OneToMany(() => Record_entry, recordEntry => recordEntry.person, {
