@@ -5,6 +5,7 @@ import { PrimaryGeneratedColumn, Column, Entity, ManyToOne, ManyToMany, JoinTabl
 @Entity({ name: 'groups' })
 
 export class Group {
+
     @PrimaryGeneratedColumn('increment')
     id: number
     @Column({ unique: true })
@@ -25,10 +26,9 @@ export class Group {
     })
     career: Career
 
-    @ManyToMany(() => Person, {
+    @ManyToMany(() => Person, person => person.groups, {
         nullable: true
     })
-    @JoinTable()
-    people: Person[]
+    students: Person[]
 
 }

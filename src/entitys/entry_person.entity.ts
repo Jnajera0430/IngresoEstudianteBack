@@ -12,7 +12,5 @@ export class EntryPerson{
     @Column()
     out: boolean
 
-    @OneToOne(()=>Record_entry)
-    @JoinColumn({name: 'person_record'})
     recordEntry: Record_entry
 }

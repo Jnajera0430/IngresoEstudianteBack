@@ -7,7 +7,7 @@ import {
 } from 'src/constants/queues';
 import { FilesConsumer } from './consumers/files.consumer';
 import { DataOfFileExcel } from 'src/dto/person/personFile.dto';
-import { Subject } from 'rxjs';
+//import { Subject } from 'rxjs';
 
 @Injectable()
 export class QueuesService {

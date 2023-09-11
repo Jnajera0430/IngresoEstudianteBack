@@ -37,7 +37,7 @@ export class Record_entry{
         nullable:true
     })
     @JoinColumn({name: 'personEntry'})
-    personInside: EntryPerson
+    personEntry: EntryPerson
 
     @OneToOne(()=>EntryType,entryType=>entryType.recordEntry,{
         cascade:true,

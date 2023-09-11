@@ -23,7 +23,7 @@ export class Person {
     @Column({ type: "boolean", default: true })
     state: boolean
 
-    @ManyToMany(() => Group, group => group.people, {
+    @ManyToMany(() => Group, group => group.students, {
         cascade: true,
         eager: true,
         nullable: true
@@ -66,5 +66,6 @@ export class Person {
         eager: true,
         nullable: true
     })
+    @JoinColumn()
     recorEntry: Record_entry[]
 }
