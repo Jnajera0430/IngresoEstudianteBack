@@ -19,7 +19,8 @@ export class RecordEntryController {
         try {
 
             const recordFound = await this.recordEntryService.findInRecordEntryByPersonInside(recordEntry.person);
-            if (!recordFound) {
+            if (!recordFound || !recordFound.checkOut) {
+                console.log('llegó');          
                 return customResponse({
                     status: HttpStatus.ACCEPTED,
                     message: 'The entry has been registered',

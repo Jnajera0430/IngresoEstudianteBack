@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Record_entry } from "./record_entry_and_out.entity";
 
 
@@ -9,7 +9,7 @@ export class EntryType{
     @Column()
     type: string
     
-    @OneToOne(()=>Record_entry,recordEntry=>recordEntry.entryType)
+    @ManyToOne(()=>Record_entry,recordEntry=>recordEntry.entryType)
     @JoinColumn()
     recordEntry: Record_entry
 }
