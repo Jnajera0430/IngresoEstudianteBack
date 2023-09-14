@@ -68,6 +68,5 @@ export class Person extends AbstractEntity{
         eager: true,
         nullable: true
     })
-    @JoinColumn()
     recorEntry: Record_entry[]
 }
