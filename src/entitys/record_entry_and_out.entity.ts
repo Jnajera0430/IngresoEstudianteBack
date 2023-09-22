@@ -1,50 +1,55 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { Person } from "src/entitys/person.entity";
 import { EntryType } from "src/entitys/entry_type.entity";
 import { EntryVehicle } from "./entry_vehicle.entity";
 import { EntryDevice } from "./entry_device.entity";
 import { EntryPerson } from "./entry_person.entity";
-@Entity({name: 'record_entry'})
-export class Record_entry{
-    
+import { AbstractEntity } from "./abstractEntity.entity";
+@Entity({ name: 'record_entry' })
+export class Record_entry extends AbstractEntity {
+
     @PrimaryGeneratedColumn('increment')
     id: number
 
-    @Column({type: 'timestamp'})
+    @Column({ type: 'timestamp' })
     checkIn: Date
 
-    @Column({type: 'timestamp',nullable:true})
+    @Column({ type: 'timestamp', nullable: true })
     checkOut: Date
 
-    @ManyToOne(()=>Person, person=>person.recorEntry)
-    @JoinColumn({name: 'person'})
+    @ManyToOne(() => Person, person => person.recorEntry, {
+        nullable: true,
+        lazy: true,
+        eager: false,
+        onUpdate: "CASCADE"
+    })
+    @JoinColumn()
     person: Person
 
-    @OneToOne(()=>EntryVehicle,(entryVehicle)=>entryVehicle.recordEntry)
-    @JoinColumn({name: 'vehicleEntry'})
-    vehicleEntry:EntryVehicle
+    @OneToOne(() => EntryVehicle, (entryVehicle) => entryVehicle.recordEntry, { nullable: true })
+    @JoinColumn({ name: 'vehicleEntry' })
+    vehicleEntry: EntryVehicle
 
-    @OneToOne(()=>EntryDevice,deviceEntry=>deviceEntry.recordEntry,{
-        cascade:true,
-        eager:true,
-        nullable:true
+    @OneToOne(() => EntryDevice, deviceEntry => deviceEntry.recordEntry, {
+        cascade: true,
+        eager: true,
+        nullable: true
     })
-    @JoinColumn({name: 'deviceEntry'})
+    @JoinColumn({ name: 'deviceEntry' })
     deviceEntry: EntryDevice
-
-    @OneToOne(()=>EntryPerson,personEntry=>personEntry.recordEntry,{
-        cascade:true,
-        eager:true,
-        nullable:true
+    
+    @OneToMany(() => EntryType, entryType => entryType.recordEntry, {
+        cascade: true,
+        eager: true,
+        nullable: true
     })
-    @JoinColumn({name: 'personEntry'})
-    personEntry: EntryPerson
-
-    @OneToMany(()=>EntryType,entryType=>entryType.recordEntry,{
-        cascade:true,
-        eager:true,
-        nullable:true
-    })
-    @JoinColumn({name:'entryType'})
+    @JoinColumn({ name: 'entryType' })
     entryType: EntryType
+    // @OneToOne(()=>EntryPerson,personEntry=>personEntry.recordEntry,{
+    //     cascade:true,
+    //     eager:true,
+    //     nullable:true
+    // })
+    // @JoinColumn({name: 'personEntry'})
+    // personEntry: EntryPerson
 }

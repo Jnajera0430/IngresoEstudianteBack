@@ -10,8 +10,8 @@ export class EntryTypeDto {
     @IsString()
     type: string;
     @ValidateNested()
-    @Type(() => RecordEntryDto)
-    recordEntry: RecordEntryDto;
+    @Type(() => Array<RecordEntryDto>)
+    recordEntry: RecordEntryDto[];
 }
 
 export class CreateEntryTypeDto extends PartialType(EntryTypeDto) {

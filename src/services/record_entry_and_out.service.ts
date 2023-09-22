@@ -22,6 +22,7 @@ export class RecordEntryService {
      */
     async checkInEntryOfPerson(recordEntry: RecordsEntryOfPersonDto): Promise<Record_entry> {
         const personFound = await this.personService.getPersonByDocument(recordEntry.person.document);
+        console.log(personFound);
         if (!personFound) 
             throw new ValueNotFoundException('This person is not in our records.');
         
@@ -110,6 +111,10 @@ export class RecordEntryService {
      * @returns 
      */
     async findAllRecord():Promise<Record_entry[]> {
+        const alias = "record"
+        const queryBuilder = this.recordEntryRepository.createQueryBuilder(alias);
+        queryBuilder
+            .leftJoinAndSelect(alias+".pe","")
         return await this.recordEntryRepository.find({
             relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
         });

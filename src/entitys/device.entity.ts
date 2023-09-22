@@ -19,7 +19,7 @@ export class Device {
 
     @ManyToOne(()=>DeviceType,(type)=>type.device,{
         cascade:true,
-        eager: true,
+        eager: false,
         nullable:true
     })
     @JoinColumn({name:'deviceType'})

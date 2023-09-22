@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {Transaction, getManager} from "typeorm";
+import { Transaction, getManager } from "typeorm";
 import { CreatePerson, PersonDto, UpdatePerson } from 'src/dto/person/person.dto';
 import { CreatePersonDocTypeDto } from 'src/dto/person/personDocType';
 import { CreatePersonTypeDto, PersonTypeEnum } from 'src/dto/person/personType.dto';
@@ -38,13 +38,13 @@ export class PersonService implements OnModuleInit {
      * Returns new Person
      * @returns Promise<Person>
      */
-    
+
     async createPersonAprendiz(person: CreatePerson): Promise<Person> {
         const newAprendiz = this.personRepository.create(person);
-        const [docType, personType] = await Promise.all([
-            this.docTypeRepository.findOne({ where: { name: person.docType.name } }),
-            this.personTypeRepository.findOne({ where: { name: PersonTypeEnum.APRENDIZ } }),
-        ]);
+        console.log({person});
+        
+        const docType = await this.docTypeRepository.findOne({ where: { name: person.docType.name } });
+        const personType = await this.personTypeRepository.findOne({ where: { name: PersonTypeEnum.APRENDIZ } })
         if (!docType) {
             throw new ValueNotFoundException(`Document type not found: ${person.docType.name}`);
         }
@@ -54,7 +54,7 @@ export class PersonService implements OnModuleInit {
         }
         newAprendiz.doctType = docType;
         newAprendiz.personTypes = personType;
-        
+
         return await this.personRepository.save(newAprendiz);
     }
     /**
@@ -62,7 +62,7 @@ export class PersonService implements OnModuleInit {
      * @returns Promise
      */
     async getPeople(
-        pageOptionsDto?:PageOptionsDto
+        pageOptionsDto?: PageOptionsDto
     ): Promise<PageDto<Person>> {
         const queryBuilder = this.personRepository.createQueryBuilder('person');
         queryBuilder
@@ -75,11 +75,11 @@ export class PersonService implements OnModuleInit {
             .orderBy('person.createdAt', pageOptionsDto.order)
             .skip(pageOptionsDto.skip)
             .take(pageOptionsDto.take)
-            
+
         const itemCount = await queryBuilder.getCount();
         const { entities } = await queryBuilder.getRawAndEntities();
-        const pageMeta = new PageMetaDto({itemCount, pageOptionsDto});
-        return new PageDto(entities,pageMeta);
+        const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
+        return new PageDto(entities, pageMeta);
         // return await this.personRepository.find({
         //     where: {
         //         state: true
@@ -112,11 +112,11 @@ export class PersonService implements OnModuleInit {
      * @returns Promise<Person>
      */
     async getPersonByDocument(document: number): Promise<Person> | null {
-        //console.log({document});
+        console.log("personService", { document });
         return await this.personRepository.findOne({
             where: {
                 document
-            }
+            }, relations: ["groups", "personTypes", "device", "vehicles", "recorEntry", 'doctType']
         });
     }
 

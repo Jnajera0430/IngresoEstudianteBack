@@ -23,7 +23,7 @@ export class Vehicle {
 
     @ManyToOne(() => VehicleType, tipo => tipo.vehicle, {
         cascade: true,
-        eager: true,
+        eager: false,
         nullable: true
     })
     @JoinColumn({ name: 'vehicleType'})

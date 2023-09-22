@@ -19,7 +19,7 @@ export class Group {
 
     @ManyToOne(() => Career,{
         cascade: true,
-        eager: true,
+        eager: false,
         nullable: true,
         onDelete: "CASCADE",
         onUpdate: "CASCADE"

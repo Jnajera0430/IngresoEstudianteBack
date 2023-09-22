@@ -16,33 +16,28 @@ export class RecordEntryController {
 
     @Post()
     async postRecordPerson(@Body() recordEntry: FindRecordEntryOfPersonDto): Promise<ICustomResponse> {
-        try {
 
-            const recordFound = await this.recordEntryService.findInRecordEntryByPersonInside(recordEntry.person);
-            if (!recordFound || !recordFound.checkOut) {
-                console.log('llegó');          
-                return customResponse({
-                    status: HttpStatus.ACCEPTED,
-                    message: 'The entry has been registered',
-                    data: await this.recordEntryService.checkInEntryOfPerson(recordEntry)
-                });
-            }
-            
-            let data = new FindRecordEntryOfPersonDto(recordFound);
-            data = Object.assign(recordFound,data);
+        const recordFound = await this.recordEntryService.findInRecordEntryByPersonInside(recordEntry.person);
+        if (!recordFound || !recordFound.checkOut) {
+            console.log('llegó');
             return customResponse({
                 status: HttpStatus.ACCEPTED,
-                message: 'Their process has been successful',
-                data: await this.recordEntryService.recordCheckOutOfPerson(data)
+                message: 'The entry has been registered',
+                data: await this.recordEntryService.checkInEntryOfPerson(recordEntry)
             });
-        } catch (error) {
-            debug(error);
-            return error;
         }
+
+        let data = new FindRecordEntryOfPersonDto(recordFound);
+        data = Object.assign(recordFound, data);
+        return customResponse({
+            status: HttpStatus.ACCEPTED,
+            message: 'Their process has been successful',
+            data: await this.recordEntryService.recordCheckOutOfPerson(data)
+        });
     }
 
     @Get()
-    async getAllRecords():Promise<ICustomResponse> {
+    async getAllRecords(): Promise<ICustomResponse> {
         try {
             return customResponse({
                 status: HttpStatus.OK,
@@ -70,7 +65,7 @@ export class RecordEntryController {
     }
 
     @Get('person')
-    async getAllRecordByperson(@Body() person: FindPersonDocumentDto):Promise<ICustomResponse> {
+    async getAllRecordByperson(@Body() person: FindPersonDocumentDto): Promise<ICustomResponse> {
         try {
             return customResponse({
                 status: HttpStatus.OK,
@@ -84,7 +79,7 @@ export class RecordEntryController {
     }
 
     @Get('person/in')
-    async getRecordOfPersonInside(@Body() person: FindPersonDocumentDto):Promise<ICustomResponse> {
+    async getRecordOfPersonInside(@Body() person: FindPersonDocumentDto): Promise<ICustomResponse> {
         try {
             return customResponse({
                 status: HttpStatus.OK,

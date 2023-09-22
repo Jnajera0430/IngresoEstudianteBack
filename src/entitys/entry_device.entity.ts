@@ -13,15 +13,14 @@ export class EntryDevice{
     @Column()
     out: boolean
 
-    @OneToOne(()=>Record_entry,(recordEntry)=>recordEntry.deviceEntry,{
+    @ManyToOne(()=>Record_entry,(recordEntry)=>recordEntry.deviceEntry,{
         nullable: true,
     })
-    @JoinColumn()
-    recordEntry: Record_entry
+    recordEntry: Record_entry[]
 
     @ManyToOne(()=>Device,device=>device,{
         cascade: true,
-        eager: true,
+        eager: false,
         nullable: true
     })
     @JoinColumn({name: 'device'})
