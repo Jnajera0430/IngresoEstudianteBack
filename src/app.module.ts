@@ -43,6 +43,8 @@ import { CareerController } from './controllers/career.controller';
 import { ValidUser } from './middlewares/jwt/validUser.middleware';
 import { SocketModule } from './ws/socket.module';
 import { SSEController } from './controllers/server_side_events';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { PermisionsInterceptor } from './decorators/UserAllowed.decorator';
 
 @Module({
   imports: [
@@ -84,7 +86,13 @@ import { SSEController } from './controllers/server_side_events';
     SocketModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: PermisionsInterceptor
+    }
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
@@ -95,7 +103,7 @@ export class AppModule implements NestModule {
         VehicleTypeController,
         UserController,
         RolesController,
-        //RecordEntryController,
+        RecordEntryController,
         PersonController,
         PersonTypeController,
         GroupController,

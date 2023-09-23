@@ -1,6 +1,8 @@
 import { Body, Controller, Get, Post, Param, HttpStatus } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { debug } from 'console';
+import { RoleEnumByType } from 'src/constants/roles.enum';
+import { UserAllowed } from 'src/decorators/UserAllowed.decorator';
 import { FindPersonDocumentDto, FindPersonDto, PersonDto } from 'src/dto/person/person.dto';
 import { FindRecordEntryOfPersonDto } from 'src/dto/recordsEntry/recordEntry.dto';
 import { ICustomResponse } from 'src/intefaces/customResponse.interface';
@@ -9,12 +11,15 @@ import { RecordEntryService } from 'src/services/record_entry_and_out.service';
 
 @Controller('records')
 @ApiTags('Api-records')
+//@UserAllowed() //De esta manera la anotacion permite a cualquier usuario y actua igual sobre todos los metodos.
 export class RecordEntryController {
     constructor(
         private readonly recordEntryService: RecordEntryService
     ) { }
 
     @Post()
+    //@UserAllowed(RoleEnumByType.PUESTO_DE_SERVICIO)
+    @UserAllowed()
     async postRecordPerson(@Body() recordEntry: FindRecordEntryOfPersonDto): Promise<ICustomResponse> {
 
         const recordFound = await this.recordEntryService.findInRecordEntryByPersonInside(recordEntry.person);

@@ -4,14 +4,23 @@ import { Request } from 'express';
 import { Observable } from 'rx';
 import { InvalidTokenException, ValueNotFoundException } from 'src/exceptions/customExcepcion';
 export const keyDecorate: string = 'permissions';
+/**
+ * 
+ * @param permissions - Spread ...string
+ * @returns @Decorators
+ */
 export const UserAllowed = (...permissions: string[]) => SetMetadata(keyDecorate, permissions);
 
 export class PermisionsInterceptor implements NestInterceptor {
-    constructor(private readonly reflector: Reflector) { }
+    constructor(
+        private readonly reflector: Reflector = new Reflector()
+    ) { }
 
     intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> {
         const permissionsUser = this.reflector.get<string[]>(keyDecorate, context.getHandler());
-        if (!permissionsUser) {
+        console.log({ permissionsUser });
+
+        if (!permissionsUser || permissionsUser.length === 0) {
             return next.handle();
         }
 

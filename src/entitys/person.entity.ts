@@ -67,7 +67,7 @@ export class Person extends AbstractEntity {
     @JoinColumn({ name: 'vehicles' })
     vehicles: Vehicle[]
 
-    @OneToMany(() => Record_entry, recordEntry => recordEntry.person, { lazy: true, eager: false })
+    @OneToMany(() => Record_entry, recordEntry => recordEntry.person)
     @JoinColumn({name:'recorEntry'})
     recorEntry: Record_entry[]
 }

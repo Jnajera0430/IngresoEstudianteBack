@@ -22,5 +22,5 @@ export class EntryVehicle {
     vehicle: Vehicle
 
     @ManyToOne(()=>Record_entry,recordEntry=>recordEntry.vehicleEntry)
-    recordEntry: Record_entry[]
+    recordEntry: Record_entry
 }

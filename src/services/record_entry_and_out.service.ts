@@ -22,7 +22,6 @@ export class RecordEntryService {
      */
     async checkInEntryOfPerson(recordEntry: RecordsEntryOfPersonDto): Promise<Record_entry> {
         const personFound = await this.personService.getPersonByDocument(recordEntry.person.document);
-        console.log(personFound);
         if (!personFound) 
             throw new ValueNotFoundException('This person is not in our records.');
         
@@ -36,6 +35,8 @@ export class RecordEntryService {
         newRecordEntry.entryType = entryTypeFound;
         newRecordEntry.checkIn = new Date();
         newRecordEntry.checkOut = null;
+        console.log({newRecordEntry});
+        
         return await this.recordEntryRepository.save(newRecordEntry);
     }
 

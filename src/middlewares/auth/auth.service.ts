@@ -7,7 +7,8 @@ import { UserService } from 'src/services/user.service';
 import { RolesService } from 'src/services/roles.service';
 import { ConfigServiceEnv } from 'src/config/config.service';
 import { AuthLogin, TokenDto } from 'src/dto/user/user.dto';
-import { RoleEnumByTypeRole, roleEnum } from 'src/dto/roles/rol.dto';
+import { roleEnum } from 'src/dto/roles/rol.dto';
+import { RoleEnumByTypeRole } from "src/constants/roles.enum";
 
 @Injectable()
 export class AuthService {

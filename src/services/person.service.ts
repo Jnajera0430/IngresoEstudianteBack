@@ -112,11 +112,10 @@ export class PersonService implements OnModuleInit {
      * @returns Promise<Person>
      */
     async getPersonByDocument(document: number): Promise<Person> | null {
-        console.log("personService", { document });
         return await this.personRepository.findOne({
             where: {
                 document
-            }, relations: ["groups", "personTypes", "device", "vehicles", "recorEntry", 'doctType']
+            }, relations: [ "personTypes", 'doctType']
         });
     }
 

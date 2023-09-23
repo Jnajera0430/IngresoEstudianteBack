@@ -16,7 +16,7 @@ export class EntryDevice{
     @ManyToOne(()=>Record_entry,(recordEntry)=>recordEntry.deviceEntry,{
         nullable: true,
     })
-    recordEntry: Record_entry[]
+    recordEntry: Record_entry
 
     @ManyToOne(()=>Device,device=>device,{
         cascade: true,

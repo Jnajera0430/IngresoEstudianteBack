@@ -9,13 +9,13 @@ import { AbstractEntity } from "./abstractEntity.entity";
 export class Record_entry extends AbstractEntity {
 
     @PrimaryGeneratedColumn('increment')
-    id: number
+    id: number;
 
     @Column({ type: 'timestamp' })
-    checkIn: Date
+    checkIn: Date;
 
     @Column({ type: 'timestamp', nullable: true })
-    checkOut: Date
+    checkOut: Date;
 
     @ManyToOne(() => Person, person => person.recorEntry, {
         nullable: true,
@@ -23,33 +23,33 @@ export class Record_entry extends AbstractEntity {
         eager: false,
         onUpdate: "CASCADE"
     })
-    @JoinColumn()
-    person: Person
+    @JoinColumn({ name: 'person' })
+    person: Person;
 
-    @OneToOne(() => EntryVehicle, (entryVehicle) => entryVehicle.recordEntry, { nullable: true })
+    @OneToMany(() => EntryVehicle, (entryVehicle) => entryVehicle.recordEntry, { nullable: true })
     @JoinColumn({ name: 'vehicleEntry' })
-    vehicleEntry: EntryVehicle
+    vehicleEntry: EntryVehicle[];
 
-    @OneToOne(() => EntryDevice, deviceEntry => deviceEntry.recordEntry, {
+    @OneToMany(() => EntryDevice, deviceEntry => deviceEntry.recordEntry, {
         cascade: true,
         eager: true,
         nullable: true
     })
     @JoinColumn({ name: 'deviceEntry' })
-    deviceEntry: EntryDevice
-    
+    deviceEntry: EntryDevice[];
+
     @OneToMany(() => EntryType, entryType => entryType.recordEntry, {
         cascade: true,
         eager: true,
         nullable: true
     })
     @JoinColumn({ name: 'entryType' })
-    entryType: EntryType
-    // @OneToOne(()=>EntryPerson,personEntry=>personEntry.recordEntry,{
-    //     cascade:true,
-    //     eager:true,
-    //     nullable:true
-    // })
-    // @JoinColumn({name: 'personEntry'})
-    // personEntry: EntryPerson
+    entryType: EntryType;
+    @OneToMany(() => EntryPerson, personEntry => personEntry.recordEntry, {
+        cascade: true,
+        eager: true,
+        nullable: true
+    })
+    @JoinColumn({ name: 'personEntry' })
+    personEntry: EntryPerson[];
 }
