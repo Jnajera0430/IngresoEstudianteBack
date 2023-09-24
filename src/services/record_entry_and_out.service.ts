@@ -35,6 +35,8 @@ export class RecordEntryService {
         newRecordEntry.entryType = entryTypeFound;
         newRecordEntry.checkIn = new Date();
         newRecordEntry.checkOut = null;
+        console.log({newRecordEntry});
+        
         return await this.recordEntryRepository.save(newRecordEntry);
     }
 
@@ -110,6 +112,10 @@ export class RecordEntryService {
      * @returns 
      */
     async findAllRecord():Promise<Record_entry[]> {
+        const alias = "record"
+        const queryBuilder = this.recordEntryRepository.createQueryBuilder(alias);
+        queryBuilder
+            .leftJoinAndSelect(alias+".pe","")
         return await this.recordEntryRepository.find({
             relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
         });

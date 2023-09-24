@@ -15,13 +15,12 @@ export class EntryVehicle {
 
     @ManyToOne(() => Vehicle, vehicle => vehicle, {
         cascade: true,
-        eager: true,
+        eager: false,
         nullable: true
     })
     @JoinColumn({ name: 'vehicle' })
     vehicle: Vehicle
 
-    @OneToOne(()=>Record_entry,recordEntry=>recordEntry.vehicleEntry)
-    @JoinColumn()
+    @ManyToOne(()=>Record_entry,recordEntry=>recordEntry.vehicleEntry)
     recordEntry: Record_entry
 }

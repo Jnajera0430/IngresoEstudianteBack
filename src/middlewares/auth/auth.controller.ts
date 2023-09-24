@@ -22,7 +22,7 @@ import { Response } from 'express';
 import { bodyExampleAuthUser } from 'src/document/body.document';
 import { responseOkAuthUser } from 'src/document/responses.200';
 import { responseErrorExampleAuthUser } from 'src/document/responses.400';
-import { RoleEnumByTypeRole } from 'src/dto/roles/rol.dto';
+import { RoleEnumByTypeRole } from "src/constants/roles.enum";
 
 @Controller('auth')
 @ApiTags('Auth-user')

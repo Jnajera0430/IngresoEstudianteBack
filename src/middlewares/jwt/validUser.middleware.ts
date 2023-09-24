@@ -1,7 +1,8 @@
 import { Injectable, NestMiddleware } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { NextFunction, Request, Response } from "express";
-import { RoleDto, RoleEnumByType, RoleEnumByTypeRole, roleEnum } from "src/dto/roles/rol.dto";
+import { RoleDto, roleEnum } from "src/dto/roles/rol.dto";
+import { RoleEnumByType, RoleEnumByTypeRole } from "src/constants/roles.enum";
 import { Role } from "src/entitys/roles.entity";
 import { UserUnauthorizedException } from "src/exceptions/customExcepcion";
 

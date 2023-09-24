@@ -9,7 +9,7 @@ export class EntryType{
     @Column()
     type: string
     
-    @ManyToOne(()=>Record_entry,recordEntry=>recordEntry.entryType)
-    @JoinColumn()
-    recordEntry: Record_entry
+    @ManyToOne(()=>Record_entry,recordEntry=>recordEntry.entryType,{eager:false})
+    @JoinColumn({name:'recordEntry'})
+    recordEntry: Record_entry[]
 }

@@ -47,15 +47,17 @@ export class FilesConsumer {
       }
       job.progress(0);
       let progressCount = 0;
+      this.logger.debug('debug');
       for (let person of people) {
         await sleep(100);
         const progress = (progressCount++) / people.length;
         job.progress(progress * 100);
         const personFound = await this.personService.getPersonByDocument(person.document);
-        let newPerson = new CreatePerson(person);
+        let newPerson = new CreatePerson();
         newPerson = Object.assign(person,newPerson);
         if (!personFound) {
           newPerson.groups = groupFound;
+          console.log(newPerson);
           // newPerson.personTypes = personType;
           // console.log({newPerson});
           this.personService.createPersonAprendiz(newPerson);
