@@ -21,6 +21,6 @@ export class EntryVehicle {
     @JoinColumn({ name: 'vehicle' })
     vehicle: Vehicle
 
-    @ManyToOne(()=>Record_entry,recordEntry=>recordEntry.vehicleEntry)
-    recordEntry: Record_entry
+    // @ManyToOne(()=>Record_entry,recordEntry=>recordEntry.vehicleEntry)
+    // recordEntry: Record_entry
 }

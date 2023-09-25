@@ -5,6 +5,8 @@ import { EntryVehicle } from "./entry_vehicle.entity";
 import { EntryDevice } from "./entry_device.entity";
 import { EntryPerson } from "./entry_person.entity";
 import { AbstractEntity } from "./abstractEntity.entity";
+import { Device } from "./device.entity";
+import { Vehicle } from "./vehicle.entity";
 @Entity({ name: 'record_entry' })
 export class Record_entry extends AbstractEntity {
 
@@ -26,17 +28,21 @@ export class Record_entry extends AbstractEntity {
     @JoinColumn({ name: 'person' })
     person: Person;
 
-    @OneToMany(() => EntryVehicle, (entryVehicle) => entryVehicle.recordEntry, { nullable: true })
+    @ManyToOne(() => Vehicle, (entryVehicle) => entryVehicle.recordEntry,{
+        cascade: true,
+        eager: true,
+        nullable: true
+    })
     @JoinColumn({ name: 'vehicleEntry' })
-    vehicleEntry: EntryVehicle[];
+    vehicleEntry: Vehicle;
 
-    @OneToMany(() => EntryDevice, deviceEntry => deviceEntry.recordEntry, {
+    @ManyToOne(() => Device, deviceEntry => deviceEntry.recordEntry, {
         cascade: true,
         eager: true,
         nullable: true
     })
     @JoinColumn({ name: 'deviceEntry' })
-    deviceEntry: EntryDevice[];
+    deviceEntry: Device;
 
     @OneToMany(() => EntryType, entryType => entryType.recordEntry, {
         cascade: true,

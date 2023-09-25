@@ -6,6 +6,8 @@ import { IsDate, IsNotEmpty, IsNumber, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 import { PartialType } from "@nestjs/swagger";
 import { EntryPerson } from "src/entitys/entry_person.entity";
+import { Vehicle } from "src/entitys/vehicle.entity";
+import { Device } from "src/entitys/device.entity";
 
 export class RecordEntryDto {
     id?: number;
@@ -16,9 +18,9 @@ export class RecordEntryDto {
 
     person: FindPersonDocumentDto;
 
-    vehicleEntry?: EntryVehicle[];
+    vehicleEntry?: Vehicle;
 
-    deviceEntry?: EntryDevice[];
+    deviceEntry?: Device;
 
     entryType: EntryTypeDto;
     personEntry: EntryPerson[]

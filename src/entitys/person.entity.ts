@@ -67,15 +67,7 @@ export class Person extends AbstractEntity {
     @JoinColumn({ name: 'vehicles' })
     vehicles: Vehicle[]
 
-<<<<<<< HEAD
-    @OneToMany(() => Record_entry, recordEntry => recordEntry.person, {
-        cascade: true,
-        eager: true,
-        nullable: true
-    })
-=======
     @OneToMany(() => Record_entry, recordEntry => recordEntry.person)
     @JoinColumn({name:'recorEntry'})
->>>>>>> 27f6e7931af136a950b103eccfdc0853f95ba2a1
     recorEntry: Record_entry[]
 }

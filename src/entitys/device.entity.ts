@@ -2,6 +2,7 @@ import { DeviceType } from "src/entitys/device_type.entity";
 import { Person } from "src/entitys/person.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { EntryDevice } from "./entry_device.entity";
+import { Record_entry } from "./record_entry_and_out.entity";
 
 @Entity({ name: 'devices' })
 export class Device {
@@ -25,7 +26,11 @@ export class Device {
     @JoinColumn({name:'deviceType'})
     deviceType: DeviceType
 
-    @OneToMany(()=>EntryDevice,entryDevice=>entryDevice.recordEntry)
+    // @OneToMany(()=>EntryDevice,entryDevice=>entryDevice.recordEntry)
+    // @JoinColumn()
+    // entryDevice: EntryDevice[]
+
+    @ManyToOne(()=>Record_entry,recordEntry=>recordEntry.vehicleEntry)
     @JoinColumn()
-    entryDevice: EntryDevice[]
+    recordEntry: Record_entry[]
 }

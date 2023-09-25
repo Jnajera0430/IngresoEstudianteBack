@@ -13,17 +13,17 @@ export class EntryDevice{
     @Column()
     out: boolean
 
-    @ManyToOne(()=>Record_entry,(recordEntry)=>recordEntry.deviceEntry,{
-        nullable: true,
-    })
-    recordEntry: Record_entry
+    // @ManyToOne(()=>Record_entry,(recordEntry)=>recordEntry.deviceEntry,{
+    //     nullable: true,
+    // })
+    // recordEntry: Record_entry
 
-    @ManyToOne(()=>Device,device=>device,{
-        cascade: true,
-        eager: false,
-        nullable: true
-    })
-    @JoinColumn({name: 'device'})
-    device: Device
+    // @ManyToOne(()=>Device,device=>device,{
+    //     cascade: true,
+    //     eager: false,
+    //     nullable: true
+    // })
+    // @JoinColumn({name: 'device'})
+    // device: Device
 
 }
