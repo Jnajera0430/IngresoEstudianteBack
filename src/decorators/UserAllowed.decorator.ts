@@ -1,7 +1,7 @@
 import { SetMetadata, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-import { Observable } from 'rxjs';
+import { Observable } from 'rx';
 import { InvalidTokenException, ValueNotFoundException } from 'src/exceptions/customExcepcion';
 export const keyDecorate: string = 'permissions';
 /**
@@ -18,7 +18,6 @@ export class PermisionsInterceptor implements NestInterceptor {
 
     intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> {
         const permissionsUser = this.reflector.get<string[]>(keyDecorate, context.getHandler());
-        console.log({ permissionsUser });
 
         if (!permissionsUser || permissionsUser.length === 0) {
             return next.handle();

@@ -1,4 +1,4 @@
-import { switchMap, Observable, interval, map,  } from 'rxjs';
+import { switchMap, Observable, interval, map,  } from 'rxjs/fetch';
 import { Controller, MessageEvent, Post, Req, Sse, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { QueuesService } from "src/queues/queues.service";

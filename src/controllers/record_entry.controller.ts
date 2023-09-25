@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Param, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, HttpStatus,Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { debug } from 'console';
 import { RoleEnumByType } from 'src/constants/roles.enum';
 import { UserAllowed } from 'src/decorators/UserAllowed.decorator';
+import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
 import { FindPersonDocumentDto, FindPersonDto, PersonDto } from 'src/dto/person/person.dto';
 import { FindRecordEntryOfPersonDto } from 'src/dto/recordsEntry/recordEntry.dto';
 import { ICustomResponse } from 'src/intefaces/customResponse.interface';
@@ -23,8 +24,7 @@ export class RecordEntryController {
     async postRecordPerson(@Body() recordEntry: FindRecordEntryOfPersonDto): Promise<ICustomResponse> {
 
         const recordFound = await this.recordEntryService.findInRecordEntryByPersonInside(recordEntry.person);
-        if (!recordFound || !recordFound.checkOut) {
-            console.log('llegó');
+        if (!recordFound || !recordFound.checkIn) {
             return customResponse({
                 status: HttpStatus.ACCEPTED,
                 message: 'The entry has been registered',
@@ -42,12 +42,14 @@ export class RecordEntryController {
     }
 
     @Get()
-    async getAllRecords(): Promise<ICustomResponse> {
+    async getAllRecords( @Query() pageOptionsDto:PageOptionsDto): Promise<ICustomResponse> {
+        const {data,meta} = await this.recordEntryService.findAllRecord(pageOptionsDto)
         try {
             return customResponse({
                 status: HttpStatus.OK,
                 message: 'List records.',
-                data: await this.recordEntryService.findAllRecord()
+                data,
+                meta
             });
         } catch (error) {
             debug(error);

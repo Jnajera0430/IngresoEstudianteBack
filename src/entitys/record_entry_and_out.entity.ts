@@ -21,7 +21,6 @@ export class Record_entry extends AbstractEntity {
 
     @ManyToOne(() => Person, person => person.recorEntry, {
         nullable: true,
-        lazy: true,
         eager: false,
         onUpdate: "CASCADE"
     })
@@ -44,18 +43,18 @@ export class Record_entry extends AbstractEntity {
     @JoinColumn({ name: 'deviceEntry' })
     deviceEntry: Device;
 
-    @OneToMany(() => EntryType, entryType => entryType.recordEntry, {
+    @ManyToOne(() => EntryType, entryType => entryType.recordEntry, {
         cascade: true,
         eager: true,
         nullable: true
     })
     @JoinColumn({ name: 'entryType' })
     entryType: EntryType;
-    @OneToMany(() => EntryPerson, personEntry => personEntry.recordEntry, {
-        cascade: true,
-        eager: true,
-        nullable: true
-    })
-    @JoinColumn({ name: 'personEntry' })
-    personEntry: EntryPerson[];
+    // @OneToMany(() => EntryPerson, personEntry => personEntry.recordEntry, {
+    //     cascade: true,
+    //     eager: true,
+    //     nullable: true
+    // })
+    // @JoinColumn({ name: 'personEntry' })
+    // personEntry?: EntryPerson[] | null;
 }

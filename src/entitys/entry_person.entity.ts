@@ -12,7 +12,7 @@ export class EntryPerson{
     @Column()
     out: boolean
     
-    @ManyToOne(()=>Record_entry,recordEntry=>recordEntry.personEntry)
-    @JoinColumn()
-    recordEntry: Record_entry
+    // @ManyToOne(()=>Record_entry,recordEntry=>recordEntry.personEntry)
+    // @JoinColumn()
+    // recordEntry: Record_entry
 }

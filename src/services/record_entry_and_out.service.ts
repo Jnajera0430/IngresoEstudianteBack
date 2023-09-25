@@ -7,6 +7,9 @@ import { FindRecordEntryOfPersonDto, RecordsEntryOfPersonDto } from 'src/dto/rec
 import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
 import { EntryTypeService } from './entry_type.service';
 import { FindPersonDocumentDto, FindPersonDto, PersonDto } from 'src/dto/person/person.dto';
+import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
+import { PageMetaDto } from 'src/dto/page/pageMeta.dto';
+import { PageDto } from 'src/dto/page/page.dto';
 
 @Injectable()
 export class RecordEntryService {
@@ -34,9 +37,7 @@ export class RecordEntryService {
         newRecordEntry.person = personFound;
         newRecordEntry.entryType = entryTypeFound;
         newRecordEntry.checkIn = new Date();
-        newRecordEntry.checkOut = null;
-        console.log({newRecordEntry});
-        
+        newRecordEntry.checkOut = null;        
         return await this.recordEntryRepository.save(newRecordEntry);
     }
 
@@ -46,6 +47,8 @@ export class RecordEntryService {
      * @returns 
      */
     async recordCheckOutOfPerson(recordEntry: FindRecordEntryOfPersonDto): Promise<Record_entry> {
+        console.log({recordEntry});
+        
         const today = new Date();
         recordEntry.checkOut = today;
         const result = await this.recordEntryRepository.update(recordEntry.id, recordEntry);
@@ -111,14 +114,24 @@ export class RecordEntryService {
      * 
      * @returns 
      */
-    async findAllRecord():Promise<Record_entry[]> {
+    async findAllRecord( pageOptionsDto?: PageOptionsDto):Promise<PageDto<Record_entry>> {
         const alias = "record"
         const queryBuilder = this.recordEntryRepository.createQueryBuilder(alias);
         queryBuilder
-            .leftJoinAndSelect(alias+".pe","")
-        return await this.recordEntryRepository.find({
-            relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
-        });
+            .leftJoinAndSelect(alias+".person","person")
+            .leftJoinAndSelect(alias+".vehicleEntry","vehicles")
+            .leftJoinAndSelect(alias+".deviceEntry","devices")
+            .leftJoinAndSelect(alias+".entryType","entryType")
+            .orderBy('person.createdAt', pageOptionsDto.order)
+            .skip(pageOptionsDto.skip)
+            .take(pageOptionsDto.take)
+            const itemCount = await queryBuilder.getCount();
+            const { entities } = await queryBuilder.getRawAndEntities();
+            const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
+        return new PageDto(entities, pageMeta);
+        // return await this.recordEntryRepository.find({
+        //     relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
+        // });
     }
 
     async findRecordById(id: number):Promise<Record_entry> {
