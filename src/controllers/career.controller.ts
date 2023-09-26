@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CareerService } from '../services/career.service'
 import { CreateCareerDto, UpdateOrFindCareer } from 'src/dto/career/career.dto';
 import { ApiBadRequestResponse, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -9,6 +9,7 @@ import { abstractBodyExample } from 'src/document/body.document';
 import { customResponse } from 'src/services/customResponse.service';
 import { debug } from 'console';
 import { ICustomResponse } from 'src/intefaces/customResponse.interface';
+import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
 
 @Controller('career')
 @ApiTags('Api-Career')
@@ -47,12 +48,14 @@ export class CareerController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async getListCareer(): Promise<ICustomResponse> {
+    async getListCareer(@Query() pageOptionsDto: PageOptionsDto): Promise<ICustomResponse> {
         try {
+            const {data,meta} = await this.careerService.listCareer(pageOptionsDto);
             return customResponse({
                 status: HttpStatus.OK,
                 message: 'List career',
-                data: await this.careerService.listCareer()
+                data,
+                meta 
             });
         } catch (error) {
             debug(error);

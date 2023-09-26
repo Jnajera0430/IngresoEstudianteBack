@@ -1,8 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCareerDto, FindCareerDto, UpdateOrFindCareer } from 'src/dto/career/career.dto';
+import { PageDto } from 'src/dto/page/page.dto';
+import { PageMetaDto } from 'src/dto/page/pageMeta.dto';
+import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
 import { Career } from 'src/entitys/career.entity';
-import { Group } from 'src/entitys/group.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -12,10 +14,21 @@ export class CareerService {
     ) { }
 
     
-    async listCareer(){
-        return await this.careerRepository.find({
-            relations:["groups"]
-        });
+    async listCareer(pageOptionsDto?: PageOptionsDto){
+        const alias ="career";
+        const queryBuilder = this.careerRepository.createQueryBuilder(alias);
+        queryBuilder
+            .leftJoinAndSelect(alias+".groups", "groups")
+            .orderBy(alias+".createdAt", pageOptionsDto.order)
+            .skip(pageOptionsDto.skip)
+            .take(pageOptionsDto.take)
+        const itemCount = await queryBuilder.getCount();
+        const { entities } = await queryBuilder.getRawAndEntities();
+        const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
+        return new PageDto(entities, pageMeta);
+        // return await this.careerRepository.find({
+        //     relations:["groups"]
+        // });
     }
 
     async createCareer(career: CreateCareerDto) {

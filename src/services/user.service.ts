@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ConfigServiceEnv } from 'src/config/config.service';
 import { CreateUserDto, UpdateUserDto } from 'src/dto/user/user.dto';
 import { User } from 'src/entitys/user.entity';
 import { Bcrypt } from 'src/middlewares/bcrypt/bcrypt.middleware';
@@ -8,12 +7,13 @@ import { DeleteResult, Repository } from 'typeorm';
 import { RolesService } from './roles.service';
 import { Role } from 'src/entitys/roles.entity';
 import { FileService } from 'src/queues/files/files.service';
-import { Job } from 'bull';
 import { read } from 'Xlsx'
 import { CellObject, DataOfFileExcel, InfoOfProgram, PersonFile } from 'src/dto/person/personFile.dto';
-import { Express } from 'express';
 import { QueuesService } from 'src/queues/queues.service';
 import { PersonTypeEnumDto } from 'src/dto/person/personDocType';
+import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
+import { PageMetaDto } from 'src/dto/page/pageMeta.dto';
+import { PageDto } from 'src/dto/page/page.dto';
 @Injectable()
 export class UserService implements OnModuleInit {
   /**
@@ -34,14 +34,26 @@ export class UserService implements OnModuleInit {
      * Finds all Users and returns the list of Persons if the status is true.
      * @returns Promise
      */
-  async findAll(): Promise<User[]> {
-    return await this.userRepository.find({
-      where: {
-        state: true
-      },
-      relations: ['role'],
-      select: ['id', 'email', 'username', 'state', 'createdAt', 'role']
-    });
+  async findAll(pageOptionsDto: PageOptionsDto): Promise<PageDto<User>> {
+    const alias = 'user';
+    const queryBuilder = this.userRepository.createQueryBuilder(alias)
+    queryBuilder
+      .select([`${alias}.id`, `${alias}.email`, `${alias}.username`, `${alias}.state`, `role`, `${alias}.createdAt`])
+      .leftJoinAndSelect(`${alias}.role`, 'role')
+      .orderBy(`${alias}.createdAt`, pageOptionsDto.order)
+      .skip(pageOptionsDto.skip)
+      .take(pageOptionsDto.take)
+    const itemCount = await queryBuilder.getCount();
+    const entities = await queryBuilder.getMany();
+    const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
+    return new PageDto(entities, pageMeta);
+    // return await this.userRepository.find({
+    //   where: {
+    //     state: true
+    //   },
+    //   relations: ['role'],
+    //   select: ['id', 'email', 'username', 'state', 'createdAt', 'role']
+    // });
   }
 
   /**
@@ -179,7 +191,7 @@ export class UserService implements OnModuleInit {
     const cellA9 = workSheet['A9'].v;
     const cellC9 = workSheet['C9'].v;
 
-    const infoOfProgram:InfoOfProgram = {
+    const infoOfProgram: InfoOfProgram = {
       fechaDelReporte: cellC2,
       fichaDeCaracterización: cellC3,
       career: {
@@ -236,7 +248,7 @@ export class UserService implements OnModuleInit {
         listPeopleFile.push(datoOfPerson);
       }
     }
-    const data:DataOfFileExcel = {
+    const data: DataOfFileExcel = {
       infoOfProgram,
       listPeopleFile
     }

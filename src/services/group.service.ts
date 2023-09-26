@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Group } from 'src/entitys/group.entity';
 import { Repository } from 'typeorm';
 import { CareerService } from './career.service';
-import { Career } from 'src/entitys/career.entity';
 import { CreateGroup, UpdateGroupDto } from 'src/dto/group/group.dto';
 
 @Injectable()

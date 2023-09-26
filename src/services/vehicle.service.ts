@@ -6,6 +6,9 @@ import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
 import { Repository } from 'typeorm';
 import { VehicleTypeService } from './vehicle_type.service';
 import { PersonService } from './person.service';
+import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
+import { PageDto } from 'src/dto/page/page.dto';
+import { PageMetaDto } from 'src/dto/page/pageMeta.dto';
 
 @Injectable()
 export class VehicleService {
@@ -73,9 +76,22 @@ export class VehicleService {
 		});
 	}
 
-	async findAllVehicle():Promise<Vehicle[]> {
-		return await this.vehicleRepository.find({
-			relations: ['person', 'vehicleType', 'entryVehicle']
-		});
+	async findAllVehicle(pageOptionsDto: PageOptionsDto):Promise<PageDto<Vehicle>> {
+		const alias = 'vehicle';
+		const queryBuilder =this.vehicleRepository.createQueryBuilder(alias);
+		queryBuilder
+			.leftJoinAndSelect(`${alias}.person`,'person')
+			.leftJoinAndSelect(`${alias}.vehicleType`,'vehicleType')
+			.leftJoinAndSelect(`${alias}.recordEntry`,'recordEntry')
+			.orderBy(`${alias}.createdAt`,pageOptionsDto.order)
+			.skip(pageOptionsDto.skip)
+			.take(pageOptionsDto.take)
+		const itemCount = await queryBuilder.getCount();
+		const { entities } = await queryBuilder.getRawAndEntities();
+		const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
+		return new PageDto(entities,pageMeta)
+		// return await this.vehicleRepository.find({
+		// 	relations: ['person', 'vehicleType', 'entryVehicle']
+		// });
 	}
 }

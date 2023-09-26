@@ -6,11 +6,12 @@ import {
   JoinTable,
 } from 'typeorm';
 import { Role } from './roles.entity';
+import { AbstractEntity } from './abstractEntity.entity';
 
 @Entity({
   name: 'users',
 })
-export class User {
+export class User extends AbstractEntity{
   @PrimaryGeneratedColumn('increment')
   id: number;
 

@@ -10,7 +10,8 @@ import {
   Patch,
   ParseIntPipe,
   UploadedFiles,
-  HttpStatus
+  HttpStatus,
+  Query
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -43,6 +44,7 @@ import { Request, Express } from 'express';
 import { customResponse } from 'src/services/customResponse.service';
 import { debug } from 'console';
 import { ICustomResponse } from 'src/intefaces/customResponse.interface';
+import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
 @Controller('user')
 @ApiTags('api-User')
 export class UserController {
@@ -83,12 +85,14 @@ export class UserController {
   @ApiResponse(responseOkListUser())
   @ApiBadRequestResponse(responseErrorExampleCreateUser400())
   @ApiResponse(responseErrorServer())
-  async getAllUser(@Req() req: Request): Promise<ICustomResponse> {
+  async getAllUser(@Query() pageOptionsDto:PageOptionsDto): Promise<ICustomResponse> {
     try {
+      const {data,meta} = await this.userService.findAll(pageOptionsDto);
       return customResponse({
         status: HttpStatus.OK,
         message: 'List users',
-        data: await this.userService.findAll()
+        data,
+        meta
       });
     } catch (error) {
       debug(error);

@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Transaction, getManager } from "typeorm";
 import { CreatePerson, PersonDto, UpdatePerson } from 'src/dto/person/person.dto';
 import { CreatePersonDocTypeDto } from 'src/dto/person/personDocType';
 import { CreatePersonTypeDto, PersonTypeEnum } from 'src/dto/person/personType.dto';

@@ -3,9 +3,10 @@ import { Person } from "src/entitys/person.entity";
 import { VehicleType } from "src/entitys/vehicle_type.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Record_entry } from "./record_entry_and_out.entity";
+import { AbstractEntity } from "./abstractEntity.entity";
 
 @Entity({ name: 'vehicles' })
-export class Vehicle {
+export class Vehicle extends AbstractEntity{
     @PrimaryGeneratedColumn('increment')
     id: number
 

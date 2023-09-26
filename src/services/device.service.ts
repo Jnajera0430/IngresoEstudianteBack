@@ -7,6 +7,9 @@ import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
 import { Repository } from 'typeorm';
 import { DeviceTypeService } from './device_type.service';
 import { PersonService } from './person.service';
+import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
+import { PageMetaDto } from 'src/dto/page/pageMeta.dto';
+import { PageDto } from 'src/dto/page/page.dto';
 
 @Injectable()
 export class DeviceService {
@@ -78,10 +81,20 @@ export class DeviceService {
         return deviceFoundUpdated
     }
 
-    async findAllDevice(){
-        return this.deviceRepository.find({
-            relations: ['person', 'deviceType','entryDevice']
-        })
+    async findAllDevice(pageOptionsDto?: PageOptionsDto){
+        const alias = "device";
+        const queryBuilder = this.deviceRepository.createQueryBuilder(alias);
+        queryBuilder
+            .leftJoinAndSelect(`${alias}.person`,'person')
+            .leftJoinAndSelect(`${alias}.deviceType`,'deviceType')
+            .leftJoinAndSelect(`${alias}.recordEntry`,'recordEntry')
+        const itemCount = await queryBuilder.getCount();
+        const {entities} = await queryBuilder.getRawAndEntities();
+        const pageMeta = new PageMetaDto({pageOptionsDto,itemCount});
+        return new PageDto(entities, pageMeta);
+        // return this.deviceRepository.find({
+        //     relations: ['person', 'deviceType','entryDevice']
+        // });
     }
 
     /**

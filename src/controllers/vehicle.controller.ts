@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Patch, Param, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Param, HttpStatus, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { debug } from 'console';
+import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
 import { FindPersonDto } from 'src/dto/person/person.dto';
 import { UpdateVehicleDto } from 'src/dto/vehicle/vehicle.dto';
 import { ICustomResponse } from 'src/intefaces/customResponse.interface';
@@ -15,12 +16,14 @@ export class VehicleController {
     ) { }
 
     @Get()
-    async getAllVehicle(): Promise<ICustomResponse> {
+    async getAllVehicle(@Query() pageOptionsDto:PageOptionsDto): Promise<ICustomResponse> {
         try {
+            const {data,meta} = await this.vehicleService.findAllVehicle(pageOptionsDto);
             return customResponse({
                 status: HttpStatus.OK,
                 message: 'List vehicle',
-                data: await this.vehicleService.findAllVehicle()
+                data,
+                meta
             });
         } catch (error) {
             debug(error);
