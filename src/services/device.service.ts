@@ -133,7 +133,6 @@ export class DeviceService {
         if (!deviceFound) {
             throw new ValueNotFoundException(`Device not found by person with this id: , ${person.id}`);
         }
-
         return deviceFound;
     }
 

@@ -31,7 +31,7 @@ export class DeviceController {
         }
     }
 
-    @Get()
+    @Get('person')
     async getDeviceByIdPerson(@Body() person: FindPersonDto): Promise<ICustomResponse> {
         try {
             return customResponse({

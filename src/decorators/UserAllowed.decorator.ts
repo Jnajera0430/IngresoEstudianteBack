@@ -1,7 +1,7 @@
 import { SetMetadata, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 import { InvalidTokenException, ValueNotFoundException } from 'src/exceptions/customExcepcion';
 export const keyDecorate: string = 'permissions';
 /**

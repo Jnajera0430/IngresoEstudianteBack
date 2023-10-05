@@ -11,6 +11,7 @@ import { EntryTypeModule } from './entry_type.module';
 @Module({
   imports:[TypeOrmModule.forFeature([Person, EntryType,Record_entry]),PersonModule,EntryTypeModule],
   controllers: [RecordEntryController],
-  providers: [RecordEntryService]
+  providers: [RecordEntryService],
+  exports:[RecordEntryService]
 })
 export class RecordEntryModule {}

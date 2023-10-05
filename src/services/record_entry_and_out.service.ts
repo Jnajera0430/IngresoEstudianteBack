@@ -10,6 +10,7 @@ import { FindPersonDocumentDto, FindPersonDto, PersonDto } from 'src/dto/person/
 import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
 import { PageMetaDto } from 'src/dto/page/pageMeta.dto';
 import { PageDto } from 'src/dto/page/page.dto';
+import { ParameterDateDto } from 'src/dto/page/parameterDate.dto';
 
 @Injectable()
 export class RecordEntryService {
@@ -25,19 +26,19 @@ export class RecordEntryService {
      */
     async checkInEntryOfPerson(recordEntry: RecordsEntryOfPersonDto): Promise<Record_entry> {
         const personFound = await this.personService.getPersonByDocument(recordEntry.person.document);
-        if (!personFound) 
+        if (!personFound)
             throw new ValueNotFoundException('This person is not in our records.');
-        
+
         const entryTypeFound = await this.entryTypeService.findEntryTypeByName(personFound.personTypes.name);
-        if (!entryTypeFound) 
+        if (!entryTypeFound)
             throw new ValueNotFoundException('Input record type is not defined.');
-        
+
         // Se crea un nuevo objeto
         const newRecordEntry = this.recordEntryRepository.create(recordEntry);
         newRecordEntry.person = personFound;
         newRecordEntry.entryType = entryTypeFound;
         newRecordEntry.checkIn = new Date();
-        newRecordEntry.checkOut = null;        
+        newRecordEntry.checkOut = null;
         return await this.recordEntryRepository.save(newRecordEntry);
     }
 
@@ -47,8 +48,6 @@ export class RecordEntryService {
      * @returns 
      */
     async recordCheckOutOfPerson(recordEntry: FindRecordEntryOfPersonDto): Promise<Record_entry> {
-        console.log({recordEntry});
-        
         const today = new Date();
         recordEntry.checkOut = today;
         const result = await this.recordEntryRepository.update(recordEntry.id, recordEntry);
@@ -76,8 +75,8 @@ export class RecordEntryService {
                     document: personFound.document
                 },
                 checkIn: Between(
-                    new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0),
-                    new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59),
+                    new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0),
+                    new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59),
                 ),
             },
             relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
@@ -90,18 +89,18 @@ export class RecordEntryService {
      * @param recordEntry FindRecordEntryOfPersonDto
      * @returns 
      */
-    async findInRecordEntryByPersonInside(person: FindPersonDocumentDto): Promise<Record_entry> {     
+    async findInRecordEntryByPersonInside(person: FindPersonDocumentDto): Promise<Record_entry> {
         const today = new Date();
         const personFound = await this.personService.getPersonByDocument(person.document);
-        if(!personFound)return null;
+        if (!personFound) return null;
         return await this.recordEntryRepository.findOne({
             where: {
                 person: {
                     document: personFound.document
                 },
                 checkIn: Between(
-                    new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0),
-                    new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59),
+                    new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0),
+                    new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59),
                 ),
             },
             relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
@@ -114,27 +113,27 @@ export class RecordEntryService {
      * 
      * @returns 
      */
-    async findAllRecord( pageOptionsDto?: PageOptionsDto):Promise<PageDto<Record_entry>> {
+    async findAllRecord(pageOptionsDto?: PageOptionsDto): Promise<PageDto<Record_entry>> {
         const alias = "record"
         const queryBuilder = this.recordEntryRepository.createQueryBuilder(alias);
         queryBuilder
-            .leftJoinAndSelect(alias+".person","person")
-            .leftJoinAndSelect(alias+".vehicleEntry","vehicles")
-            .leftJoinAndSelect(alias+".deviceEntry","devices")
-            .leftJoinAndSelect(alias+".entryType","entryType")
+            .leftJoinAndSelect(alias + ".person", "person")
+            .leftJoinAndSelect(alias + ".vehicleEntry", "vehicles")
+            .leftJoinAndSelect(alias + ".deviceEntry", "devices")
+            .leftJoinAndSelect(alias + ".entryType", "entryType")
             .orderBy('person.createdAt', pageOptionsDto.order)
             .skip(pageOptionsDto.skip)
             .take(pageOptionsDto.take)
-            const itemCount = await queryBuilder.getCount();
-            const { entities } = await queryBuilder.getRawAndEntities();
-            const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
+        const itemCount = await queryBuilder.getCount();
+        const { entities } = await queryBuilder.getRawAndEntities();
+        const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
         return new PageDto(entities, pageMeta);
         // return await this.recordEntryRepository.find({
         //     relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
         // });
     }
 
-    async findRecordById(id: number):Promise<Record_entry> {
+    async findRecordById(id: number): Promise<Record_entry> {
         return await this.recordEntryRepository.findOne({
             where: {
                 id
@@ -143,7 +142,7 @@ export class RecordEntryService {
         });
     }
 
-    async findAllRecordsByPerson(person: FindPersonDocumentDto):Promise<Record_entry[]> {
+    async findAllRecordsByPerson(person: FindPersonDocumentDto): Promise<Record_entry[]> {
         return await this.recordEntryRepository.find({
             where: {
                 person: {
@@ -154,4 +153,28 @@ export class RecordEntryService {
         });
     }
 
+    async findRecordsPeopleInside(pageOptionsDto?: PageOptionsDto, parameterDateDto?: ParameterDateDto):Promise<PageDto<Record_entry>>{
+        const today = new Date();
+        const alias = "record"
+        const queryBuilder = this.recordEntryRepository.createQueryBuilder(alias);
+        queryBuilder
+            .leftJoinAndSelect(alias + ".person", "person")
+            .leftJoinAndSelect(alias + ".vehicleEntry", "vehicles")
+            .leftJoinAndSelect(alias + ".deviceEntry", "devices")
+            .leftJoinAndSelect(alias + ".entryType", "entryType")
+            .where(`${alias}.checkIn BETWEEN :startDate AND :endDate`,
+                {
+                    startDate: new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), parameterDateDto.hourFrom, 0, 0),
+                    endDate: new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), parameterDateDto.hourTo, 59, 59),
+                })
+            .andWhere(`${alias}.checkOut = null`)
+            .orderBy(`${alias}.createdAt`, pageOptionsDto.order)
+            .skip(pageOptionsDto.skip)
+            .take(pageOptionsDto.take)
+        const itemCount = await queryBuilder.getCount();
+        const { entities } = await queryBuilder.getRawAndEntities();
+        const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
+        return new PageDto(entities, pageMeta);
+    }
+    
 }

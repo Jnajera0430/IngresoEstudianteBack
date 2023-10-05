@@ -45,6 +45,7 @@ import { SocketModule } from './ws/socket.module';
 import { SSEController } from './controllers/server_side_events';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PermisionsInterceptor } from './decorators/UserAllowed.decorator';
+import { DashBoardModule } from './modules/dashBoard.module';
 
 @Module({
   imports: [
@@ -83,7 +84,8 @@ import { PermisionsInterceptor } from './decorators/UserAllowed.decorator';
     EntryVehicleModule,
     AuthModule,
     QueuesModule,
-    SocketModule
+    SocketModule,
+    DashBoardModule
   ],
   controllers: [AppController],
   providers: [
@@ -113,6 +115,7 @@ export class AppModule implements NestModule {
         DeviceController,
         DeviceTypeController,
         CareerController,
+        DashBoardModule
       );
 
     consumer.apply().forRoutes(UserController, SSEController);
