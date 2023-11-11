@@ -115,9 +115,9 @@ export class AppModule implements NestModule {
         DeviceController,
         DeviceTypeController,
         CareerController,
-        DashBoardModule
+        //DashBoardModule
       );
 
-    consumer.apply().forRoutes(UserController, SSEController);
+    //consumer.apply().forRoutes(UserController, SSEController);
   }
 }

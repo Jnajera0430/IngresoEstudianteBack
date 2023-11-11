@@ -5,7 +5,7 @@ import { RoleEnumByType } from 'src/constants/roles.enum';
 import { UserAllowed } from 'src/decorators/UserAllowed.decorator';
 import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
 import { FindPersonDocumentDto, FindPersonDto, PersonDto } from 'src/dto/person/person.dto';
-import { FindRecordEntryOfPersonDto } from 'src/dto/recordsEntry/recordEntry.dto';
+import { FindRecordEntryOfPersonDto, RecordEntryDto } from 'src/dto/recordsEntry/recordEntry.dto';
 import { ICustomResponse } from 'src/intefaces/customResponse.interface';
 import { customResponse } from 'src/services/customResponse.service';
 import { RecordEntryService } from 'src/services/record_entry_and_out.service';
@@ -33,6 +33,7 @@ export class RecordEntryController {
         }
 
         let data = new FindRecordEntryOfPersonDto(recordFound);
+        console.log(data);
         data = Object.assign(recordFound, data);
         return customResponse({
             status: HttpStatus.ACCEPTED,
@@ -42,7 +43,8 @@ export class RecordEntryController {
     }
 
     @Get()
-    async getAllRecords( @Query() pageOptionsDto:PageOptionsDto): Promise<ICustomResponse> {
+    async getAllRecords( @Query() pageOptionsDto:PageOptionsDto<RecordEntryDto>): Promise<ICustomResponse> {
+        console.log(typeof pageOptionsDto.keyWords);
         const {data,meta} = await this.recordEntryService.findAllRecord(pageOptionsDto)
         try {
             return customResponse({

@@ -82,6 +82,8 @@ export class DeviceService {
     }
 
     async findAllDevice(pageOptionsDto?: PageOptionsDto){
+
+        const [] = await this.deviceRepository.findAndCount();
         const alias = "device";
         const queryBuilder = this.deviceRepository.createQueryBuilder(alias);
         queryBuilder

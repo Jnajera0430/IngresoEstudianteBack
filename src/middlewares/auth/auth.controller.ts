@@ -54,9 +54,9 @@ export class AuthController {
           access_token: token,
         };
       default:
-        response.setHeader('Set-Cookie', [
-          `access_token=${token}; Path=/; Max-Age=86400;`,
-        ]);
+        // response.setHeader('Set-Cookie', [
+        //   `access_token=${token}; Path=/; Max-Age=86400;`,
+        // ]);
         return {
           access_token: token,
         };

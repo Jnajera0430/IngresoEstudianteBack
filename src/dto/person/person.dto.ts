@@ -1,4 +1,4 @@
-import { IsNumber, IsString, IsNotEmpty, IsBooleanString, ValidateNested, IsArray, isNotEmpty } from "class-validator";
+import { IsNumber, IsString, IsNotEmpty, IsBooleanString, ValidateNested, IsArray, isNotEmpty, IsNotIn, IsInt, IsDefined } from "class-validator";
 import { Type } from "class-transformer";
 import { Device } from "src/entitys/device.entity";
 import { DoctType } from "src/entitys/doctType.entity";
@@ -80,7 +80,8 @@ export class FindPersonDto extends PartialType(PersonDto){
 
 export class FindPersonDocumentDto extends PartialType(PersonDto){
     @IsNotEmpty()
-    @IsNumber()
+    @IsInt()
+    @IsDefined()
     document:number
 }
 

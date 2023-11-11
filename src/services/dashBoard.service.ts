@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Record_entry } from "src/entitys/record_entry_and_out.entity";
-import { Repository, Between,IsNull } from "typeorm";
+import { Repository, Between, IsNull } from "typeorm";
 import { RecordEntryService } from "./record_entry_and_out.service";
 import { ParameterDateDto } from "src/dto/page/parameterDate.dto";
 
@@ -13,7 +13,12 @@ export class DashBoardService {
     ) { }
 
     async statisticsRecords(paramDateDto: ParameterDateDto) {
-        let linear_graph_per_hour = [];
+        let linear_graph_per_hour: string[] | (string | number)[][] | string = [
+            [
+                "HOURS",
+                "PEOPLE COUNT"
+            ],
+        ];
         const today = new Date();
         const people_last_24h = await this.recordRepository.countBy({
             checkIn: Between(
@@ -21,18 +26,6 @@ export class DashBoardService {
                 new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59),
             )
         });
-        for (let i = 0; i < 24; i++) {
-            linear_graph_per_hour.push({
-                start: `${i < 10 ? `0${i}` : i}:00`,
-                end: `${i < 10 ? `0${i}` : i}:59`,
-                people: await this.recordRepository.countBy({
-                    checkIn: Between(
-                        new Date(paramDateDto.fromYear, paramDateDto.fromMonth, paramDateDto.fromDay, i, 0, 0),
-                        new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), i, 59, 59),
-                    )
-                })
-            });
-        }
         const peopleInside = await this.recordRepository.countBy({
             checkIn: Between(
                 new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0),
@@ -40,7 +33,18 @@ export class DashBoardService {
             ),
             checkOut: IsNull()
         });
-        
+        for (let i = 0; i < 24; i++) {
+            let start = `${i < 10 ? `0${i}` : i}:00`;
+            let end = `${i < 10 ? `0${i}` : i}:59`;
+            let peopleCount = await this.recordRepository.countBy({
+                checkIn: Between(
+                    new Date(paramDateDto.fromYear, paramDateDto.fromMonth, paramDateDto.fromDay, i, 0, 0),
+                    new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), i, 59, 59),
+                )
+            })
+            linear_graph_per_hour.push([`${start} - ${end}`,peopleCount]);
+        }
+
         return {
             people_last_24h,
             peopleInside,

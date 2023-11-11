@@ -23,32 +23,6 @@ export class PersonController {
         summary: "people list",
         description: 'Endpoint to list all people',
     })
-    // @ApiResponse(abstractResponseOk({
-    //     status: 200,
-    //     message: 'List people',
-    //     description: 'Example response of list of people',
-    //     data: [
-    //         {
-    //             id: 1212,
-    //             firtsName: 'Lazlo Gabriel',
-    //             lastName: 'Caputo Arias',
-    //             docType: {
-    //                 id: 1,
-    //                 type: 'CC'
-    //             },
-    //             document: 1002148455,
-    //             state: true,
-    //             personTypes: {
-    //                 id: 1,
-    //                 name: 'Aprendiz'
-    //             },
-    //             groups: [],
-    //             device: [],
-    //             vehicles: [],
-    //             recordEntry: []
-    //         }
-    //     ]
-    // }))
     @ApiPaginatedResponse(PersonDto)
     @ApiBadRequestResponse(abstracResponseErrorExample({
         error: 'An unexpected error has occurred'

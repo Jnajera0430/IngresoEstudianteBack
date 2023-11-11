@@ -3,7 +3,7 @@ import { Type } from "class-transformer";
 import { IsEnum, IsInt, IsOptional, Max, Min } from "class-validator";
 import { Order } from "src/constants/orderPage.enum";
 
-export class PageOptionsDto {
+export class PageOptionsDto<T = {}> {
   @ApiPropertyOptional({ enum: Order, default: Order.ASC })
   @IsEnum(Order)
   @IsOptional()
@@ -17,7 +17,7 @@ export class PageOptionsDto {
   @IsInt()
   @Min(1)
   @IsOptional()
-  readonly page?: number = 1;
+  readonly page: number = 1;
 
   @ApiPropertyOptional({
     minimum: 1,
@@ -29,9 +29,11 @@ export class PageOptionsDto {
   @Min(1)
   @Max(50)
   @IsOptional()
-  readonly take?: number = 10;
+  readonly take: number = 10;
 
   get skip(): number {
     return (this.page - 1) * this.take;
   }
+
+  keyWords:T = {} as T;
 }

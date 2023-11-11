@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Record_entry } from 'src/entitys/record_entry_and_out.entity';
-import { Between, Repository } from 'typeorm';
+import { Between, Repository,Like,ILike } from 'typeorm';
 import { PersonService } from './person.service';
-import { FindRecordEntryOfPersonDto, RecordsEntryOfPersonDto } from 'src/dto/recordsEntry/recordEntry.dto';
+import { FindRecordEntryOfPersonDto, RecordEntryDto, RecordsEntryOfPersonDto } from 'src/dto/recordsEntry/recordEntry.dto';
 import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
 import { EntryTypeService } from './entry_type.service';
 import { FindPersonDocumentDto, FindPersonDto, PersonDto } from 'src/dto/person/person.dto';
@@ -11,6 +11,8 @@ import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
 import { PageMetaDto } from 'src/dto/page/pageMeta.dto';
 import { PageDto } from 'src/dto/page/page.dto';
 import { ParameterDateDto } from 'src/dto/page/parameterDate.dto';
+import { Search } from 'src/intefaces/Search.interface';
+import { SearchQueries } from 'src/helpers/convertSearch';
 
 @Injectable()
 export class RecordEntryService {
@@ -25,6 +27,9 @@ export class RecordEntryService {
      * @returns Promise -> Record_Entry
      */
     async checkInEntryOfPerson(recordEntry: RecordsEntryOfPersonDto): Promise<Record_entry> {
+        if (!recordEntry.person.document) {
+            throw new ValueNotFoundException('value invalid')
+        }
         const personFound = await this.personService.getPersonByDocument(recordEntry.person.document);
         if (!personFound)
             throw new ValueNotFoundException('This person is not in our records.');
@@ -113,24 +118,21 @@ export class RecordEntryService {
      * 
      * @returns 
      */
-    async findAllRecord(pageOptionsDto?: PageOptionsDto): Promise<PageDto<Record_entry>> {
-        const alias = "record"
-        const queryBuilder = this.recordEntryRepository.createQueryBuilder(alias);
-        queryBuilder
-            .leftJoinAndSelect(alias + ".person", "person")
-            .leftJoinAndSelect(alias + ".vehicleEntry", "vehicles")
-            .leftJoinAndSelect(alias + ".deviceEntry", "devices")
-            .leftJoinAndSelect(alias + ".entryType", "entryType")
-            .orderBy('person.createdAt', pageOptionsDto.order)
-            .skip(pageOptionsDto.skip)
-            .take(pageOptionsDto.take)
-        const itemCount = await queryBuilder.getCount();
-        const { entities } = await queryBuilder.getRawAndEntities();
+    async findAllRecord(pageOptionsDto?: PageOptionsDto<RecordEntryDto>): Promise<PageDto<Record_entry>> {
+        const search: Search = SearchQueries(pageOptionsDto.keyWords);
+        console.log(search);
+        
+        const [rows, itemCount] = await this.recordEntryRepository.findAndCount({
+            skip: pageOptionsDto.skip,
+            order: {
+                createdAt: pageOptionsDto.order
+            },
+            take: pageOptionsDto.take,
+            where: search,
+            relations: ['person', 'vehicleEntry', 'deviceEntry']
+        })
         const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
-        return new PageDto(entities, pageMeta);
-        // return await this.recordEntryRepository.find({
-        //     relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
-        // });
+        return new PageDto(rows, pageMeta);
     }
 
     async findRecordById(id: number): Promise<Record_entry> {
@@ -153,28 +155,23 @@ export class RecordEntryService {
         });
     }
 
-    async findRecordsPeopleInside(pageOptionsDto?: PageOptionsDto, parameterDateDto?: ParameterDateDto):Promise<PageDto<Record_entry>>{
+    async findRecordsPeopleInside(pageOptionsDto?: PageOptionsDto, parameterDateDto?: ParameterDateDto): Promise<PageDto<Record_entry>> {
         const today = new Date();
-        const alias = "record"
-        const queryBuilder = this.recordEntryRepository.createQueryBuilder(alias);
-        queryBuilder
-            .leftJoinAndSelect(alias + ".person", "person")
-            .leftJoinAndSelect(alias + ".vehicleEntry", "vehicles")
-            .leftJoinAndSelect(alias + ".deviceEntry", "devices")
-            .leftJoinAndSelect(alias + ".entryType", "entryType")
-            .where(`${alias}.checkIn BETWEEN :startDate AND :endDate`,
-                {
-                    startDate: new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), parameterDateDto.hourFrom, 0, 0),
-                    endDate: new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), parameterDateDto.hourTo, 59, 59),
-                })
-            .andWhere(`${alias}.checkOut = null`)
-            .orderBy(`${alias}.createdAt`, pageOptionsDto.order)
-            .skip(pageOptionsDto.skip)
-            .take(pageOptionsDto.take)
-        const itemCount = await queryBuilder.getCount();
-        const { entities } = await queryBuilder.getRawAndEntities();
+        const [entities, itemCount] = await this.recordEntryRepository.findAndCount({
+            skip: pageOptionsDto.skip,
+            take: pageOptionsDto.take,
+            order: { createdAt: pageOptionsDto.order },
+            where: {
+                //...search,
+                checkIn: Between(
+                    new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), parameterDateDto.hourFrom, 0, 0),
+                    new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), parameterDateDto.hourTo, 59, 59),
+                )
+            },
+            relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType']
+        })
         const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
         return new PageDto(entities, pageMeta);
     }
-    
+
 }

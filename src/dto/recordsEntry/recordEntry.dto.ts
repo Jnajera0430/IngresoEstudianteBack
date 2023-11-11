@@ -8,6 +8,7 @@ import { PartialType } from "@nestjs/swagger";
 import { EntryPerson } from "src/entitys/entry_person.entity";
 import { Vehicle } from "src/entitys/vehicle.entity";
 import { Device } from "src/entitys/device.entity";
+import { Record_entry } from "src/entitys/record_entry_and_out.entity";
 
 export class RecordEntryDto {
     id?: number;
@@ -23,7 +24,10 @@ export class RecordEntryDto {
     deviceEntry?: Device;
 
     entryType: EntryTypeDto;
-    personEntry: EntryPerson[]
+    personEntry: EntryPerson[];
+    constructor(person: FindPersonDocumentDto) {
+        this.person = person;
+    }
 }
 
 export class RecordsEntryOfPersonDto extends PartialType(RecordEntryDto) {
@@ -38,4 +42,7 @@ export class FindRecordEntryOfPersonDto extends PartialType(RecordEntryDto) {
     @ValidateNested()
     @Type(() => FindPersonDocumentDto)
     person: FindPersonDocumentDto;
+    constructor(person: Record_entry) {
+        super(person);
+    }
 }

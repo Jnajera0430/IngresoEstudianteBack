@@ -13,22 +13,27 @@ export class CareerService {
         @InjectRepository(Career) private readonly careerRepository: Repository<Career>,
     ) { }
 
-    
-    async listCareer(pageOptionsDto?: PageOptionsDto){
-        const alias ="career";
-        const queryBuilder = this.careerRepository.createQueryBuilder(alias);
-        queryBuilder
-            .leftJoinAndSelect(alias+".groups", "groups")
-            .orderBy(alias+".createdAt", pageOptionsDto.order)
-            .skip(pageOptionsDto.skip)
-            .take(pageOptionsDto.take)
-        const itemCount = await queryBuilder.getCount();
-        const { entities } = await queryBuilder.getRawAndEntities();
+
+    async listCareer(pageOptionsDto?: PageOptionsDto): Promise<PageDto<Career>> {
+        const [entities, itemCount] = await this.careerRepository.findAndCount({
+            skip: pageOptionsDto.skip,
+            take: pageOptionsDto.take,
+            order: {
+                createdAt: pageOptionsDto.order
+            },
+            where:{}
+        })
+        // const alias = "career";
+        // const queryBuilder = this.careerRepository.createQueryBuilder(alias);
+        // queryBuilder
+        //     .leftJoinAndSelect(alias + ".groups", "groups")
+        //     .orderBy(alias + ".createdAt", pageOptionsDto.order)
+        //     .skip(pageOptionsDto.skip)
+        //     .take(pageOptionsDto.take)
+        // const itemCount = await queryBuilder.getCount();
+        // const { entities } = await queryBuilder.getRawAndEntities();
         const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
         return new PageDto(entities, pageMeta);
-        // return await this.careerRepository.find({
-        //     relations:["groups"]
-        // });
     }
 
     async createCareer(career: CreateCareerDto) {
@@ -43,10 +48,10 @@ export class CareerService {
             },
             //relations:["groups"]
         });
-        // if(!fichaFound){
-        //     //se tiene que hacer la excepcion 
-        //     throw new NotFoundException("Career not found")
-        // }
+        if (!fichaFound) {
+            //se tiene que hacer la excepcion 
+            throw new NotFoundException("Career not found")
+        }
         return fichaFound;
     }
 
@@ -55,7 +60,7 @@ export class CareerService {
             where: {
                 id
             },
-            relations:["groups"]
+            relations: ["groups"]
         });
 
         return foundFicha;
@@ -66,7 +71,7 @@ export class CareerService {
             where: {
                 id: careerUpdated.id
             },
-            relations:["groups"]
+            relations: ["groups"]
         });
 
         if (!foundCareer) {
@@ -78,7 +83,7 @@ export class CareerService {
             where: {
                 id: careerUpdated.id
             },
-            relations:["groups"]
+            relations: ["groups"]
         });
     }
 }
