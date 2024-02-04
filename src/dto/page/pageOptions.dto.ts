@@ -35,5 +35,5 @@ export class PageOptionsDto<T = {}> {
     return (this.page - 1) * this.take;
   }
 
-  keyWords:T = {} as T;
+  //keyWords:T = {} as T;
 }
