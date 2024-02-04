@@ -85,6 +85,13 @@ export class FindPersonDocumentDto extends PartialType(PersonDto){
     document:number
 }
 
+export class CreateDeviceVehicleToPerson extends PartialType(PersonDto){
+    @IsNotEmpty()
+    @IsInt()
+    @IsDefined()
+    id?: number;
+}
+
 
 // export class CreatePerson {
 //     id?: number;
