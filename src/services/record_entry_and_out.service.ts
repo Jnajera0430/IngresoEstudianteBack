@@ -26,7 +26,7 @@ export class RecordEntryService {
      * @param recordEntry RecordsEntryOfPersonDto
      * @returns Promise -> Record_Entry
      */
-    async checkInEntryOfPerson(recordEntry: RecordsEntryOfPersonDto): Promise<Record_entry> {
+    async checkInEntryOfPerson(recordEntry: RecordsEntryOfPersonDto): Promise<any> {
         if (!recordEntry.person.document) {
             throw new ValueNotFoundException('value invalid')
         }
@@ -38,13 +38,16 @@ export class RecordEntryService {
         if (!entryTypeFound)
             throw new ValueNotFoundException('Input record type is not defined.');
 
+        //Se obtiene los vehilculos y dispositivos
+        const personFounById = await this.personService.getPersonById(personFound.id)
         // Se crea un nuevo objeto
         const newRecordEntry = this.recordEntryRepository.create(recordEntry);
         newRecordEntry.person = personFound;
         newRecordEntry.entryType = entryTypeFound;
         newRecordEntry.checkIn = new Date();
         newRecordEntry.checkOut = null;
-        return await this.recordEntryRepository.save(newRecordEntry);
+        const entry = await this.recordEntryRepository.save(newRecordEntry)
+        return {entry, device:personFounById.device, vehicle: personFounById.vehicles  };
     }
 
     /**
@@ -108,6 +111,9 @@ export class RecordEntryService {
                     new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59),
                 ),
             },
+            order: {
+                createdAt: 'DESC'
+            },
             relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
         });
     }
@@ -119,8 +125,8 @@ export class RecordEntryService {
      * @returns 
      */
     async findAllRecord(pageOptionsDto?: PageOptionsDto<RecordEntryDto>): Promise<PageDto<Record_entry>> {
-        const search: Search = SearchQueries(pageOptionsDto.keyWords);
-        console.log(search);
+        //const search: Search = SearchQueries(pageOptionsDto.keyWords);
+        //console.log(search);
         
         const [rows, itemCount] = await this.recordEntryRepository.findAndCount({
             skip: pageOptionsDto.skip,
@@ -128,7 +134,15 @@ export class RecordEntryService {
                 createdAt: pageOptionsDto.order
             },
             take: pageOptionsDto.take,
-            where: search,
+            join: {
+                alias: 'record_entry',
+                leftJoinAndSelect: {
+                    person: 'record_entry.person',
+                    vehicles: 'person.vehicles',
+                    devices: 'person.device'
+                }
+            },
+            //where: search,
             relations: ['person', 'vehicleEntry', 'deviceEntry']
         })
         const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
