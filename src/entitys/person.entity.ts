@@ -53,7 +53,6 @@ export class Person extends AbstractEntity {
 
     @OneToMany(() => Device, device => device.person, {
         cascade: true,
-        eager: false,
         nullable: true
     })
     @JoinColumn({ name: 'device' })
@@ -61,7 +60,6 @@ export class Person extends AbstractEntity {
 
     @OneToMany(() => Vehicle, vehicle => vehicle.person, {
         cascade: true,
-        eager: false,
         nullable: true
     })
     @JoinColumn({ name: 'vehicles' })
