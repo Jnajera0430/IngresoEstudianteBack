@@ -24,27 +24,28 @@ export class RecordEntryController {
     async postRecordPerson(@Body() recordEntry: FindRecordEntryOfPersonDto): Promise<ICustomResponse> {
 
         const recordFound = await this.recordEntryService.findInRecordEntryByPersonInside(recordEntry.person);
-        if (!recordFound || !recordFound.checkIn) {
+        console.log(recordFound.checkOut);
+        
+        if (recordFound && !recordFound.checkOut) {
+            let data = new FindRecordEntryOfPersonDto(recordFound);
+            data = Object.assign(recordFound, data);
             return customResponse({
                 status: HttpStatus.ACCEPTED,
-                message: 'The entry has been registered',
-                data: await this.recordEntryService.checkInEntryOfPerson(recordEntry)
+                message: 'Their process has been successful',
+                data: await this.recordEntryService.recordCheckOutOfPerson(data)
             });
         }
-
-        let data = new FindRecordEntryOfPersonDto(recordFound);
-        console.log(data);
-        data = Object.assign(recordFound, data);
         return customResponse({
             status: HttpStatus.ACCEPTED,
-            message: 'Their process has been successful',
-            data: await this.recordEntryService.recordCheckOutOfPerson(data)
+            message: 'The entry has been registered',
+            data: await this.recordEntryService.checkInEntryOfPerson(recordEntry)
         });
+        
     }
 
     @Get()
     async getAllRecords( @Query() pageOptionsDto:PageOptionsDto<RecordEntryDto>): Promise<ICustomResponse> {
-        console.log(typeof pageOptionsDto.keyWords);
+        //console.log(typeof pageOptionsDto.keyWords);
         const {data,meta} = await this.recordEntryService.findAllRecord(pageOptionsDto)
         try {
             return customResponse({
