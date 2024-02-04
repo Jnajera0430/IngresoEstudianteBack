@@ -22,7 +22,7 @@ export class RecordEntryService {
         private readonly entryTypeService: EntryTypeService
     ) { }
     /**
-     * 
+     *
      * @param recordEntry RecordsEntryOfPersonDto
      * @returns Promise -> Record_Entry
      */
@@ -51,9 +51,9 @@ export class RecordEntryService {
     }
 
     /**
-     * 
+     *
      * @param recordEntry FindRecordEntryOfPersonDto
-     * @returns 
+     * @returns
      */
     async recordCheckOutOfPerson(recordEntry: FindRecordEntryOfPersonDto): Promise<Record_entry> {
         const today = new Date();
@@ -67,9 +67,9 @@ export class RecordEntryService {
     }
 
     /**
-     * 
+     *
      * @param recordEntry FindRecordEntryOfPersonDto
-     * @returns 
+     * @returns
      */
     async findInRecordEntryPersonIn(person: FindPersonDocumentDto): Promise<Record_entry> {
         const today = new Date();
@@ -93,9 +93,9 @@ export class RecordEntryService {
 
 
     /**
-     * 
+     *
      * @param recordEntry FindRecordEntryOfPersonDto
-     * @returns 
+     * @returns
      */
     async findInRecordEntryByPersonInside(person: FindPersonDocumentDto): Promise<Record_entry> {
         const today = new Date();
@@ -121,8 +121,8 @@ export class RecordEntryService {
 
 
     /**
-     * 
-     * @returns 
+     *
+     * @returns
      */
     async findAllRecord(pageOptionsDto?: PageOptionsDto<RecordEntryDto>): Promise<PageDto<Record_entry>> {
         //const search: Search = SearchQueries(pageOptionsDto.keyWords);
@@ -186,6 +186,15 @@ export class RecordEntryService {
         })
         const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
         return new PageDto(entities, pageMeta);
+    }
+
+    async findRecordEntryById(id: number): Promise<Record_entry> {
+        return await this.recordEntryRepository.findOne({
+            where: {
+                id
+            },
+            relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType']
+        });
     }
 
 }

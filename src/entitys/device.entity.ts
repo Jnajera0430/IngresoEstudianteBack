@@ -8,7 +8,11 @@ import { Record_entry } from "./record_entry_and_out.entity";
 export class Device {
     @PrimaryGeneratedColumn('increment')
     id: number
+<<<<<<< HEAD
     @Column({ type: 'timestamp', nullable: true })
+=======
+    @Column({ type: 'timestamp', nullable: true})
+>>>>>>> d88541c651520337417c330186b23fc3a8793cfb
     dateOfEntry: Date
 
     @Column({ type: 'timestamp', nullable: true })

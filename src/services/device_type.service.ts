@@ -34,9 +34,18 @@ export class DeviceTypeService implements OnModuleInit {
         return deviceFound;
     }
 
+    async findDeviceTypeById(id: number) {
+        const deviceFound = await this.deviceTypeRepository.findOne({
+            where: {
+                id
+            }
+        });
+        return deviceFound;
+    }
+
     /**
-     * 
-     * @param deviceType  UpdateDeviceTypeDto 
+     *
+     * @param deviceType  UpdateDeviceTypeDto
      * @returns Device
      */
     async editDeviceType(deviceType: UpdateDeviceTypeDto) {
