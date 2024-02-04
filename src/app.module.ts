@@ -99,7 +99,7 @@ import { DashBoardModule } from './modules/dashBoard.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(TokenMiddleware)
+      .apply()
       .forRoutes(
         VehicleController,
         VehicleTypeController,
