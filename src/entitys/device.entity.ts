@@ -1,6 +1,6 @@
 import { DeviceType } from "src/entitys/device_type.entity";
 import { Person } from "src/entitys/person.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { EntryDevice } from "./entry_device.entity";
 import { Record_entry } from "./record_entry_and_out.entity";
 
@@ -8,10 +8,10 @@ import { Record_entry } from "./record_entry_and_out.entity";
 export class Device {
     @PrimaryGeneratedColumn('increment')
     id: number
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'timestamp', nullable: true })
     dateOfEntry: Date
 
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'timestamp', nullable: true })
     dateOfOut: Date
 
     @ManyToOne(()=>Person,person=>person.device)
