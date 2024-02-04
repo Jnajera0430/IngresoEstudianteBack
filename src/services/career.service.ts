@@ -49,8 +49,10 @@ export class CareerService {
             //relations:["groups"]
         });
         if (!fichaFound) {
-            //se tiene que hacer la excepcion 
-            throw new NotFoundException("Career not found")
+            //se tiene que hacer la excepcion
+            this.careerRepository.create(career);
+            // throw new NotFoundException("Career not found")
+
         }
         return fichaFound;
     }

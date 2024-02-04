@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateDeviceDto, UpdateDeviceDto } from 'src/dto/device/device.dto';
+import { CreateDeviceDto, DeviceDto, UpdateDeviceDto } from 'src/dto/device/device.dto';
 import { FindPersonDto, PersonDto } from 'src/dto/person/person.dto';
 import { Device } from 'src/entitys/device.entity';
 import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
@@ -10,31 +10,49 @@ import { PersonService } from './person.service';
 import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
 import { PageMetaDto } from 'src/dto/page/pageMeta.dto';
 import { PageDto } from 'src/dto/page/page.dto';
+import { DeviceType } from 'src/entitys/device_type.entity';
+import { Person } from 'src/entitys/person.entity';
+import { RecordEntryService } from './record_entry_and_out.service';
 
 @Injectable()
 export class DeviceService {
     constructor(
         @InjectRepository(Device) private readonly deviceRepository: Repository<Device>,
         private readonly deviceTypeService: DeviceTypeService,
-        private readonly personService: PersonService
+        private readonly personService: PersonService,
+        private readonly recordEntryService: RecordEntryService
     ) { }
     /**
-     * 
+     *
      * @param device CreateDeviceDto
      * @returns Device
      */
-    async createDevice(device: CreateDeviceDto): Promise<Device> {
-        const newDevice = this.deviceRepository.create(device);
-        const devicetypeFound = await this.deviceTypeService.findDeviceTypeByBrand(device.deviceType.brand);
-        if (!devicetypeFound) {
-            throw new ValueNotFoundException('Device type not found');
-        }
-        newDevice.deviceType = devicetypeFound;
+    async createDevice(device: any): Promise<Device> {
+        const person: Person = await this.personService.getPersonById(device.person);
+        const deviceType: DeviceType = await this.deviceTypeService.findDeviceTypeById(device.deviceType);
+        const entry: any = await this.recordEntryService.findRecordEntryById(device.recordEntryId);
+
+        console.log(person);
+        console.log(deviceType);
+
+        const newDevice = this.deviceRepository.create({
+            person: person,
+            deviceType: deviceType,
+            dateOfEntry: new Date(),
+            recordEntry: entry
+        });
+
+        console.log('===>',newDevice);
+        // const devicetypeFound = await this.deviceTypeService.findDeviceTypeByBrand(device.deviceType.brand);
+        // if (!devicetypeFound) {
+        //     throw new ValueNotFoundException('Device type not found');
+        // }
+        // newDevice.deviceType = devicetypeFound;
         return await this.deviceRepository.save(newDevice);
     }
 
     /**
-     * 
+     *
      * @param device CreateDeviceDto
      * @returns Promise<Device>
      */
@@ -57,7 +75,7 @@ export class DeviceService {
     }
 
     /**
-     * 
+     *
      * @param device UpdateDeviceDto
      * @returns Device
      */
@@ -100,7 +118,7 @@ export class DeviceService {
     }
 
     /**
-     * 
+     *
      * @param id number
      * @returns Device
      */
@@ -119,9 +137,9 @@ export class DeviceService {
     }
 
     /**
-     * 
+     *
      * @param person PersonDto
-     * @returns 
+     * @returns
      */
     async findDeviceByPerson(person: FindPersonDto): Promise<Device> {
         const deviceFound = await this.deviceRepository.findOne({

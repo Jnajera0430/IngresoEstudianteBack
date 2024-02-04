@@ -7,9 +7,10 @@ import { DeviceType } from 'src/entitys/device_type.entity';
 import { Device } from 'src/entitys/device.entity';
 import { PersonModule } from './person.module';
 import { DeviceTypeModule } from './device_type.module';
+import { RecordEntryModule } from './record_entry_and_out.module';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Person,DeviceType,Device]),DeviceTypeModule,PersonModule],
+  imports:[TypeOrmModule.forFeature([Person,DeviceType,Device]),DeviceTypeModule,PersonModule, RecordEntryModule],
   providers: [DeviceService],
   controllers: [DeviceController]
 })

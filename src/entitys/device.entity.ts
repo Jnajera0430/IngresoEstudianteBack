@@ -8,10 +8,10 @@ import { Record_entry } from "./record_entry_and_out.entity";
 export class Device {
     @PrimaryGeneratedColumn('increment')
     id: number
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'timestamp', nullable: true})
     dateOfEntry: Date
 
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'timestamp', nullable: true })
     dateOfOut: Date
 
     @ManyToOne(()=>Person,person=>person.device)

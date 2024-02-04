@@ -46,6 +46,8 @@ export class RecordEntryController {
     async getAllRecords( @Query() pageOptionsDto:PageOptionsDto<RecordEntryDto>): Promise<ICustomResponse> {
         console.log(typeof pageOptionsDto.keyWords);
         const {data,meta} = await this.recordEntryService.findAllRecord(pageOptionsDto)
+        console.log(data);
+
         try {
             return customResponse({
                 status: HttpStatus.OK,
