@@ -2,25 +2,34 @@ import { Record_entry } from "src/entitys/record_entry_and_out.entity";
 import { Vehicle } from "src/entitys/vehicle.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ name: 'entry_vehicle' })
-export class EntryVehicle {
+@Entity({ name: 'RecordVehicle' })
+export class RecordVehicle {
     @PrimaryGeneratedColumn('increment')
-    id: number
+    id: number;
 
     @Column()
-    inside: boolean
+    inside: boolean;
 
-    @Column({ type: 'timestamp', nullable: true })
-    out: Date
+    @Column({ nullable: true })
+    out: boolean;
+
+    @Column({ type: "timestamp", nullable: true })
+    dateEntry: Date;
+
+    @Column({ type: "timestamp", nullable: true })
+    dateExit: Date;
 
     @ManyToOne(() => Vehicle, vehicle => vehicle, {
-        cascade: true,
         eager: false,
         nullable: true
     })
-    @JoinColumn({ name: 'vehicle' })
-    vehicle: Vehicle
+    @JoinColumn({ name: 'idVehicle' })
+    idVehicle: number;
 
-    // @ManyToOne(()=>Record_entry,recordEntry=>recordEntry.vehicleEntry)
-    // recordEntry: Record_entry
+    @ManyToOne(() => Record_entry, recordEntry => recordEntry.idRecordVehicle, {
+        eager: false,
+        nullable: true
+    })
+    @JoinColumn({name: "idRecord"})
+    idRecord: number
 }

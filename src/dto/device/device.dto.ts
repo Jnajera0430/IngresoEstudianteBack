@@ -13,15 +13,15 @@ export class DeviceDto{
 
     dateOfOut: Date;
 
-    person: Person;
+    person: number;
 
     deviceType: DeviceType
 }
 
 export class CreateDeviceDto extends PartialType(DeviceDto){
     @IsNotEmpty()
-    @Type(()=>Person)
-    person: Person;
+    @IsNumber()
+    person: number;
 
     @IsNotEmpty()
     @Type(()=>DeviceType)
@@ -32,4 +32,13 @@ export class UpdateDeviceDto extends PartialType(DeviceDto){
     @IsNotEmpty()
     @IsNumber()
     id:number;
+}
+
+export class CreateDeviceForEntry{
+    @IsNotEmpty()
+    person: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    idDeviceType: number
 }

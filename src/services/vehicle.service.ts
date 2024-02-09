@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateVehicleDto, UpdateVehicleDto } from 'src/dto/vehicle/vehicle.dto';
+import { CreateVehicleDto, CreateVehicleToEntry, UpdateVehicleDto } from 'src/dto/vehicle/vehicle.dto';
 import { Vehicle } from 'src/entitys/vehicle.entity';
 import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
 import { Repository } from 'typeorm';
@@ -9,6 +9,7 @@ import { PersonService } from './person.service';
 import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
 import { PageDto } from 'src/dto/page/page.dto';
 import { PageMetaDto } from 'src/dto/page/pageMeta.dto';
+import { FindPersonDto } from 'src/dto/person/person.dto';
 
 @Injectable()
 export class VehicleService {
@@ -32,7 +33,7 @@ export class VehicleService {
 		const newVehicle = this.vehicleRepository.create(vehicle);
 		const [vehicleTypeFound,personFound] = await Promise.all([
 			this.vehicleTypeService.findVehicleTypeByVendor(vehicle.vehicleType.vendor),
-			this.personService.getPersonById(vehicle.person.id)
+			this.personService.getPersonById(vehicle.person)
 		])
 		if(!vehicleTypeFound){
 			throw new ValueNotFoundException('Vehicle type not found')
@@ -42,6 +43,11 @@ export class VehicleService {
 		}
 		newVehicle.vehicleType = vehicleTypeFound;
 		return await this.vehicleRepository.save(newVehicle);
+	}
+
+	async createVehicleToRecord(vehicle:CreateVehicleToEntry){
+		const vehicleTypeFound = this.vehicleTypeService.findVehicleTypeById(vehicle.idVehicleType)
+		
 	}
 
 	async updateVehicle(vehicle: UpdateVehicleDto): Promise<Vehicle> {
@@ -72,7 +78,7 @@ export class VehicleService {
 			where: {
 				badge: badge
 			},
-			relations: ['person', 'vehicleType', 'entryVehicle']
+			relations: ['person', 'idRecordVehicle', 'entryVehicle']
 		});
 	}
 
@@ -82,7 +88,7 @@ export class VehicleService {
 		queryBuilder
 			.leftJoinAndSelect(`${alias}.person`,'person')
 			.leftJoinAndSelect(`${alias}.vehicleType`,'vehicleType')
-			.leftJoinAndSelect(`${alias}.recordEntry`,'recordEntry')
+			.leftJoinAndSelect(`${alias}.idRecordVehicle`,'idRecordVehicle')
 			.orderBy(`${alias}.createdAt`,pageOptionsDto.order)
 			.skip(pageOptionsDto.skip)
 			.take(pageOptionsDto.take)
@@ -93,5 +99,18 @@ export class VehicleService {
 		// return await this.vehicleRepository.find({
 		// 	relations: ['person', 'vehicleType', 'entryVehicle']
 		// });
+	}
+
+	async findAllVehicleByPersonID(person: FindPersonDto){
+		const vehiclesFound = await this.vehicleRepository.find({
+			where: {
+				person: person.id
+			}
+		})
+		if(!vehiclesFound){
+			throw new ValueNotFoundException(`Vehicles not found`);
+		}
+
+		return vehiclesFound;
 	}
 }

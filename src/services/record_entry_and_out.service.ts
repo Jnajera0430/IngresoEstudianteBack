@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Record_entry } from 'src/entitys/record_entry_and_out.entity';
-import { Between, Repository,Like,ILike } from 'typeorm';
+import { Between, Repository, Like, ILike } from 'typeorm';
 import { PersonService } from './person.service';
-import { FindRecordEntryOfPersonDto, RecordEntryDto, RecordsEntryOfPersonDto } from 'src/dto/recordsEntry/recordEntry.dto';
+import { FindRecordEntryOfPersonDto, RecordEntryNewDeviceDto, RecordEntryDto, RecordsEntryOfPersonDto, RecordEntryDeviceDto } from 'src/dto/recordsEntry/recordEntry.dto';
 import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
 import { EntryTypeService } from './entry_type.service';
 import { FindPersonDocumentDto, FindPersonDto, PersonDto } from 'src/dto/person/person.dto';
@@ -13,13 +13,21 @@ import { PageDto } from 'src/dto/page/page.dto';
 import { ParameterDateDto } from 'src/dto/page/parameterDate.dto';
 import { Search } from 'src/intefaces/Search.interface';
 import { SearchQueries } from 'src/helpers/convertSearch';
+import { DeviceService } from './device.service';
+import { VehicleService } from './vehicle.service';
+import { RecordDevice } from 'src/entitys/entry_device.entity';
+import { RecordVehicle } from 'src/entitys/entry_vehicle.entity';
 
 @Injectable()
 export class RecordEntryService {
     constructor(
         @InjectRepository(Record_entry) private readonly recordEntryRepository: Repository<Record_entry>,
+        @InjectRepository(RecordDevice) private readonly recordDeviceRepository: Repository<RecordDevice>,
+        @InjectRepository(RecordVehicle) private readonly recordVehicleRepository: Repository<RecordVehicle>,
         private readonly personService: PersonService,
-        private readonly entryTypeService: EntryTypeService
+        private readonly entryTypeService: EntryTypeService,
+        private readonly deviceService: DeviceService,
+        private readonly vehicleService: VehicleService
     ) { }
     /**
      *
@@ -47,7 +55,7 @@ export class RecordEntryService {
         newRecordEntry.checkIn = new Date();
         newRecordEntry.checkOut = null;
         const entry = await this.recordEntryRepository.save(newRecordEntry)
-        return {entry, device:personFounById.device, vehicle: personFounById.vehicles  };
+        return { entry, device: personFounById.device, vehicle: personFounById.vehicles };
     }
 
     /**
@@ -91,7 +99,6 @@ export class RecordEntryService {
         });
     }
 
-
     /**
      *
      * @param recordEntry FindRecordEntryOfPersonDto
@@ -114,11 +121,9 @@ export class RecordEntryService {
             order: {
                 createdAt: 'DESC'
             },
-            relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
+            relations: ['person', 'vehicleEntry', 'idRecordDevice', 'entryType'],
         });
     }
-
-
 
     /**
      *
@@ -127,7 +132,7 @@ export class RecordEntryService {
     async findAllRecord(pageOptionsDto?: PageOptionsDto<RecordEntryDto>): Promise<PageDto<Record_entry>> {
         //const search: Search = SearchQueries(pageOptionsDto.keyWords);
         //console.log(search);
-        
+
         const [rows, itemCount] = await this.recordEntryRepository.findAndCount({
             skip: pageOptionsDto.skip,
             order: {
@@ -143,8 +148,13 @@ export class RecordEntryService {
                 }
             },
             //where: search,
-            relations: ['person', 'vehicleEntry', 'deviceEntry']
+            relations: ['person', 'vehicleEntry', 'idRecordDevice']
         })
+        for (const row of rows) {
+            if (row.person && row.person.id) {
+                row.person.device = await this.deviceService.findDeviceByPerson({id: row.person.id});
+            }
+        }
         const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
         return new PageDto(rows, pageMeta);
     }
@@ -154,7 +164,7 @@ export class RecordEntryService {
             where: {
                 id
             },
-            relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
+            relations: ['person', 'vehicleEntry', 'idRecordDevice', 'entryType'],
         });
     }
 
@@ -193,8 +203,76 @@ export class RecordEntryService {
             where: {
                 id
             },
-            relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType']
+            relations: ['person', 'vehicleEntry', 'idRecordDevice', 'entryType']
         });
     }
 
+    async registerNewDeviceEntry(recordEntryDevice: RecordEntryNewDeviceDto): Promise<RecordDevice> {
+        const entryFound = await this.findRecordById(recordEntryDevice.id)
+        if (!entryFound)
+            throw new NotFoundException("The user has not registered an entry.")
+        const newDevice = await this.deviceService.createDeviceForEntry({ person: entryFound.person.id, idDeviceType: recordEntryDevice.idDeviceType })
+        if (!newDevice)
+            throw new NotFoundException("Failed to create device.")
+
+        const newRecordDevice = this.recordDeviceRepository.create({
+            idRecord: entryFound.id,
+            idDevice: newDevice.id,
+            dateEntry: new Date(),
+            dateExit: null,
+            inside: true,
+            out: false
+        })
+        return await this.recordDeviceRepository.save(newRecordDevice)
+    }
+
+    async registerDeviceEntry(recordEntryDevice: RecordEntryDeviceDto) {
+        const today = new Date();
+        const entryFound = await this.findRecordById(recordEntryDevice.id)
+        if (!entryFound) {
+            throw new NotFoundException("The user has not registered an entry.")
+        }
+        const deviceFound = await this.deviceService.registerInAndOut(recordEntryDevice.idDevice, entryFound.person.id);
+        if (!deviceFound) {
+            throw new NotFoundException("Device not found.")
+        }
+
+        const recordDeviceFound = await this.recordDeviceRepository.findOne({
+            where: {
+                idDevice: deviceFound.id,
+                idRecord: entryFound.id,
+                dateEntry: Between(
+                    new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0),
+                    new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59),
+                ),
+            },
+            order: {
+                createdAt: "DESC"
+            }
+        })
+
+        if (recordDeviceFound && recordDeviceFound.inside && !recordDeviceFound.out) {
+            recordDeviceFound.dateExit = new Date();
+            recordDeviceFound.out = true;
+            return await this.recordDeviceRepository.save(recordDeviceFound);
+        }
+
+        const newRecordDevice = this.recordDeviceRepository.create({
+            idDevice: deviceFound.id,
+            idRecord: entryFound.id,
+            dateEntry: new Date(),
+            dateExit: null,
+            inside: true,
+            out: false,
+        });
+        return await this.recordDeviceRepository.save(newRecordDevice);
+    }
+
+    async registerNewVehicle(recordEntryVehicle: any) {
+        const entryFound = await this.findRecordById(recordEntryVehicle.id)
+        if (!entryFound) {
+            throw new NotFoundException("The user has not registered an entry.")
+        }
+        //const newVehicle = await this.vehicleService.createVehicleEntry
+    }
 }

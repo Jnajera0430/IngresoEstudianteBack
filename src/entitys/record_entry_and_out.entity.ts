@@ -1,12 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { Person } from "src/entitys/person.entity";
 import { EntryType } from "src/entitys/entry_type.entity";
-import { EntryVehicle } from "./entry_vehicle.entity";
-import { EntryDevice } from "./entry_device.entity";
+import { RecordVehicle } from "./entry_vehicle.entity";
+import { RecordDevice } from "./entry_device.entity";
 import { EntryPerson } from "./entry_person.entity";
 import { AbstractEntity } from "./abstractEntity.entity";
-import { Device } from "./device.entity";
-import { Vehicle } from "./vehicle.entity";
 @Entity({ name: 'record_entry' })
 export class Record_entry extends AbstractEntity {
 
@@ -27,21 +25,21 @@ export class Record_entry extends AbstractEntity {
     @JoinColumn({ name: 'person' })
     person: Person;
 
-    @ManyToOne(() => Vehicle, (entryVehicle) => entryVehicle.recordEntry,{
+    @OneToMany(() => RecordVehicle, (entryVehicle) => entryVehicle.idRecord,{
         cascade: true,
         eager: true,
         nullable: true
     })
-    @JoinColumn({ name: 'vehicleEntry' })
-    vehicleEntry: Vehicle;
+    @JoinColumn({ name: 'idRecordVehicle' })
+    idRecordVehicle: RecordVehicle[];
 
-    @ManyToOne(() => Device, deviceEntry => deviceEntry.recordEntry, {
+    @OneToMany(() => RecordDevice, recordDevice => recordDevice.idRecord, {
         cascade: true,
         eager: true,
         nullable: true
     })
-    @JoinColumn({ name: 'deviceEntry' })
-    deviceEntry: Device;
+    @JoinColumn({ name: 'idRecordDevice' })
+    idRecordDevice: RecordDevice[];
 
     @ManyToOne(() => EntryType, entryType => entryType.recordEntry, {
         cascade: true,
@@ -50,6 +48,7 @@ export class Record_entry extends AbstractEntity {
     })
     @JoinColumn({ name: 'entryType' })
     entryType: EntryType;
+
     // @OneToMany(() => EntryPerson, personEntry => personEntry.recordEntry, {
     //     cascade: true,
     //     eager: true,

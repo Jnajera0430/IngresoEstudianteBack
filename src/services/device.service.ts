@@ -1,6 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateDeviceDto, DeviceDto, UpdateDeviceDto } from 'src/dto/device/device.dto';
+import { CreateDeviceDto, CreateDeviceForEntry, DeviceDto, UpdateDeviceDto } from 'src/dto/device/device.dto';
 import { FindPersonDto, PersonDto } from 'src/dto/person/person.dto';
 import { Device } from 'src/entitys/device.entity';
 import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
@@ -20,7 +20,6 @@ export class DeviceService {
         @InjectRepository(Device) private readonly deviceRepository: Repository<Device>,
         private readonly deviceTypeService: DeviceTypeService,
         private readonly personService: PersonService,
-        private readonly recordEntryService: RecordEntryService
     ) { }
     /**
      *
@@ -30,16 +29,16 @@ export class DeviceService {
     async createDevice(device: any): Promise<Device> {
         const person: Person = await this.personService.getPersonById(device.person);
         const deviceType: DeviceType = await this.deviceTypeService.findDeviceTypeById(device.deviceType);
-        const entry: any = await this.recordEntryService.findRecordEntryById(device.recordEntryId);
+        //const entry: any = await this.recordEntryService.findRecordEntryById(device.recordEntryId);
 
         console.log(person);
         console.log(deviceType);
 
         const newDevice = this.deviceRepository.create({
-            person: person,
+            person: person.id,
             deviceType: deviceType,
-            dateOfEntry: new Date(),
-            recordEntry: entry
+            //dateOfEntry: new Date(),
+           // recordEntry: entry
         });
 
         console.log('===>',newDevice);
@@ -56,22 +55,37 @@ export class DeviceService {
      * @param device CreateDeviceDto
      * @returns Promise<Device>
      */
-    async createDeviceForEntry(device: CreateDeviceDto): Promise<Device> {
+    async createDeviceForEntry(device: CreateDeviceForEntry): Promise<Device> {
         const newDevice = this.deviceRepository.create(device);
-        const [devicetypeFound, personFound] = await Promise.all([
-            this.deviceTypeService.findDeviceTypeByBrand(device.deviceType.brand),
-            this.personService.getPersonById(device.person.id)
-        ]);
+        const devicetypeFound = await this.deviceTypeService.findDeviceTypeById(device.idDeviceType);
+        
         if (!devicetypeFound) {
             throw new ValueNotFoundException('Device type not found');
         }
 
-        if (!personFound) {
-            throw new ValueNotFoundException('Person not found');
-        }
         newDevice.deviceType = devicetypeFound;
-        newDevice.person = personFound;
+        newDevice.person = device.person;
+        // newDevice.dateOfEntry = new Date()
         return await this.deviceRepository.save(newDevice);
+    }
+
+    /**
+     * @param id 
+     * @param idPerson 
+     * @returns 
+     */
+    async registerInAndOut(id:number,idPerson: number){
+        const deviceFound = await this.deviceRepository.findOne({where:{id,person:idPerson}})
+        if(!deviceFound){
+            throw new NotFoundException("Device Not Found")
+        }
+        // if(!deviceFound.dateOfOut){
+        //     deviceFound.dateOfOut = new Date()
+        //     return await this.deviceRepository.save(deviceFound)
+        // }
+        // deviceFound.dateOfEntry= new Date();
+        // deviceFound.dateOfOut = null;
+        return await this.deviceRepository.save(deviceFound);
     }
 
     /**
@@ -107,7 +121,6 @@ export class DeviceService {
         queryBuilder
             .leftJoinAndSelect(`${alias}.person`,'person')
             .leftJoinAndSelect(`${alias}.deviceType`,'deviceType')
-            .leftJoinAndSelect(`${alias}.recordEntry`,'recordEntry')
         const itemCount = await queryBuilder.getCount();
         const {entities} = await queryBuilder.getRawAndEntities();
         const pageMeta = new PageMetaDto({pageOptionsDto,itemCount});
@@ -141,14 +154,12 @@ export class DeviceService {
      * @param person PersonDto
      * @returns
      */
-    async findDeviceByPerson(person: FindPersonDto): Promise<Device> {
-        const deviceFound = await this.deviceRepository.findOne({
+    async findDeviceByPerson(person: FindPersonDto): Promise<Device[]> {
+        const deviceFound = await this.deviceRepository.find({
             where: {
-                person: {
-                    id: person.id
-                }
+                person: person.id
             },
-            relations: ['person', 'deviceType','entryDevice']
+            relations: ['deviceType']
         });
         if (!deviceFound) {
             throw new ValueNotFoundException(`Device not found by person with this id: , ${person.id}`);

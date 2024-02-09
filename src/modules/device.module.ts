@@ -10,8 +10,9 @@ import { DeviceTypeModule } from './device_type.module';
 import { RecordEntryModule } from './record_entry_and_out.module';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Person,DeviceType,Device]),DeviceTypeModule,PersonModule, RecordEntryModule],
+  imports:[TypeOrmModule.forFeature([Person,DeviceType,Device]),DeviceTypeModule,PersonModule],
   providers: [DeviceService],
-  controllers: [DeviceController]
+  controllers: [DeviceController],
+  exports:[DeviceService]
 })
 export class DeviceModule {}

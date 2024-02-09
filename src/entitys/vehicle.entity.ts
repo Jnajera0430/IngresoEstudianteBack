@@ -1,8 +1,7 @@
-import { EntryVehicle } from "src/entitys/entry_vehicle.entity";
+import { RecordVehicle } from "src/entitys/entry_vehicle.entity";
 import { Person } from "src/entitys/person.entity";
 import { VehicleType } from "src/entitys/vehicle_type.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Record_entry } from "./record_entry_and_out.entity";
 import { AbstractEntity } from "./abstractEntity.entity";
 
 @Entity({ name: 'vehicles' })
@@ -21,7 +20,7 @@ export class Vehicle extends AbstractEntity{
 
     @ManyToOne(()=>Person, person=>person.vehicles)
     @JoinColumn()
-    person: Person
+    person: number
 
     @ManyToOne(() => VehicleType, tipo => tipo.vehicle, {
         cascade: true,
@@ -31,9 +30,9 @@ export class Vehicle extends AbstractEntity{
     @JoinColumn({ name: 'vehicleType'})
     vehicleType: VehicleType
 
-    @ManyToOne(()=>Record_entry,recordEntry=>recordEntry.vehicleEntry)
+    @OneToMany(()=>RecordVehicle,recordEntry=>recordEntry.idVehicle)
     @JoinColumn()
-    recordEntry: Record_entry[]
+    idRecordVehicle: RecordVehicle[]
 
     // @OneToMany(()=>EntryVehicle,entryVehicle=>entryVehicle.vehicle)
     // entryVehicle: EntryVehicle[]

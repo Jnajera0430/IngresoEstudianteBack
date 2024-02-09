@@ -1,6 +1,9 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeviceTypeDto, DeviceTypeDto, UpdateDeviceTypeDto } from 'src/dto/device/deviceType.dto';
+import { PageDto } from 'src/dto/page/page.dto';
+import { PageMetaDto } from 'src/dto/page/pageMeta.dto';
+import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
 import { DeviceType } from 'src/entitys/device_type.entity';
 import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
 import { Repository } from 'typeorm';
@@ -18,6 +21,15 @@ export class DeviceTypeService implements OnModuleInit {
     async createDeviceType(typeDevice: CreateDeviceTypeDto) {
         const newTypeDevice = this.deviceTypeRepository.create(typeDevice);
         return await this.deviceTypeRepository.save(newTypeDevice);
+    }
+
+    async findAllDeviceType(pageOptionsDto?: PageOptionsDto<DeviceTypeDto>){
+        const [rows, itemCount]= await this.deviceTypeRepository.findAndCount({
+            skip: pageOptionsDto.skip,
+            take: pageOptionsDto.take,
+        })
+        const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
+        return new PageDto(rows, pageMeta);
     }
 
     /**
