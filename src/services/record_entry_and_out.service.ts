@@ -95,7 +95,7 @@ export class RecordEntryService {
                     new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59),
                 ),
             },
-            relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
+            relations: ['person', 'idRecordVehicle', 'deviceEntry', 'entryType'],
         });
     }
 
@@ -121,7 +121,7 @@ export class RecordEntryService {
             order: {
                 createdAt: 'DESC'
             },
-            relations: ['person', 'vehicleEntry', 'idRecordDevice', 'entryType'],
+            relations: ['person', 'idRecordVehicle', 'idRecordDevice', 'entryType'],
         });
     }
 
@@ -148,7 +148,7 @@ export class RecordEntryService {
                 }
             },
             //where: search,
-            relations: ['person', 'vehicleEntry', 'idRecordDevice']
+            relations: ['person', 'idRecordVehicle', 'idRecordDevice']
         })
         for (const row of rows) {
             if (row.person && row.person.id) {
@@ -164,7 +164,7 @@ export class RecordEntryService {
             where: {
                 id
             },
-            relations: ['person', 'vehicleEntry', 'idRecordDevice', 'entryType'],
+            relations: ['person', 'idRecordVehicle', 'idRecordDevice', 'entryType'],
         });
     }
 
@@ -175,7 +175,7 @@ export class RecordEntryService {
                     document: person.document
                 }
             },
-            relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType'],
+            relations: ['person', 'idRecordVehicle', 'deviceEntry', 'entryType'],
         });
     }
 
@@ -192,7 +192,7 @@ export class RecordEntryService {
                     new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), parameterDateDto.hourTo, 59, 59),
                 )
             },
-            relations: ['person', 'vehicleEntry', 'deviceEntry', 'entryType']
+            relations: ['person', 'idRecordVehicle', 'idRecordDevice', 'entryType']
         })
         const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
         return new PageDto(entities, pageMeta);
@@ -203,7 +203,7 @@ export class RecordEntryService {
             where: {
                 id
             },
-            relations: ['person', 'vehicleEntry', 'idRecordDevice', 'entryType']
+            relations: ['person', 'idRecordVehicle', 'idRecordDevice', 'entryType']
         });
     }
 
