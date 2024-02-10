@@ -40,8 +40,8 @@ export class PersonService implements OnModuleInit {
 
     async createPersonAprendiz(person: CreatePerson): Promise<Person> {
         const newAprendiz = this.personRepository.create(person);
-        console.log({person});
-        
+        console.log({ person });
+
         const docType = await this.docTypeRepository.findOne({ where: { name: person.docType.name } });
         const personType = await this.personTypeRepository.findOne({ where: { name: PersonTypeEnum.APRENDIZ } })
         if (!docType) {
@@ -111,11 +111,17 @@ export class PersonService implements OnModuleInit {
      * @returns Promise<Person>
      */
     async getPersonByDocument(document: number): Promise<Person> | null {
-        return await this.personRepository.findOne({
-            where: {
-                document
-            }, relations: [ "personTypes", 'doctType']
-        });
+        return await this.personRepository.createQueryBuilder("person")
+        .where({"document": document})
+        .leftJoinAndSelect("person.personTypes", "personTypes")
+            .leftJoinAndSelect("person.device", "device")
+            .leftJoinAndSelect("device.deviceType", "deviceType")
+            .getOne()
+        // return await this.personRepository.findOne({
+        //     where: {
+        //         document
+        //     }, relations: [ "personTypes", 'doctType']
+        // });
     }
 
     /**

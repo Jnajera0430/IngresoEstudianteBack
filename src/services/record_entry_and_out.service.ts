@@ -39,6 +39,7 @@ export class RecordEntryService {
             throw new ValueNotFoundException('value invalid')
         }
         const personFound = await this.personService.getPersonByDocument(recordEntry.person.document);
+        
         if (!personFound)
             throw new ValueNotFoundException('This person is not in our records.');
 
@@ -46,8 +47,6 @@ export class RecordEntryService {
         if (!entryTypeFound)
             throw new ValueNotFoundException('Input record type is not defined.');
 
-        //Se obtiene los vehilculos y dispositivos
-        const personFounById = await this.personService.getPersonById(personFound.id)
         // Se crea un nuevo objeto
         const newRecordEntry = this.recordEntryRepository.create(recordEntry);
         newRecordEntry.person = personFound;
@@ -55,7 +54,8 @@ export class RecordEntryService {
         newRecordEntry.checkIn = new Date();
         newRecordEntry.checkOut = null;
         const entry = await this.recordEntryRepository.save(newRecordEntry)
-        return { entry, device: personFounById.device, vehicle: personFounById.vehicles };
+        // const devices = await this.
+        return  entry;
     }
 
     /**
@@ -129,34 +129,44 @@ export class RecordEntryService {
      *
      * @returns
      */
-    async findAllRecord(pageOptionsDto?: PageOptionsDto<RecordEntryDto>): Promise<PageDto<Record_entry>> {
+    async findAllRecord(pageOptionsDto?: PageOptionsDto<RecordEntryDto>): Promise<any> {
         //const search: Search = SearchQueries(pageOptionsDto.keyWords);
         //console.log(search);
 
-        const [rows, itemCount] = await this.recordEntryRepository.findAndCount({
-            skip: pageOptionsDto.skip,
-            order: {
-                createdAt: pageOptionsDto.order
-            },
-            take: pageOptionsDto.take,
-            join: {
-                alias: 'record_entry',
-                leftJoinAndSelect: {
-                    person: 'record_entry.person',
-                    vehicles: 'person.vehicles',
-                    devices: 'person.device'
-                }
-            },
-            //where: search,
-            relations: ['person', 'idRecordVehicle', 'idRecordDevice']
-        })
-        for (const row of rows) {
-            if (row.person && row.person.id) {
-                row.person.device = await this.deviceService.findDeviceByPerson({id: row.person.id});
-            }
-        }
+        const rows =  await this.recordEntryRepository.createQueryBuilder("record")
+        .skip(pageOptionsDto.skip)
+        .take(pageOptionsDto.take)
+        .orderBy("record.createdAt", pageOptionsDto.order)
+        .leftJoinAndSelect("record.person","person")
+        .leftJoinAndSelect("person.device","devices")
+        .leftJoinAndSelect("devices.deviceType","deviceType")
+        .getMany()  
+
+        const itemCount = rows.length
         const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
         return new PageDto(rows, pageMeta);
+        // findAndCount({
+        //     skip: pageOptionsDto.skip,
+        //     order: {
+        //         createdAt: pageOptionsDto.order
+        //     },
+        //     take: pageOptionsDto.take,
+        //     join: {
+        //         alias: 'record_entry',
+        //         leftJoinAndSelect: {
+        //             person: 'record_entry.person',
+        //             vehicles: 'person.vehicles',
+        //             devices: 'person.device',
+        //         },
+        //     },
+        //     //where: search,
+        //     relations: ['person', 'idRecordVehicle', 'idRecordDevice']
+        // })
+        // for (const row of rows) {
+        //     if (row.person && row.person.id) {
+        //         row.person.device = await this.deviceService.findDeviceByPerson({id: row.person.id});
+        //     }
+        // }
     }
 
     async findRecordById(id: number): Promise<Record_entry> {
