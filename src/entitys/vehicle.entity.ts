@@ -12,12 +12,6 @@ export class Vehicle extends AbstractEntity{
     @Column()
     badge: string
 
-    @Column({ type: 'timestamp', nullable: true })
-    dateOfEntry: Date
-
-    @Column({ type: 'timestamp', nullable: true })
-    dateOfOut: Date
-
     @ManyToOne(()=>Person, person=>person.vehicles)
     @JoinColumn()
     person: number

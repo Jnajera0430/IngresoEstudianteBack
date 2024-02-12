@@ -27,7 +27,6 @@ export class Record_entry extends AbstractEntity {
 
     @OneToMany(() => RecordVehicle, (entryVehicle) => entryVehicle.idRecord,{
         cascade: true,
-        eager: true,
         nullable: true
     })
     @JoinColumn({ name: 'idRecordVehicle' })
@@ -35,7 +34,6 @@ export class Record_entry extends AbstractEntity {
 
     @OneToMany(() => RecordDevice, recordDevice => recordDevice.idRecord, {
         cascade: true,
-        eager: true,
         nullable: true
     })
     @JoinColumn({ name: 'idRecordDevice' })

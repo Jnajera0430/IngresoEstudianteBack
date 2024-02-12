@@ -2,7 +2,6 @@ import { IsDateString, IsNotEmpty, IsNumber, IsString, ValidateNested } from "cl
 import { Type } from "class-transformer";
 import { PartialType } from "@nestjs/swagger";
 import { VehicleType } from "src/entitys/vehicle_type.entity";
-import { Person } from "src/entitys/person.entity";
 import { RecordVehicle } from "src/entitys/entry_vehicle.entity";
 
 export class VehicleDto {
@@ -12,36 +11,21 @@ export class VehicleDto {
     @IsString()
     badge: string
 
-    @IsDateString()
-    dateOfEntry: Date;
-
-    @IsDateString()
-    dateOfOut: Date;
-
-    @ValidateNested()
+    @IsNumber()
     person: number;
 
     @ValidateNested()
     @Type(()=>VehicleType)
     vehicleType: VehicleType;
 
-    @ValidateNested()
-    @Type(()=>Array<RecordVehicle>)
-    recordEntry: RecordVehicle[]
+    @IsNumber()
+    idRecord: number;
 }
 
 export class CreateVehicleDto extends PartialType(VehicleDto){
     @IsNotEmpty()
     @IsString()
     registration: string
-
-    @IsNotEmpty()
-    @IsDateString()
-    dateOfEntry: Date;
-
-    @IsNotEmpty()
-    @IsDateString()
-    dateOfOut: Date;
 
     @IsNotEmpty()
     @ValidateNested()
@@ -55,14 +39,28 @@ export class UpdateVehicleDto extends PartialType(VehicleDto){
     id: number;
 }
 
-export class CreateVehicleToEntry extends PartialType(VehicleDto){
-    @IsNotEmpty()
-    @IsNumber()
-    person: number;
+export class CreateVehicleToEntryDto extends PartialType(VehicleDto){
+    
     @IsNotEmpty()
     @IsNumber()
     idVehicleType: number;
+
     @IsNotEmpty()
     @IsString()
-    registration: string;
+    badge: string;
+
+    @IsNotEmpty()
+    @IsNumber()
+    idPerson: number;
+}
+
+export class FindVehicleToRecords {
+    @IsNotEmpty()
+    @IsNumber()
+    idVehicle: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    idPerson: number;
+
 }

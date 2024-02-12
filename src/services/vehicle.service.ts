@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateVehicleDto, CreateVehicleToEntry, UpdateVehicleDto } from 'src/dto/vehicle/vehicle.dto';
+import { CreateVehicleDto, CreateVehicleToEntryDto, FindVehicleToRecords, UpdateVehicleDto } from 'src/dto/vehicle/vehicle.dto';
 import { Vehicle } from 'src/entitys/vehicle.entity';
 import { ValueNotFoundException } from 'src/exceptions/customExcepcion';
 import { Repository } from 'typeorm';
@@ -45,9 +45,16 @@ export class VehicleService {
 		return await this.vehicleRepository.save(newVehicle);
 	}
 
-	async createVehicleToRecord(vehicle:CreateVehicleToEntry){
-		const vehicleTypeFound = this.vehicleTypeService.findVehicleTypeById(vehicle.idVehicleType)
-		
+	async createVehicleToRecord(vehicle:CreateVehicleToEntryDto){
+		const vehicleTypeFound = await this.vehicleTypeService.findVehicleTypeById(vehicle.idVehicleType)
+		if(!vehicleTypeFound)
+			throw new ValueNotFoundException("Vehicle type not found.");
+		const newVehicle = this.vehicleRepository.create({
+			badge: vehicle.badge,
+			vehicleType: vehicleTypeFound,
+			person: vehicle.idPerson
+		});
+		return await this.vehicleRepository.save(newVehicle);
 	}
 
 	async updateVehicle(vehicle: UpdateVehicleDto): Promise<Vehicle> {
@@ -78,7 +85,7 @@ export class VehicleService {
 			where: {
 				badge: badge
 			},
-			relations: ['person', 'idRecordVehicle', 'entryVehicle']
+			relations: ['person', 'idRecordVehicle', 'vehicleType']
 		});
 	}
 
@@ -106,11 +113,20 @@ export class VehicleService {
 			where: {
 				person: person.id
 			}
-		})
+		});
 		if(!vehiclesFound){
 			throw new ValueNotFoundException(`Vehicles not found`);
 		}
 
 		return vehiclesFound;
+	}
+
+	async findVehicleByID(findVehicleToRecords:FindVehicleToRecords){
+		return await this.vehicleRepository.findOne({
+			where: {
+				id: findVehicleToRecords.idVehicle,
+				person: findVehicleToRecords.idPerson
+			}
+		});
 	}
 }

@@ -5,7 +5,7 @@ import { RoleEnumByType } from 'src/constants/roles.enum';
 import { UserAllowed } from 'src/decorators/UserAllowed.decorator';
 import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
 import { FindPersonDocumentDto, FindPersonDto, PersonDto } from 'src/dto/person/person.dto';
-import { FindRecordEntryOfPersonDto, RecordEntryNewDeviceDto, RecordEntryDto, RecordEntryDeviceDto } from 'src/dto/recordsEntry/recordEntry.dto';
+import { FindRecordEntryOfPersonDto, RecordEntryNewDeviceDto, RecordEntryDto, RecordEntryDeviceDto, RecordNewVehicleDto, RecordVehicleDto } from 'src/dto/recordsEntry/recordEntry.dto';
 import { ICustomResponse } from 'src/intefaces/customResponse.interface';
 import { customResponse } from 'src/services/customResponse.service';
 import { RecordEntryService } from 'src/services/record_entry_and_out.service';
@@ -27,12 +27,10 @@ export class RecordEntryController {
         const recordFound = await this.recordEntryService.findInRecordEntryByPersonInside(recordEntry.person);
 
         if (recordFound && !recordFound.checkOut) {
-            let data = new FindRecordEntryOfPersonDto(recordFound);
-            data = Object.assign(recordFound, data);
             return customResponse({
                 status: HttpStatus.CREATED,
                 message: 'Their process has been successful.',
-                data: await this.recordEntryService.recordCheckOutOfPerson(data)
+                data: await this.recordEntryService.recordCheckOutOfPerson(recordFound)
             });
         }
         return customResponse({
@@ -45,7 +43,7 @@ export class RecordEntryController {
 
     @Post('device')
     @HttpCode(201)
-    async postRecordEntryDevice(@Body() recordEntryDevice: RecordEntryNewDeviceDto) {
+    async postRecordEntryNewDevice(@Body() recordEntryDevice: RecordEntryNewDeviceDto) {
         return customResponse({
             status: HttpStatus.CREATED,
             message: "Device entry has been registered.",
@@ -54,19 +52,20 @@ export class RecordEntryController {
 
     }
 
-    @Put('device')
+    @Post('device/in-out')
     @HttpCode(201)
-    async putRecordEntryDevice(@Body() recordEntryDevice:RecordEntryDeviceDto){
+    async postRecordEntryDevice(@Body() recordEntryDevice: RecordEntryDeviceDto) {
+        const { message, data } = await this.recordEntryService.registerDeviceEntry(recordEntryDevice);
         return customResponse({
             status: HttpStatus.CREATED,
-            message:"The device entry has been registered.",
-            data: await this.recordEntryService.registerDeviceEntry(recordEntryDevice)
+            message,
+            data
         })
     }
 
     @Post('vehicle')
     @HttpCode(201)
-    async postRecordEntryNewVehicle(@Body() recordEntryVehicle:any){
+    async postRecordEntryNewVehicle(@Body() recordEntryVehicle: RecordNewVehicleDto) {
         return customResponse({
             status: HttpStatus.CREATED,
             message: "Vehicle entry has been registered.",
@@ -74,11 +73,21 @@ export class RecordEntryController {
         })
     }
 
+    @Post('vehicle/in-out')
+    @HttpCode(201)
+    async PostRecordToVehicle(@Body() recordVehicle: RecordVehicleDto) {
+        const { data, message } = await this.recordEntryService.registerVehicle(recordVehicle);
+        return customResponse({
+            status: HttpStatus.CREATED,
+            message,
+            data
+        });
+    }
+
     @Get()
     async getAllRecords(@Query() pageOptionsDto: PageOptionsDto<RecordEntryDto>): Promise<ICustomResponse> {
         //console.log(typeof pageOptionsDto.keyWords);
         const { data, meta } = await this.recordEntryService.findAllRecord(pageOptionsDto)
-        //console.log(data);
 
         try {
             return customResponse({

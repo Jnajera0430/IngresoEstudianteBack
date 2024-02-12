@@ -1,6 +1,6 @@
 import { FindPersonDocumentDto, PersonDto } from "../person/person.dto";
 import { EntryTypeDto } from "./entryType.dto";
-import { IsDate, IsNotEmpty, IsNumber, ValidateNested } from "class-validator";
+import { IsDate, IsNotEmpty, IsNumber, IsString, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 import { PartialType } from "@nestjs/swagger";
 import { EntryPerson } from "src/entitys/entry_person.entity";
@@ -46,19 +46,48 @@ export class FindRecordEntryOfPersonDto extends PartialType(RecordEntryDto) {
 export class RecordEntryNewDeviceDto extends PartialType(RecordEntryDto){
     @IsNotEmpty()
     @IsNumber()
-    id?: number;
+    idRecord: number;
 
     @IsNotEmpty()
     @IsNumber()
-    idDeviceType: number; 
+    idDeviceType: number;
+
+    @IsNotEmpty()
+    @IsString()
+    bagde:string;
 }
 
-export class RecordEntryDeviceDto extends PartialType(RecordEntryDto){
+export class RecordEntryDeviceDto {
     @IsNotEmpty()
     @IsNumber()
-    id?: number;
+    idRecord: number;
 
     @IsNotEmpty()
     @IsNumber()
     idDevice: number; 
+}
+
+export class RecordNewVehicleDto {
+    @IsNotEmpty()
+    @IsNumber()
+    idRecord: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    idVehicleType: number;
+
+    @IsNotEmpty()
+    @IsString()
+    badge: string;
+
+}
+
+export class RecordVehicleDto{
+    @IsNotEmpty()
+    @IsNumber()
+    idRecord: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    idVehicle: number;
 }
