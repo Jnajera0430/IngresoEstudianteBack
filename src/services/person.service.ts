@@ -116,6 +116,8 @@ export class PersonService implements OnModuleInit {
         .leftJoinAndSelect("person.personTypes", "personTypes")
             .leftJoinAndSelect("person.device", "device")
             .leftJoinAndSelect("device.deviceType", "deviceType")
+            .leftJoinAndSelect("person.vehicles", "vehicles")
+            .leftJoinAndSelect("vehicles.vehicleType", "vehicleType")
             .getOne()
         // return await this.personRepository.findOne({
         //     where: {

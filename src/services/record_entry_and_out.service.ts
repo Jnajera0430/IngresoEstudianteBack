@@ -132,9 +132,13 @@ export class RecordEntryService {
             .skip(pageOptionsDto.skip)
             .take(pageOptionsDto.take)
             .orderBy("record.createdAt", pageOptionsDto.order)
+            .leftJoinAndSelect("record.idRecordDevice", "recordDevices")
+            .leftJoinAndSelect("record.idRecordVehicle", "recordVehicles")
             .leftJoinAndSelect("record.person", "person")
             .leftJoinAndSelect("person.device", "devices")
             .leftJoinAndSelect("devices.deviceType", "deviceType")
+            .leftJoinAndSelect("person.vehicles", "vehicles")
+            .leftJoinAndSelect("vehicles.vehicleType", "vehicleType")
             .getMany()
 
         const itemCount = rows.length
