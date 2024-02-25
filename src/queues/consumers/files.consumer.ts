@@ -64,12 +64,11 @@ export class FilesConsumer {
         }
       }
       job.progress(100);
+      console.log('person', people[0]);
       done(null, job.data);
-      // console.log('person', people[0]);
       // done(null,job.data);
       // return 'Trabajo en cola'
 
-    done(null, job.data);
   }
 }
 

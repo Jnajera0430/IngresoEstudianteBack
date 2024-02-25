@@ -43,7 +43,7 @@ export class FindRecordEntryOfPersonDto extends PartialType(RecordEntryDto) {
     }
 }
 
-export class RecordEntryNewDeviceDto extends PartialType(RecordEntryDto){
+export class RecordEntryNewDeviceDto{
     @IsNotEmpty()
     @IsNumber()
     idRecord: number;
@@ -54,7 +54,7 @@ export class RecordEntryNewDeviceDto extends PartialType(RecordEntryDto){
 
     @IsNotEmpty()
     @IsString()
-    bagde:string;
+    serialId: string
 }
 
 export class RecordEntryDeviceDto {

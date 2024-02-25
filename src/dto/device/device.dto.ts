@@ -1,5 +1,5 @@
 import { DeviceType } from './../../entitys/device_type.entity';
-import { IsDate, IsNotEmpty, IsNumber } from "class-validator";
+import { IsDate, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { PersonDto } from "../person/person.dto";
 import { Type } from "class-transformer";
 import { DeviceTypeDto } from "./deviceType.dto";
@@ -16,6 +16,8 @@ export class DeviceDto{
     person: number;
 
     deviceType: DeviceType
+
+    serialId: string
 }
 
 export class CreateDeviceDto extends PartialType(DeviceDto){
@@ -41,4 +43,8 @@ export class CreateDeviceForEntry{
     @IsNotEmpty()
     @IsNumber()
     idDeviceType: number
+
+    @IsNotEmpty()
+    @IsString()
+    serialId: string
 }

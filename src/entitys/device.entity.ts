@@ -12,6 +12,9 @@ export class Device {
     @JoinColumn()
     person: number
 
+    @Column({ length: 50, nullable: true, unique: true }) //se tiene que quitar el nulluable
+    serialId: string
+
     @ManyToOne(() => DeviceType, (type) => type.device, {
         cascade: true,
         eager: false,
@@ -23,17 +26,4 @@ export class Device {
     @OneToMany(() => RecordDevice, (recordDevice) => recordDevice.idDevice)
     @JoinColumn({ name: 'idDeviceRecord' })
     idDeviceRecord: RecordDevice[]
-
-    // @Column({ type: 'timestamp', nullable: true})
-    // dateOfEntry: Date
-
-    // @Column({ type: 'timestamp', nullable: true })
-    // dateOfOut: Date
-    // @OneToMany(()=>EntryDevice,entryDevice=>entryDevice.recordEntry)
-    // @JoinColumn()
-    // entryDevice: EntryDevice[]
-
-    // @ManyToOne(()=>Record_entry,recordEntry=>recordEntry.vehicleEntry)
-    // @JoinColumn()
-    // recordEntry: Record_entry[]
 }
