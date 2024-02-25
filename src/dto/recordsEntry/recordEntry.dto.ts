@@ -13,6 +13,10 @@ import { RecordVehicle } from "src/entitys/entry_vehicle.entity";
 export class RecordEntryDto {
     id?: number;
 
+    inside: boolean;
+
+    out: boolean;
+    
     checkIn?: Date;
 
     checkOut?: Date;
@@ -43,7 +47,7 @@ export class FindRecordEntryOfPersonDto extends PartialType(RecordEntryDto) {
     }
 }
 
-export class RecordEntryNewDeviceDto{
+export class RecordEntryNewDeviceDto {
     @IsNotEmpty()
     @IsNumber()
     idRecord: number;
@@ -64,7 +68,7 @@ export class RecordEntryDeviceDto {
 
     @IsNotEmpty()
     @IsNumber()
-    idDevice: number; 
+    idDevice: number;
 }
 
 export class RecordNewVehicleDto {
@@ -82,7 +86,7 @@ export class RecordNewVehicleDto {
 
 }
 
-export class RecordVehicleDto{
+export class RecordVehicleDto {
     @IsNotEmpty()
     @IsNumber()
     idRecord: number;

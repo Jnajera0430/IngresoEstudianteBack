@@ -23,16 +23,18 @@ export class RecordEntryController {
     @UserAllowed()
     @HttpCode(201)
     async postRecordPerson(@Body() recordEntry: FindRecordEntryOfPersonDto): Promise<ICustomResponse> {
-
+        //Se busca por persona si tiene una entrada registrada
         const recordFound = await this.recordEntryService.findInRecordEntryByPersonInside(recordEntry.person);
 
-        if (recordFound && !recordFound.checkOut) {
+        if (recordFound && !recordFound.out) {
+            //Se registra la salida
             return customResponse({
                 status: HttpStatus.CREATED,
-                message: 'Their process has been successful.',
+                message: 'Your departure has been recorded. Have a nice rest of the day.',
                 data: await this.recordEntryService.recordCheckOutOfPerson(recordFound)
             });
         }
+        //Se registra la entrada.
         return customResponse({
             status: HttpStatus.CREATED,
             message: 'The entry has been registered.',

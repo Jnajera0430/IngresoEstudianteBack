@@ -66,6 +66,7 @@ export class RecordEntryService {
     async recordCheckOutOfPerson(recordEntry: Record_entry): Promise<Record_entry> {
         const today = new Date();
         recordEntry.checkOut = today;
+        recordEntry.out = true
         return this.recordEntryRepository.save(recordEntry);
     }
 
@@ -89,6 +90,9 @@ export class RecordEntryService {
                     new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0),
                     new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59),
                 ),
+            },
+            order: {
+                createdAt: 'DESC'
             },
             relations: ['person', 'idRecordVehicle', 'deviceEntry', 'entryType'],
         });
@@ -196,9 +200,10 @@ export class RecordEntryService {
 
     async registerNewDeviceEntry(recordEntryDevice: RecordEntryNewDeviceDto): Promise<RecordDevice> {
         const entryFound = await this.findRecordById(recordEntryDevice.idRecord)
+        const { idDeviceType, serialId } = recordEntryDevice
         if (!entryFound)
             throw new ValueNotFoundException("The user has not registered an entry.")
-        const newDevice = await this.deviceService.createDeviceForEntry({ person: entryFound.person.id, idDeviceType: recordEntryDevice.idDeviceType })
+        const newDevice = await this.deviceService.createDeviceForEntry({ person: entryFound.person.id, idDeviceType, serialId })
         if (!newDevice)
             throw new ValueNotFoundException("Failed to create device.")
 
@@ -237,7 +242,7 @@ export class RecordEntryService {
                 createdAt: "DESC"
             }
         })
-         
+
         if (recordDeviceFound && !recordDeviceFound.out) {
             recordDeviceFound.dateExit = new Date();
             recordDeviceFound.out = true;
