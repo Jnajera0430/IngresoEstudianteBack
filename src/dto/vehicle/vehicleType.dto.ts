@@ -19,6 +19,10 @@ export class CreateVehicleTypeDto extends PartialType(VehicleTypeDto){
     @IsNotEmpty()
     @IsString()
     vendor: string
+
+    @IsNotEmpty()
+    @IsString()
+    icon: string
 }
 
 export class UpdateVehicleType extends PartialType(VehicleTypeDto){

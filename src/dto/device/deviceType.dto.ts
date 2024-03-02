@@ -13,6 +13,10 @@ export class CreateDeviceTypeDto extends PartialType(DeviceTypeDto){
     @IsNotEmpty()
     @IsString()
     brand: string;
+
+    @IsNotEmpty()
+    @IsString()
+    icon: string;
 }
 
 export class UpdateDeviceTypeDto extends PartialType(DeviceTypeDto){

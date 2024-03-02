@@ -102,10 +102,16 @@ export class DeviceTypeService implements OnModuleInit {
     async onModuleInit() {
         const listDeviceType: CreateDeviceTypeDto[] = [
             {
-                brand: 'Laptop'
+                brand: 'Laptop',
+                icon: 'src/assets/icons/device-laptop.svg'
             },
             {
-                brand: 'Tablet'
+                brand: 'Tablet',
+                icon: 'src/assets/icons/device-ipad.svg'
+            },
+            {
+                brand: 'CPU / Componentes',
+                icon: 'src/assets/icons/device-cpu.svg'
             }
         ]
         const dataCount: number = await this.deviceTypeRepository.count();
