@@ -126,21 +126,12 @@ export class RecordEntryService {
         const today = new Date();
         const personFound = await this.personService.getPersonByDocument(person.document);
         if (!personFound) return null;
-        return await this.recordEntryRepository.findOne({
-            where: {
-                person: {
-                    document: personFound.document
-                },
-                checkIn: Between(
-                    new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0),
-                    new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59),
-                ),
-            },
-            order: {
-                createdAt: 'DESC'
-            },
-            relations: ['person', 'idRecordVehicle', 'idRecordDevice', 'entryType'],
-        });
+        return await this.recordEntryRepository.createQueryBuilder("record_entry")
+            .leftJoinAndSelect("record_entry.person", "person")
+            .leftJoinAndSelect("record_entry.entryType", "entryType")
+            .where("record_entry.person = :person", { person: personFound.id })
+            .orderBy("record_entry.createdAt", "DESC")
+            .getOne();
     }
 
     /**
