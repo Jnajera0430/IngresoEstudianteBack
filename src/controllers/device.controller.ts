@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Query,
   Post,
+  Param,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { debug } from 'console';
@@ -45,15 +46,16 @@ export class DeviceController {
     }
   }
 
-  @Get('person')
+  @Get('person/:id')
   async getDeviceByIdPerson(
-    @Body() person: FindPersonDto,
+    @Param('id') personID: number,
   ): Promise<ICustomResponse> {
     try {
+      console.log('personID', personID);
       return customResponse({
         status: HttpStatus.OK,
         message: 'Device found by person id.',
-        data: await this.deviceService.findDeviceByPerson(person),
+        data: await this.deviceService.findDeviceByPersonId(personID),
       });
     } catch (error) {
       debug(error);

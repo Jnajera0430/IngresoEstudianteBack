@@ -12,7 +12,7 @@ export class Device {
     @JoinColumn()
     person: number
 
-    @Column({ length: 50, nullable: true, unique: true }) //se tiene que quitar el nulluable
+    @Column({ length: 50, unique: true }) //se tiene que quitar el nulluable
     serialId: string
 
     @ManyToOne(() => DeviceType, (type) => type.device, {

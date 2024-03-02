@@ -203,7 +203,7 @@ export class RecordEntryService {
         const { idDeviceType, serialId } = recordEntryDevice
         if (!entryFound)
             throw new ValueNotFoundException("The user has not registered an entry.")
-        const newDevice = await this.deviceService.createDeviceForEntry({ person: entryFound.person.id, idDeviceType, serialId })
+        const newDevice = await this.deviceService.createDeviceForEntry({ person: entryFound.person.id, idDeviceType: recordEntryDevice.idDeviceType, serialId: recordEntryDevice.serialId})
         if (!newDevice)
             throw new ValueNotFoundException("Failed to create device.")
 
