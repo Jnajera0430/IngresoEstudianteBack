@@ -171,6 +171,7 @@ export class DeviceService {
     async findDeviceByPersonId(id: number) {
         const deviceFound = await this.deviceRepository.createQueryBuilder('devices')
             .leftJoinAndSelect('devices.person', 'person')
+            .leftJoinAndSelect('devices.deviceType', 'deviceType')
             .where(`person.id = ${id}`)
             .getMany();
         if (!deviceFound) {
