@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Param, HttpStatus, Query, Put, HttpCode } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, HttpStatus, Query, Put, HttpCode, HttpException, Res } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { debug } from 'console';
 import { RoleEnumByType } from 'src/constants/roles.enum';
@@ -6,6 +6,7 @@ import { UserAllowed } from 'src/decorators/UserAllowed.decorator';
 import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
 import { FindPersonDocumentDto, FindPersonDto, PersonDto } from 'src/dto/person/person.dto';
 import { FindRecordEntryOfPersonDto, RecordEntryNewDeviceDto, RecordEntryDto, RecordEntryDeviceDto, RecordNewVehicleDto, RecordVehicleDto } from 'src/dto/recordsEntry/recordEntry.dto';
+import { RecordDevice } from 'src/entitys/entry_device.entity';
 import { ICustomResponse } from 'src/intefaces/customResponse.interface';
 import { customResponse } from 'src/services/customResponse.service';
 import { RecordEntryService } from 'src/services/record_entry_and_out.service';
@@ -44,14 +45,24 @@ export class RecordEntryController {
     }
 
     @Post('device')
-    @HttpCode(201)
-    async postRecordEntryNewDevice(@Body() recordEntryDevice: RecordEntryNewDeviceDto) {
-        return customResponse({
-            status: HttpStatus.CREATED,
-            message: "Device entry has been registered.",
-            data: await this.recordEntryService.registerNewDeviceEntry(recordEntryDevice)
-        })
-
+    async postRecordEntryNewDevice(
+        @Res() res,
+        @Body() recordEntryDevice: RecordEntryNewDeviceDto
+        ) {
+        let data: RecordDevice = null;
+        try {
+            data = await this.recordEntryService.registerNewDeviceEntry(recordEntryDevice)
+        } catch (error) {
+            debug(error);
+        }
+        const { status, message } = await this.recordEntryService.getRequestStatus();
+        return res.status(status).send(
+            customResponse({
+                status: status,
+                message: message,
+                data: data
+            })
+        )
     }
 
     @Post('device/in-out')

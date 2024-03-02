@@ -180,4 +180,11 @@ export class DeviceService {
         return deviceFound;
     }
 
+    async findDeviceBySerialID(serial: string) {
+        const deviceFound = await this.deviceRepository.createQueryBuilder('devices')
+            .where(`devices.serialId = '${serial}'`)
+            .getOne();
+        return deviceFound;
+    }
+
 }
