@@ -58,7 +58,7 @@ export class DeviceService {
     async createDeviceForEntry(device: CreateDeviceForEntry): Promise<Device> {
         const newDevice = this.deviceRepository.create(device);
         const devicetypeFound = await this.deviceTypeService.findDeviceTypeById(device.idDeviceType);
-        
+
         if (!devicetypeFound) {
             throw new ValueNotFoundException('Device type not found');
         }
@@ -70,9 +70,9 @@ export class DeviceService {
     }
 
     /**
-     * @param id 
-     * @param idPerson 
-     * @returns 
+     * @param id
+     * @param idPerson
+     * @returns
      */
     async registerInAndOut(id:number,idPerson: number){
         const deviceFound = await this.deviceRepository.findOne({where:{id,person:idPerson}})
@@ -164,6 +164,26 @@ export class DeviceService {
         if (!deviceFound) {
             throw new ValueNotFoundException(`Device not found by person with this id: , ${person.id}`);
         }
+        return deviceFound;
+    }
+
+    // find device by person id
+    async findDeviceByPersonId(id: number) {
+        const deviceFound = await this.deviceRepository.createQueryBuilder('devices')
+            .leftJoinAndSelect('devices.person', 'person')
+            .leftJoinAndSelect('devices.deviceType', 'deviceType')
+            .where(`person.id = ${id}`)
+            .getMany();
+        if (!deviceFound) {
+            throw new ValueNotFoundException(`Device not found by person with this id: , ${id}`);
+        }
+        return deviceFound;
+    }
+
+    async findDeviceBySerialID(serial: string) {
+        const deviceFound = await this.deviceRepository.createQueryBuilder('devices')
+            .where(`devices.serialId = '${serial}'`)
+            .getOne();
         return deviceFound;
     }
 

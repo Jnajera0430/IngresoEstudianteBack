@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Query,
   Post,
+  Param,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { debug } from 'console';
@@ -22,8 +23,10 @@ import { DeviceTypeService } from 'src/services/device_type.service';
 @Controller('device')
 @ApiTags('Api-device')
 export class DeviceController {
-  constructor(private readonly deviceService: DeviceService,
-    private readonly deviceTypeService: DeviceTypeService) {}
+  constructor(
+    private readonly deviceService: DeviceService,
+    private readonly deviceTypeService: DeviceTypeService,
+  ) {}
 
   @Get()
   async getAllDevice(
@@ -45,15 +48,16 @@ export class DeviceController {
     }
   }
 
-  @Get('person')
+  @Get('person/:id')
   async getDeviceByIdPerson(
-    @Body() person: FindPersonDto,
+    @Param('id') personID: number,
   ): Promise<ICustomResponse> {
     try {
+      console.log('personID', personID);
       return customResponse({
         status: HttpStatus.OK,
         message: 'Device found by person id.',
-        data: await this.deviceService.findDeviceByPerson(person),
+        data: await this.deviceService.findDeviceByPersonId(personID),
       });
     } catch (error) {
       debug(error);
@@ -80,13 +84,39 @@ export class DeviceController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createDevice(
-    @Body() device: { person: number; deviceType: number, recordEntryId: number},
+    @Body()
+    device: {
+      person: number;
+      deviceType: number;
+      recordEntryId: number;
+    },
   ): Promise<ICustomResponse> {
     try {
       return customResponse({
         status: HttpStatus.CREATED,
         message: 'Device has been created',
         data: await this.deviceService.createDevice(device),
+      });
+    } catch (error) {
+      debug(error);
+      return error;
+    }
+  }
+
+  @Get('types')
+  async getAllDeviceType(
+    @Query() pageOptionsDto: PageOptionsDto,
+
+  ): Promise<ICustomResponse> {
+    try {
+      const devices = await this.deviceTypeService.findAllDeviceType(
+        pageOptionsDto,
+      );
+      return customResponse({
+        status: await this.deviceTypeService.getRequestStatus(),
+        message: 'List device type.',
+        data: devices.data,
+        meta: devices.meta,
       });
     } catch (error) {
       debug(error);

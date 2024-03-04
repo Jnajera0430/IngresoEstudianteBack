@@ -8,9 +8,11 @@ export class DeviceType{
 
     @Column()
     brand: string
-    
+
     @OneToMany(()=>Device,device=>device.deviceType)
     @JoinColumn()
     device: Device
 
+    @Column({ nullable: true })
+    icon: string
 }

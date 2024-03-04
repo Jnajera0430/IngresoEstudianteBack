@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Record_entry } from 'src/entitys/record_entry_and_out.entity';
 import { Between, Repository, Like, ILike } from 'typeorm';
@@ -17,9 +17,18 @@ import { DeviceService } from './device.service';
 import { VehicleService } from './vehicle.service';
 import { RecordDevice } from 'src/entitys/entry_device.entity';
 import { RecordVehicle } from 'src/entitys/entry_vehicle.entity';
+import { ResponseMessages } from 'src/constants/responseMessages';
+import { debug } from 'console';
+
+interface RequestStatus {
+    status: HttpStatus;
+    message: string;
+}
 
 @Injectable()
 export class RecordEntryService {
+    requestStatus: RequestStatus
+
     constructor(
         @InjectRepository(Record_entry) private readonly recordEntryRepository: Repository<Record_entry>,
         @InjectRepository(RecordDevice) private readonly recordDeviceRepository: Repository<RecordDevice>,
@@ -28,12 +37,22 @@ export class RecordEntryService {
         private readonly entryTypeService: EntryTypeService,
         private readonly deviceService: DeviceService,
         private readonly vehicleService: VehicleService
-    ) { }
+    ) {
+        this.requestStatus = {
+            status: HttpStatus.INTERNAL_SERVER_ERROR,
+            message: ResponseMessages.INTERNAL_SERVER_ERROR
+        }
+    }
     /**
      *
      * @param recordEntry RecordsEntryOfPersonDto
      * @returns Promise -> Record_Entry
      */
+
+    public async getRequestStatus(): Promise<RequestStatus> {
+        return this.requestStatus;
+    }
+
     async checkInEntryOfPerson(recordEntry: RecordsEntryOfPersonDto): Promise<any> {
         if (!recordEntry.person.document) {
             throw new ValueNotFoundException('value invalid')
@@ -107,21 +126,12 @@ export class RecordEntryService {
         const today = new Date();
         const personFound = await this.personService.getPersonByDocument(person.document);
         if (!personFound) return null;
-        return await this.recordEntryRepository.findOne({
-            where: {
-                person: {
-                    document: personFound.document
-                },
-                checkIn: Between(
-                    new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0),
-                    new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59),
-                ),
-            },
-            order: {
-                createdAt: 'DESC'
-            },
-            relations: ['person', 'idRecordVehicle', 'idRecordDevice', 'entryType'],
-        });
+        return await this.recordEntryRepository.createQueryBuilder("record_entry")
+            .leftJoinAndSelect("record_entry.person", "person")
+            .leftJoinAndSelect("record_entry.entryType", "entryType")
+            .where("record_entry.person = :person", { person: personFound.id })
+            .orderBy("record_entry.createdAt", "DESC")
+            .getOne();
     }
 
     /**
@@ -200,10 +210,20 @@ export class RecordEntryService {
 
     async registerNewDeviceEntry(recordEntryDevice: RecordEntryNewDeviceDto): Promise<RecordDevice> {
         const entryFound = await this.findRecordById(recordEntryDevice.idRecord)
-        const { idDeviceType, serialId } = recordEntryDevice
-        if (!entryFound)
+        if (!entryFound) {
+            this.requestStatus.status = HttpStatus.NOT_FOUND;
+            this.requestStatus.message = ResponseMessages.NOT_FOUND;
             throw new ValueNotFoundException("The user has not registered an entry.")
-        const newDevice = await this.deviceService.createDeviceForEntry({ person: entryFound.person.id, idDeviceType, serialId })
+        }
+
+        const existDevice = await this.deviceService.findDeviceBySerialID(recordEntryDevice.serialId)
+        if (existDevice) {
+            this.requestStatus.status = HttpStatus.CONFLICT;
+            this.requestStatus.message = ResponseMessages.CONFLICT;
+            throw new ValueNotFoundException("Device already exists.")
+        }
+
+        const newDevice = await this.deviceService.createDeviceForEntry({ person: entryFound.person.id, idDeviceType: recordEntryDevice.idDeviceType, serialId: recordEntryDevice.serialId})
         if (!newDevice)
             throw new ValueNotFoundException("Failed to create device.")
 
@@ -215,7 +235,10 @@ export class RecordEntryService {
             inside: true,
             out: false
         })
-        return await this.recordDeviceRepository.save(newRecordDevice)
+            this.requestStatus.status = HttpStatus.CREATED;
+            this.requestStatus.message = ResponseMessages.CREATED;
+            return await this.recordDeviceRepository.save(newRecordDevice)
+
     }
 
     async registerDeviceEntry(recordEntryDevice: RecordEntryDeviceDto) {

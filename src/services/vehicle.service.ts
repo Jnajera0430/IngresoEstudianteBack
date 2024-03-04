@@ -129,4 +129,17 @@ export class VehicleService {
 			}
 		});
 	}
+
+	async findVehicleByPersonID(id: number) {
+		const deviceFound = await this.vehicleRepository
+			.createQueryBuilder('vehicle')
+			.leftJoinAndSelect('vehicle.person', 'person')
+			.leftJoinAndSelect('vehicle.vehicleType', 'vehicleType')
+			.where('vehicle.person = :id', { id })
+			.getMany();
+		if (!deviceFound) {
+			throw new ValueNotFoundException(`Device not found by person with this id: , ${id}`);
+		}
+		return deviceFound;
+	}
 }

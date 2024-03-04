@@ -57,10 +57,12 @@ export class VehicleTypeService implements OnModuleInit{
     async onModuleInit() {
         const vehicleTypes:CreateVehicleTypeDto[] = [
             {
-                vendor:'vehicle'
+                vendor:'Automóvil',
+                icon:'src/assets/icons/vehicle-car'
             },
             {
-                vendor:'motorcycle'
+                vendor:'Motocicleta',
+                icon:'src/assets/icons/vehicle-motorcycle'
             }
         ]
 

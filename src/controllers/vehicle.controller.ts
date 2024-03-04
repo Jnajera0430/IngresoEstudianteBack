@@ -1,3 +1,4 @@
+import { PersonService } from 'src/services/person.service';
 import { Body, Controller, Get, Patch, Param, HttpStatus, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { debug } from 'console';
@@ -72,4 +73,25 @@ export class VehicleController {
             return error;
         }
     }
+
+
+
+    @Get('person/:id')
+    async getVehicleByIdPerson(
+      @Param('id') personID: number,
+    ): Promise<ICustomResponse> {
+      try {
+        console.log('personID', personID);
+        return customResponse({
+          status: HttpStatus.OK,
+          message: 'Device found by person id.',
+          data: await this.vehicleService.findVehicleByPersonID(personID),
+        });
+      } catch (error) {
+        debug(error);
+        return error;
+      }
+    }
 }
+
+

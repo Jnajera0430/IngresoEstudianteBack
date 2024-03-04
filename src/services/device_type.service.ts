@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeviceTypeDto, DeviceTypeDto, UpdateDeviceTypeDto } from 'src/dto/device/deviceType.dto';
 import { PageDto } from 'src/dto/page/page.dto';
@@ -10,6 +10,9 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class DeviceTypeService implements OnModuleInit {
+
+    HttpStatus: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+
     constructor(
         @InjectRepository(DeviceType) private readonly deviceTypeRepository: Repository<DeviceType>,
     ) { }
@@ -18,18 +21,32 @@ export class DeviceTypeService implements OnModuleInit {
      * @param typeDevice CreateDeviceTypeDto
      * @returns DeviceType
      */
+
+    async getRequestStatus(): Promise<HttpStatus> {
+        return this.HttpStatus;
+    }
+
     async createDeviceType(typeDevice: CreateDeviceTypeDto) {
         const newTypeDevice = this.deviceTypeRepository.create(typeDevice);
         return await this.deviceTypeRepository.save(newTypeDevice);
     }
 
     async findAllDeviceType(pageOptionsDto?: PageOptionsDto<DeviceTypeDto>){
-        const [rows, itemCount]= await this.deviceTypeRepository.findAndCount({
-            skip: pageOptionsDto.skip,
-            take: pageOptionsDto.take,
-        })
-        const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
-        return new PageDto(rows, pageMeta);
+        try {
+            const [rows, itemCount]= await this.deviceTypeRepository.findAndCount({
+                skip: pageOptionsDto.skip,
+                take: pageOptionsDto.take,
+            })
+            if (!rows) {
+                this.HttpStatus = HttpStatus.NOT_FOUND;
+                throw new ValueNotFoundException('Device type not found.');
+            }
+            const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
+            this.HttpStatus = HttpStatus.OK;
+            return new PageDto(rows, pageMeta);
+        } catch (error) {
+            throw error;
+        }
     }
 
     /**
@@ -85,10 +102,16 @@ export class DeviceTypeService implements OnModuleInit {
     async onModuleInit() {
         const listDeviceType: CreateDeviceTypeDto[] = [
             {
-                brand: 'Laptop'
+                brand: 'Laptop',
+                icon: 'src/assets/icons/device-laptop.svg'
             },
             {
-                brand: 'Tablet'
+                brand: 'Tablet',
+                icon: 'src/assets/icons/device-ipad.svg'
+            },
+            {
+                brand: 'CPU / Componentes',
+                icon: 'src/assets/icons/device-cpu.svg'
             }
         ]
         const dataCount: number = await this.deviceTypeRepository.count();
