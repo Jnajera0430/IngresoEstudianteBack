@@ -24,3 +24,9 @@ export class ValueNotFoundException extends HttpException{
         super(message,HttpStatus.NOT_FOUND);
     }
 }
+
+export class DataNotValid extends HttpException {
+    constructor(message:string){
+        super(message,HttpStatus.UNPROCESSABLE_ENTITY)
+    }
+}

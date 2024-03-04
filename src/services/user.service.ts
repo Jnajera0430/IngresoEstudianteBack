@@ -14,6 +14,8 @@ import { PersonTypeEnumDto } from 'src/dto/person/personDocType';
 import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
 import { PageMetaDto } from 'src/dto/page/pageMeta.dto';
 import { PageDto } from 'src/dto/page/page.dto';
+import { DataNotValid } from 'src/exceptions/customExcepcion';
+import { validCampusFile, validDataEmpty } from 'src/helpers/validFile';
 @Injectable()
 export class UserService implements OnModuleInit {
   /**
@@ -163,6 +165,7 @@ export class UserService implements OnModuleInit {
       raw: true,
       cellDates: true
     })
+
     const cellObject = {
       1: "A",
       2: "B",
@@ -173,24 +176,31 @@ export class UserService implements OnModuleInit {
     const sheetName = workBook.SheetNames[0];
     const workSheet = workBook.Sheets[sheetName];
     //fecha del reporte
-    const cellA2 = workSheet['A2'].v;
-    const cellC2 = workSheet['C2'].v;
+    const cellA2: string = workSheet['A2']?.v;
+    const cellC2: string = workSheet['C2']?.v;
     //ficha de caracterizacion
-    const cellA3 = workSheet['A3'].v;
-    const cellC3 = workSheet['C3'].v;
+    const cellA3: string = workSheet['A3']?.v;
+    const cellC3: string = workSheet['C3']?.v;
     //codig de la ficha
-    const cellA4 = workSheet['A4'].v;
-    const cellC4 = workSheet['C4'].v;
+    const cellA4: string = workSheet['A4']?.v;
+    const cellC4: string = workSheet['C4']?.v;
     //codig de la ficha
-    const cellA6 = workSheet['A6'].v;
-    const cellC6 = workSheet['C6'].v;
+    const cellA6: string = workSheet['A6']?.v;
+    const cellC6: string = workSheet['C6']?.v;
     //fecha de inicio
-    const cellA8 = workSheet['A8'].v;
-    const cellC8 = workSheet['C8'].v;
+    const cellA8: string = workSheet['A8']?.v;
+    const cellC8: string = workSheet['C8']?.v;
     //fecha fin
-    const cellA9 = workSheet['A9'].v;
-    const cellC9 = workSheet['C9'].v;
+    const cellA9: string = workSheet['A9']?.v;
+    const cellC9: string = workSheet['C9']?.v;
 
+    //Valida los datos vacios
+    if (!validDataEmpty([cellA2, cellA3, cellA4, cellA6, cellA8, cellA9, cellC2, cellC3, cellC4, cellC6, cellC8, cellC9])) {
+      throw new DataNotValid("The data are not valid, please check the file you are uploading if it counts all the data.")
+    }
+    if (!validCampusFile(workSheet, 13)) {
+      throw new DataNotValid("The data are not valid, please check the file you are uploading if it counts all the data.");
+    }
     const infoOfProgram: InfoOfProgram = {
       fechaDelReporte: cellC2,
       fichaDeCaracterización: cellC3,
@@ -207,38 +217,54 @@ export class UserService implements OnModuleInit {
     for (let numRow = 14; numRow <= sizeOfDatos; numRow++) {
       let datoOfPerson: PersonFile;
       for (const cell of Object.values(cellObject)) {
+        const dataValue:string = workSheet[cell + numRow]?.v
         switch (cell) {
           case "A":
+            if (!validDataEmpty([dataValue])) {
+              throw new DataNotValid("There is empty data, please check the file.");
+            }
             datoOfPerson = {
               ...datoOfPerson,
               docType: {
-                name: workSheet[cell + numRow].v === PersonTypeEnumDto.CC ? 'Cedula' :
-                  (workSheet[cell + numRow].v === PersonTypeEnumDto.TI) ? 'Tarjeta de identidad' : 'Otro'
+                name: dataValue === PersonTypeEnumDto.CC ? 'Cedula' :
+                  (dataValue === PersonTypeEnumDto.TI) ? 'Tarjeta de identidad' : 'Otro'
               }
             }
             break;
           case "B":
+            if (!validDataEmpty([dataValue])) {
+              throw new DataNotValid("There is empty data, please check the file.");
+            }
             datoOfPerson = {
               ...datoOfPerson,
-              document: parseInt(workSheet[cell + numRow].v)
+              document: parseInt(dataValue)
             }
             break;
           case "C":
+            if (!validDataEmpty([dataValue])) {
+              throw new DataNotValid("There is empty data, please check the file.");
+            }
             datoOfPerson = {
               ...datoOfPerson,
-              firtsName: workSheet[cell + numRow].v
+              firtsName: dataValue
             }
             break;
           case "D":
+            if (!validDataEmpty([dataValue])) {
+              throw new DataNotValid("There is empty data, please check the file.");
+            }
             datoOfPerson = {
               ...datoOfPerson,
-              lastName: workSheet[cell + numRow].v
+              lastName: dataValue
             }
             break;
           case "E":
+            if (!validDataEmpty([dataValue])) {
+              throw new DataNotValid("There is empty data, please check the file.");
+            }
             datoOfPerson = {
               ...datoOfPerson,
-              state: workSheet[cell + numRow].v === 'EN FORMACION' ? true : false
+              state: dataValue === 'EN FORMACION' ? true : false
             }
             break;
         }
