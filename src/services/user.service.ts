@@ -270,7 +270,7 @@ export class UserService implements OnModuleInit {
             }
             datoOfPerson = {
               ...datoOfPerson,
-              firtsName: dataValue
+              firstName: dataValue
             }
             break;
           case "D":

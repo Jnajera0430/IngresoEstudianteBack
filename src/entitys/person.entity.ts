@@ -16,7 +16,7 @@ export class Person extends AbstractEntity {
     id: number
 
     @Column()
-    firtsName: String
+    firstName: String
 
     @Column()
     lastName: String

@@ -27,7 +27,7 @@ export class PersonService implements OnModuleInit {
      * @returns Promise<Person>
      */
     async createPerson(person: CreatePerson): Promise<Person> {
-        const { docType, document, firtsName, lastName, personTypes } = person;
+        const { docType, document, firstName, lastName, personTypes } = person;
         const validDocument = await this.personRepository.findOne({
             where: {
                 document,
@@ -37,12 +37,12 @@ export class PersonService implements OnModuleInit {
 
             }
         })
-        
+
         if (validDocument) {
             throw new BadRequestException("Document must be unique.")
         }
 
-        const newPerson = this.personRepository.create({ document, firtsName, lastName, personTypes: { id: personTypes }, doctType: { id: docType } });
+        const newPerson = this.personRepository.create({ document, firstName, lastName, personTypes: { id: personTypes }, doctType: { id: docType } });
         return await this.personRepository.save(newPerson);
     }
 

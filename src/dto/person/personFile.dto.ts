@@ -9,7 +9,7 @@ import { CreateCareerDto } from "../career/career.dto";
 export class PersonFile extends PartialType(PersonDto){
     @IsNotEmpty()
     @IsString()
-    firtsName: string;
+    firstName: string;
     @IsNotEmpty()
     @IsString()
     lastName: string;
