@@ -1,10 +1,14 @@
 import {
   Body,
   Controller,
+  Get,
+  Headers,
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -61,6 +65,29 @@ export class AuthController {
           access_token: token,
         };
     }
+  }
+
+  // validate if token is valid
+  @Get('validate')
+  validateToken(@Req() request) {
+    const token = request.cookies['access_token']; // Reemplaza 'your_cookie_name' con el nombre real de tu cookie
+    console.log('token', token);
+    if (!token) {
+      throw new UnauthorizedException('Token cookie is missing');
+    }
+
+    try {
+      const decoded = this.jwtServices.verify(token);
+      if (decoded) {
+        return {
+          valid: true,
+          token,
+        };
+      }
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
+
   }
 
   // switch (rol) {

@@ -150,14 +150,17 @@ export class RecordEntryService {
             .leftJoinAndSelect("record.idRecordVehicle", "recordVehicles")
             .leftJoinAndSelect("record.person", "person")
             .leftJoinAndSelect("person.device", "devices")
+            .leftJoinAndSelect("person.personTypes", "personTypes")
+            .leftJoinAndSelect("person.groups", "groups")
+            .leftJoinAndSelect("person.doctType", "doctType")
             .leftJoinAndSelect("devices.deviceType", "deviceType")
             .leftJoinAndSelect("person.vehicles", "vehicles")
             .leftJoinAndSelect("vehicles.vehicleType", "vehicleType")
-            .getMany()
+            .getManyAndCount();
 
-        const itemCount = rows.length
+        const itemCount = rows[1];
         const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
-        return new PageDto(rows, pageMeta);
+        return new PageDto(rows[0], pageMeta);
     }
 
     async findRecordById(id: number): Promise<Record_entry> {
