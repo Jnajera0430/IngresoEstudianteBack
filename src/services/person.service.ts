@@ -37,7 +37,7 @@ export class PersonService implements OnModuleInit {
             }
         })
 
-        if(validDocument){
+        if (validDocument) {
             throw new BadRequestException("Document must be unique.")
         }
 
@@ -172,6 +172,10 @@ export class PersonService implements OnModuleInit {
     async createPersonDocType(docType: CreatePersonDocTypeDto) {
         const newDocType = this.docTypeRepository.create(docType);
         return await this.docTypeRepository.save(newDocType);
+    }
+
+    async getAllDocumentType() {
+        return await this.docTypeRepository.find()
     }
 
     async onModuleInit() {

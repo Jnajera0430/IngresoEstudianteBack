@@ -18,6 +18,14 @@ export class PersonController {
         private readonly personService: PersonService
     ) { }
 
+    @Get('typedocuments')
+    async getAllDocumentType(){
+        return customResponse({
+            status: HttpStatus.OK,
+            message: 'List of document of type',
+            data: await this.personService.getAllDocumentType()
+        })
+    }
     @Get()
     @ApiOperation({
         summary: "people list",
@@ -199,4 +207,5 @@ export class PersonController {
             data: await this.personService.updatePerson(person)
         });
     }
+
 }
