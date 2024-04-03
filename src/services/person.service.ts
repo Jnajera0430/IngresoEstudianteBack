@@ -28,15 +28,16 @@ export class PersonService implements OnModuleInit {
      */
     async createPerson(person: CreatePerson): Promise<Person> {
         const { docType, document, firtsName, lastName, personTypes } = person;
-        const validDocument = this.personRepository.findOne({
+        const validDocument = await this.personRepository.findOne({
             where: {
                 document,
                 doctType: {
                     id: docType
                 }
+
             }
         })
-
+        
         if (validDocument) {
             throw new BadRequestException("Document must be unique.")
         }
