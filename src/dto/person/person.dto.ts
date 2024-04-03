@@ -1,4 +1,4 @@
-import { IsNumber, IsString, IsNotEmpty, IsBooleanString, ValidateNested, IsArray, isNotEmpty, IsNotIn, IsInt, IsDefined } from "class-validator";
+import { IsNumber, IsString, IsNotEmpty, IsBooleanString, ValidateNested, IsArray, isNotEmpty, IsNotIn, IsInt, IsDefined, Min, Max } from "class-validator";
 import { Type } from "class-transformer";
 import { Device } from "src/entitys/device.entity";
 import { DoctType } from "src/entitys/doctType.entity";
@@ -55,6 +55,8 @@ export class CreatePerson {
     lastName: string;
     @IsNotEmpty()
     @IsNumber()
+    @Min(0)
+    @Max(2147483647) 
     document: number;
     @IsNotEmpty()
     @IsNumber()
