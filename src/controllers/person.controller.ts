@@ -59,7 +59,7 @@ export class PersonController {
         description: 'Example response of person',
         data: {
             id: 1212,
-            firtsName: 'Lazlo Gabriel',
+            firstName: 'Lazlo Gabriel',
             lastName: 'Caputo Arias',
             docType: {
                 id: 1,
@@ -101,7 +101,7 @@ export class PersonController {
         example1: {
             summary: 'data required to create a person',
             value: {
-                firtsName: 'string',
+                firstName: 'string',
                 lastName: 'string',
                 document: 'string',
                 docType: 'DoctType',
@@ -116,7 +116,7 @@ export class PersonController {
         description: 'Example of a response when creating a new person',
         data: {
             id: 1212,
-            firtsName: 'Lazlo Gabriel',
+            firstName: 'Lazlo Gabriel',
             lastName: 'Caputo Arias',
             docType: {
                 id: 1,
@@ -159,7 +159,7 @@ export class PersonController {
             summary: 'data required to edit a person',
             value: {
                 id: 'number',
-                'firtsName?': 'string',
+                'firstName?': 'string',
                 'lastName?': 'string',
                 'document?': 'string',
                 'state?': 'boolean',
@@ -178,7 +178,7 @@ export class PersonController {
         description: 'Example of a response when update a person',
         data: {
             id: 1212,
-            firtsName: 'Lazlo Gabriel',
+            firstName: 'Lazlo Gabriel',
             lastName: 'Caputo Arias',
             docType: {
                 id: 1,

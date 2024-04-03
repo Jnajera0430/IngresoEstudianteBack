@@ -16,7 +16,7 @@ export class PersonDto {
     id?: number;
 
     @ApiProperty()
-    firtsName: string;
+    firstName: string;
 
     @ApiProperty()
     lastName: string;
@@ -49,7 +49,7 @@ export class PersonDto {
 export class CreatePerson {
     @IsNotEmpty()
     @IsString()
-    firtsName: string;
+    firstName: string;
     @IsNotEmpty()
     @IsString()
     lastName: string;
@@ -67,7 +67,7 @@ export class CreatePerson {
 export class createPersonAprendizDTO extends PartialType(PersonDto) {
     @IsNotEmpty()
     @IsString()
-    firtsName: string;
+    firstName: string;
     @IsNotEmpty()
     @IsString()
     lastName: string;
@@ -109,7 +109,7 @@ export class CreateDeviceVehicleToPerson extends PartialType(PersonDto) {
 
 // export class CreatePerson {
 //     id?: number;
-//     firtsName: string;
+//     firstName: string;
 //     lastName: string;
 //     document: string;
 //     state?: boolean;
@@ -123,7 +123,7 @@ export class CreateDeviceVehicleToPerson extends PartialType(PersonDto) {
 
 // export class UpdatePerson {
 //     id: number;
-//     firtsName?: string;
+//     firstName?: string;
 //     lastName?: string;
 //     document?: string;
 //     state?: boolean;
