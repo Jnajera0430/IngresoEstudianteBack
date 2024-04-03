@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreatePerson, PersonDto, UpdatePerson } from 'src/dto/person/person.dto';
+import { CreatePerson, PersonDto, UpdatePerson, createPersonAprendizDTO } from 'src/dto/person/person.dto';
 import { CreatePersonDocTypeDto } from 'src/dto/person/personDocType';
 import { CreatePersonTypeDto, PersonTypeEnum } from 'src/dto/person/personType.dto';
 import { DoctType } from 'src/entitys/doctType.entity';
@@ -27,7 +27,21 @@ export class PersonService implements OnModuleInit {
      * @returns Promise<Person>
      */
     async createPerson(person: CreatePerson): Promise<Person> {
-        const newPerson = this.personRepository.create(person);
+        const { docType, document, firtsName, lastName, personTypes } = person;
+        const validDocument = this.personRepository.findOne({
+            where: {
+                document,
+                doctType: {
+                    id: docType
+                }
+            }
+        })
+
+        if(validDocument){
+            throw new BadRequestException("Document must be unique.")
+        }
+
+        const newPerson = this.personRepository.create({ document, firtsName, lastName, personTypes: { id: personTypes }, doctType: { id: docType } });
         return await this.personRepository.save(newPerson);
     }
 
@@ -38,10 +52,8 @@ export class PersonService implements OnModuleInit {
      * @returns Promise<Person>
      */
 
-    async createPersonAprendiz(person: CreatePerson): Promise<Person> {
+    async createPersonAprendiz(person: createPersonAprendizDTO): Promise<Person> {
         const newAprendiz = this.personRepository.create(person);
-        console.log({ person });
-
         const docType = await this.docTypeRepository.findOne({ where: { name: person.docType.name } });
         const personType = await this.personTypeRepository.findOne({ where: { name: PersonTypeEnum.APRENDIZ } })
         if (!docType) {
@@ -79,14 +91,6 @@ export class PersonService implements OnModuleInit {
         const { entities } = await queryBuilder.getRawAndEntities();
         const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
         return new PageDto(entities, pageMeta);
-        // return await this.personRepository.find({
-        //     where: {
-        //         state: true
-        //     },
-        //     relations: ["groups", "personTypes", "device", "vehicles", "recorEntry", 'doctType'],
-        //     skip: (1 -1)  * 1,
-        //     take: 1
-        // });
     }
     /**
      * Receives a parameter id of type number
@@ -112,18 +116,13 @@ export class PersonService implements OnModuleInit {
      */
     async getPersonByDocument(document: number): Promise<Person> | null {
         return await this.personRepository.createQueryBuilder("person")
-        .where({"document": document})
-        .leftJoinAndSelect("person.personTypes", "personTypes")
+            .where({ "document": document })
+            .leftJoinAndSelect("person.personTypes", "personTypes")
             .leftJoinAndSelect("person.device", "device")
             .leftJoinAndSelect("device.deviceType", "deviceType")
             .leftJoinAndSelect("person.vehicles", "vehicles")
             .leftJoinAndSelect("vehicles.vehicleType", "vehicleType")
             .getOne()
-        // return await this.personRepository.findOne({
-        //     where: {
-        //         document
-        //     }, relations: [ "personTypes", 'doctType']
-        // });
     }
 
     /**

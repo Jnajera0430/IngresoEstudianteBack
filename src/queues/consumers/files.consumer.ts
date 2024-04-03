@@ -5,7 +5,7 @@ import {
   FILE_ONE_UPLOAD_WORKER,
   FILE_UPLOAD_QUEUE,
 } from 'src/constants/queues';
-import { CreatePerson } from 'src/dto/person/person.dto';
+import { CreatePerson, createPersonAprendizDTO } from 'src/dto/person/person.dto';
 import { DataOfFileExcel } from 'src/dto/person/personFile.dto';
 import { PersonTypeEnum } from 'src/dto/person/personType.dto';
 import { sleep } from 'src/helpers/delay';
@@ -53,7 +53,7 @@ export class FilesConsumer {
         const progress = (progressCount++) / people.length;
         job.progress(progress * 100);
         const personFound = await this.personService.getPersonByDocument(person.document);
-        let newPerson = new CreatePerson();
+        let newPerson = new createPersonAprendizDTO();
         newPerson = Object.assign(person,newPerson);
         if (!personFound) {
           newPerson.groups = groupFound;

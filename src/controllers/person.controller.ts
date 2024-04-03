@@ -29,9 +29,9 @@ export class PersonController {
     }))
     @ApiResponse(responseErrorServer())
     async getListPeople(
-        @Query() pageOptionsDto:PageOptionsDto
+        @Query() pageOptionsDto: PageOptionsDto
     ): Promise<ICustomResponse> {
-        const {data,meta} = await this.personService.getPeople(pageOptionsDto)
+        const { data, meta } = await this.personService.getPeople(pageOptionsDto)
         return customResponse({
             status: HttpStatus.OK,
             message: 'List of people registred',
@@ -130,7 +130,7 @@ export class PersonController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async postCreatePerson(newPerson: CreatePerson): Promise<ICustomResponse> {
+    async postCreatePerson(@Body() newPerson: CreatePerson): Promise<ICustomResponse> {
         return customResponse({
             status: HttpStatus.CREATED,
             message: 'Person has been created.',
@@ -192,7 +192,7 @@ export class PersonController {
         error: 'An unexpected error has occurred'
     }))
     @ApiResponse(responseErrorServer())
-    async patchUpdatePerson(@Body() person: UpdatePerson):Promise<ICustomResponse> {
+    async patchUpdatePerson(@Body() person: UpdatePerson): Promise<ICustomResponse> {
         return customResponse({
             status: HttpStatus.CREATED,
             message: 'Person has been updated.',

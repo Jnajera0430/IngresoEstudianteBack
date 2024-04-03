@@ -41,12 +41,30 @@ export class PersonDto {
 
     @ApiProperty()
     vehicles?: Vehicle[];
-    
+
     @ApiProperty()
     recordEntry?: Record_entry[];
 }
 
-export class CreatePerson extends PartialType(PersonDto) {
+export class CreatePerson {
+    @IsNotEmpty()
+    @IsString()
+    firtsName: string;
+    @IsNotEmpty()
+    @IsString()
+    lastName: string;
+    @IsNotEmpty()
+    @IsNumber()
+    document: number;
+    @IsNotEmpty()
+    @IsNumber()
+    docType: number;
+    @IsNotEmpty()
+    @IsNumber()
+    personTypes: number;
+}
+
+export class createPersonAprendizDTO extends PartialType(PersonDto) {
     @IsNotEmpty()
     @IsString()
     firtsName: string;
@@ -57,35 +75,31 @@ export class CreatePerson extends PartialType(PersonDto) {
     @IsString()
     document: number;
     @IsNotEmpty()
-    @ValidateNested()
-    @Type(() => PersonDocumentTypeDto)
     docType: PersonDocumentTypeDto;
     @IsNotEmpty()
-    @ValidateNested()
-    @Type(() => PersonTypeDto)
     personTypes: PersonTypeDto;
 }
 
-export class UpdatePerson extends PartialType(PersonDto){
+export class UpdatePerson extends PartialType(PersonDto) {
     @IsNotEmpty()
     @IsNumber()
-    id:number
+    id: number
 }
 
-export class FindPersonDto extends PartialType(PersonDto){
+export class FindPersonDto extends PartialType(PersonDto) {
     @IsNotEmpty()
     @IsNumber()
-    id:number
+    id: number
 }
 
-export class FindPersonDocumentDto extends PartialType(PersonDto){
+export class FindPersonDocumentDto extends PartialType(PersonDto) {
     @IsNotEmpty()
     @IsInt()
     @IsDefined()
-    document:number
+    document: number
 }
 
-export class CreateDeviceVehicleToPerson extends PartialType(PersonDto){
+export class CreateDeviceVehicleToPerson extends PartialType(PersonDto) {
     @IsNotEmpty()
     @IsInt()
     @IsDefined()
