@@ -3,13 +3,15 @@ import { BadRequestException, Controller, MessageEvent, Post, Req, Sse, Uploaded
 import { FileInterceptor } from "@nestjs/platform-express";
 import { QueuesService } from "src/queues/queues.service";
 import { UserService } from "src/services/user.service";
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('events')
 export class SSEController {
 
   constructor(
     private readonly queueService: QueuesService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly jwtServices: JwtService,
   ) { }
 
   @Sse('sse')
@@ -23,14 +25,19 @@ export class SSEController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async postUploadFileUser(
-    @Req() req: Request,
+    @Req() req: any,
     @UploadedFile() file: Express.Multer.File,
   ) {
     const typesRequired = ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel"]
     if (!typesRequired.includes(file.mimetype))
       throw new BadRequestException({ message: "Files is not allowed. Only is allowed excel type file.", typesRequired })
 
-    return await this.userService.readFile(file);
+      // get claims from token
+      const token = req.cookies['access_token'];
+      const decoded: any = this.jwtServices.verify(token);
+    console.log('decoded', decoded.user.id);
+
+    return await this.userService.readFile(file, decoded.user.id);
 
   }
 }

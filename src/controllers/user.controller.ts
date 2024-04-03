@@ -45,6 +45,7 @@ import { customResponse } from 'src/services/customResponse.service';
 import { debug } from 'console';
 import { ICustomResponse } from 'src/intefaces/customResponse.interface';
 import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
+import { ParameterDateDto } from 'src/dto/page/parameterDate.dto';
 @Controller('user')
 @ApiTags('api-User')
 export class UserController {
@@ -66,10 +67,19 @@ export class UserController {
     @Body() newUser: CreateUserDto,
   ): Promise<ICustomResponse> {
     try {
+      const response = await this.userService.createUser(newUser)
+      if (response) {
+        return customResponse({
+          status: HttpStatus.CREATED,
+          message: 'User has been created',
+          data: response
+        });
+      }
+      req.res.status(HttpStatus.BAD_REQUEST);
       return customResponse({
-        status: HttpStatus.CREATED,
-        message: 'User has been created',
-        data: await this.userService.createUser(newUser)
+        status: HttpStatus.BAD_REQUEST,
+        message: 'User has not been created',
+        data: response
       });
     } catch (error) {
       debug(error);
@@ -96,7 +106,7 @@ export class UserController {
       });
     } catch (error) {
       debug(error);
-      return error;     
+      return error;
     }
   }
 
@@ -154,7 +164,7 @@ export class UserController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     try {
-      return await this.userService.readFile(file);
+      // return await this.userService.readFile(file);
     } catch (error) {
       debug(error);
       return error;
@@ -167,10 +177,25 @@ export class UserController {
     @UploadedFiles() files: Express.Multer.File[],
   ) {
     try {
-      return await this.userService.readFiles(files);
+      // return await this.userService.readFiles(files);
     } catch (error) {
       debug(error);
       return error;
     }
   }
+
+  @Get('uploads/history')
+  async getUploadsHistory(@Query() parameterDateDto?:PageOptionsDto):Promise<ICustomResponse> {
+    try {
+      return customResponse({
+        status: HttpStatus.OK,
+        message: 'Uploads history.',
+        data: await this.userService.getUploadsLogs(parameterDateDto)
+      });
+    } catch (error) {
+      debug(error);
+      return error;
+    }
+  }
+
 }

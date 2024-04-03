@@ -14,7 +14,7 @@ export class UserDto {
 
 export class CreateUserDto {
     @IsNumber()
-    id?: number;
+    id?: number = 0;
 
     @IsEmail()
     @IsNotEmpty()

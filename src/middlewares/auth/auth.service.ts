@@ -38,6 +38,7 @@ export class AuthService {
 
         const payload: TokenDto = {
             sub: userFound.id, user: {
+                id: userFound.id,
                 email: userFound.email,
                 username: userFound.username,
                 role: userFound.role.map(rol => ({ tipo: rol.tipo })),

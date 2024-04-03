@@ -16,6 +16,7 @@ import { PageMetaDto } from 'src/dto/page/pageMeta.dto';
 import { PageDto } from 'src/dto/page/page.dto';
 import { DataNotValid } from 'src/exceptions/customExcepcion';
 import { validCampusFile, validDataEmpty } from 'src/helpers/validFile';
+import { UploadLogs } from 'src/entitys/upload_logs.entity';
 @Injectable()
 export class UserService implements OnModuleInit {
   /**
@@ -30,6 +31,7 @@ export class UserService implements OnModuleInit {
     private readonly rolesServices: RolesService,
     private readonly fileManaggerQueue: FileService,
     private readonly queueService: QueuesService,
+    @InjectRepository(UploadLogs) private readonly uploadLogsRepository: Repository<UploadLogs>,
   ) { }
 
   /**
@@ -99,6 +101,16 @@ export class UserService implements OnModuleInit {
    */
   async createUser(newUser: CreateUserDto): Promise<User> {
     try {
+      const userFound: User = await this.userRepository.findOne({
+        where: {
+          email: newUser.email,
+        }
+      });
+      console.log(userFound);
+
+      if (userFound) {
+        throw new NotFoundException('User already exists');
+      }
       const bcryptService: Bcrypt = new Bcrypt();
       newUser.password = await bcryptService.hashPassword(newUser.password);
       const user = this.userRepository.create(newUser);
@@ -158,8 +170,20 @@ export class UserService implements OnModuleInit {
     });
   }
 
+  async saveLogUploadFile(name: string, tipo: string, userId: number) {
+    return await this.uploadLogsRepository.save({
+      name,
+      tipo,
+      user: {
+        id: userId
+      }
+    });
+  }
 
-  async readFile(file: Express.Multer.File) {
+
+  async readFile(file: Express.Multer.File, userId: number) {
+    this.saveLogUploadFile(file.originalname, file.mimetype, userId);
+
     const workBook = read(file.buffer, {
       type: 'buffer',
       raw: true,
@@ -285,8 +309,8 @@ export class UserService implements OnModuleInit {
     const size = files.length;
     const arrayDatosOfReport = []
     for (let file of files) {
-      const datosOfReport = this.readFile(file);
-      arrayDatosOfReport.push(datosOfReport);
+      // const datosOfReport = this.readFile(file);
+      // arrayDatosOfReport.push(datosOfReport);
     }
     return arrayDatosOfReport;
   }
@@ -327,6 +351,21 @@ export class UserService implements OnModuleInit {
       console.log('Users: created');
 
     }
+  }
+
+  async getUploadsLogs(pageOptionsDto: PageOptionsDto) {
+    const alias = 'upload_logs';
+    const queryBuilder = this.uploadLogsRepository.createQueryBuilder(alias)
+    queryBuilder
+      .select([`${alias}.id`, `${alias}.name`, `${alias}.tipo`, `${alias}.createdAt`])
+      .leftJoinAndSelect(`${alias}.user`, 'user')
+      .orderBy(`${alias}.createdAt`, pageOptionsDto.order)
+      .skip(pageOptionsDto.skip)
+      .take(pageOptionsDto.take)
+    const itemCount = await queryBuilder.getCount();
+    const entities = await queryBuilder.getMany();
+    const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
+    return new PageDto(entities, pageMeta);
   }
 
 
