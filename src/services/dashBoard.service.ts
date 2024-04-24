@@ -22,24 +22,25 @@ export class DashBoardService {
         const today = new Date();
         const people_last_24h = await this.recordRepository.countBy({
             checkIn: Between(
-                new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0),
-                new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59),
+                new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0),
+                new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59),
             )
         });
         const peopleInside = await this.recordRepository.countBy({
             checkIn: Between(
-                new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0),
-                new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59),
+                new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0),
+                new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59),
             ),
             checkOut: IsNull()
         });
+        
         for (let i = 0; i < 24; i++) {
             let start = `${i < 10 ? `0${i}` : i}:00`;
             let end = `${i < 10 ? `0${i}` : i}:59`;
             let peopleCount = await this.recordRepository.countBy({
                 checkIn: Between(
                     new Date(paramDateDto.fromYear, paramDateDto.fromMonth, paramDateDto.fromDay, i, 0, 0),
-                    new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), i, 59, 59),
+                    new Date(today.getFullYear(), today.getMonth(), today.getDate(), i, 59, 59),
                 )
             })
             linear_graph_per_hour.push([`${start} - ${end}`,peopleCount]);
