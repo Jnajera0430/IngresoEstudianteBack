@@ -16,12 +16,12 @@ export class TokenMiddleware implements NestMiddleware {
      * @param next Express->NextFunction
      */
     async use(req: Request, res: Response, next: NextFunction) {
-        const token: string | undefined = req.cookies.access_token
-        
+        const token: string | undefined = req.headers.authorization;
+
         if (!token) {
             throw new InvalidTokenException('Invalid token or not found.');
         }
-        if (!(await this.verifyToken(token))) {
+        if (!(await this.verifyToken(token.split(' ')[1] || ''))) {
             throw new InvalidTokenException('Invalid token or has expired.');
         }
         if (Object.keys(this.decode).length < 1) {

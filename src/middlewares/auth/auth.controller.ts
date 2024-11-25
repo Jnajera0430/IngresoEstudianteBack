@@ -5,6 +5,7 @@ import {
   Headers,
   HttpCode,
   HttpStatus,
+  Options,
   Post,
   Req,
   Res,
@@ -51,16 +52,10 @@ export class AuthController {
     const { token, rol } = await this.authService.login(userData);
     switch (rol.id) {
       case RoleEnumByTypeRole.PUESTO_DE_SERVICIO:
-        response.setHeader('Set-Cookie', [
-          `access_token=${token};`,
-        ]);
         return {
           access_token: token,
         };
       default:
-        response.setHeader('Set-Cookie', [
-          `access_token=${token}; Path=/; Max-Age=86400;`,
-        ]);
         return {
           access_token: token,
         };
@@ -70,7 +65,8 @@ export class AuthController {
   // validate if token is valid
   @Get('validate')
   validateToken(@Req() request) {
-    const token = request.cookies['access_token']; // Reemplaza 'your_cookie_name' con el nombre real de tu cookie
+    // const token = request.cookies['access_token']; // Reemplaza 'your_cookie_name' con el nombre real de tu cookie
+    const token = request.headers['authorization'].split(' ')[1];
     console.log('token', token);
     if (!token) {
       throw new UnauthorizedException('Token cookie is missing');
