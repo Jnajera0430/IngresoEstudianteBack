@@ -7,7 +7,7 @@ import { DeleteResult, Repository } from 'typeorm';
 import { RolesService } from './roles.service';
 import { Role } from 'src/entitys/roles.entity';
 import { FileService } from 'src/queues/files/files.service';
-import { read } from 'Xlsx'
+import { read } from 'xlsx'
 import { CellObject, DataOfFileExcel, InfoOfProgram, PersonFile } from 'src/dto/person/personFile.dto';
 import { QueuesService } from 'src/queues/queues.service';
 import { PersonTypeEnumDto } from 'src/dto/person/personDocType';
