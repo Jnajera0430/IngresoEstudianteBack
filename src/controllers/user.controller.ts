@@ -187,6 +187,7 @@ export class UserController {
     }
   }
 
+  @UserAllowed(RoleEnumByType.ADMINISTRADOR)
   @Get('uploads/history')
   async getUploadsHistory(@Query() parameterDateDto?:PageOptionsDto):Promise<ICustomResponse> {
     try {
