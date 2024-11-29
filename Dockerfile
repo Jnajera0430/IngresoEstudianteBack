@@ -53,6 +53,8 @@ COPY package*.json ./
 # Install app dependencies
 RUN yarn install
 
+RUN cd /app
+
 # Bundle app source
 COPY . /app
 
