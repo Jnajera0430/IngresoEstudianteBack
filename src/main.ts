@@ -8,11 +8,12 @@ import * as dotenv from 'dotenv';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: "*",
-    methods: "GET, POST, PUT, DELETE, OPTIONS",
-    allowedHeaders: "Content-Type, Authorization, X-Requested-With, Accept, Origin",
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
-  },);
+    optionsSuccessStatus: 204,
+    credentials: true,
+  });
 
   dotenv.config()
   //prefijo para la consulta en la api
