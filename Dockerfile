@@ -15,18 +15,18 @@ FROM node:18
 # CONFIG_KEY_FILES=f1l3K3yP4r4N0rm4l
 
 
-ARG PORT = 3000
-ARG HOST_FRONT = "https://pia.elprogramador.co"
-ARG DB_HOST = pia-postgres
-ARG DB_USER = estudiantesena
-ARG DB_PORT = 5432
-ARG DB_NAME = pia
-ARG DB_PASS = S3n450F1@
-ARG REDIS_PORT = 6379
-ARG REDIS_HOST = pia-redis
-ARG REDIS_USER = default
-ARG REDIS_PASS = r3d!s-(P1A)S3CuR3_P@ssw0rd
-ARG CONFIG_KEY_FILES = f1l3K3yP4r4N0rm4l
+ARG PORT=3000
+ARG HOST_FRONT="https://pia.elprogramador.co"
+ARG DB_HOST=pia-postgres
+ARG DB_USER=estudiantesena
+ARG DB_PORT=5432
+ARG DB_NAME=pia
+ARG DB_PASS=S3n450F1@
+ARG REDIS_PORT=6379
+ARG REDIS_HOST=pia-redis
+ARG REDIS_USER=default
+ARG REDIS_PASS=r3d!s-(P1A)S3CuR3_P@ssw0rd
+ARG CONFIG_KEY_FILES=f1l3K3yP4r4N0rm4l
 
 
 # Set environment variables
