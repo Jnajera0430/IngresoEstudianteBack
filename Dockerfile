@@ -57,7 +57,7 @@ RUN yarn install
 RUN cd /app
 
 # Bundle app source
-COPY . /app
+COPY . /app/
 
 # Creates a "dist" folder with the production build
 RUN yarn run build
