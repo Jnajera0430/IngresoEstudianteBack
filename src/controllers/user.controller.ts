@@ -55,6 +55,7 @@ export class UserController {
     private readonly userService: UserService
   ) { }
   //documentar la request
+  @UserAllowed(RoleEnumByType.ADMINISTRADOR)
   @Post()
   @ApiOperation({
     summary: 'Create new user',

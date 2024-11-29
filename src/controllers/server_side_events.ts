@@ -33,7 +33,7 @@ export class SSEController {
       throw new BadRequestException({ message: "Files is not allowed. Only is allowed excel type file.", typesRequired })
 
       // get claims from token
-      const token = req.cookies['access_token'];
+      const token = req.headers.authorization.split(' ')[1] || ''
       const decoded: any = this.jwtServices.verify(token);
     console.log('decoded', decoded.user.id);
 

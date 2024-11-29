@@ -182,7 +182,10 @@ export class UserService implements OnModuleInit {
 
 
   async readFile(file: Express.Multer.File, userId: number) {
+
     this.saveLogUploadFile(file.originalname, file.mimetype, userId);
+
+    console.log('file', file);
 
     const workBook = read(file.buffer, {
       type: 'buffer',
@@ -217,6 +220,8 @@ export class UserService implements OnModuleInit {
     //fecha fin
     const cellA9: string = workSheet['A9']?.v;
     const cellC9: string = workSheet['C9']?.v;
+
+    console.log('cellA2', cellA2);
 
     //Valida los datos vacios
     if (!validDataEmpty([cellA2, cellA3, cellA4, cellA6, cellA8, cellA9, cellC2, cellC3, cellC4, cellC6, cellC8, cellC9])) {
