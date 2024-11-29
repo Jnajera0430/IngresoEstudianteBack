@@ -11,7 +11,6 @@ async function bootstrap() {
     origin: "https://pia.elprogramador.co",
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    preflightContinue: false,
   },);
 
   dotenv.config()
