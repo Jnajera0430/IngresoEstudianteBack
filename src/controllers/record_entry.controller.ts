@@ -11,6 +11,7 @@ import { ICustomResponse } from 'src/intefaces/customResponse.interface';
 import { customResponse } from 'src/services/customResponse.service';
 import { RecordEntryService } from 'src/services/record_entry_and_out.service';
 
+@UserAllowed(RoleEnumByType.PUESTO_DE_SERVICIO, RoleEnumByType.ADMINISTRADOR, RoleEnumByType.AUDITOR)
 @Controller('records')
 @ApiTags('Api-records')
 //@UserAllowed() //De esta manera la anotacion permite a cualquier usuario y actua igual sobre todos los metodos.
