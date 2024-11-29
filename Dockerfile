@@ -45,6 +45,12 @@ ENV CONFIG_KEY_FILES={CONFIG_KEY_FILES}
 
 RUN mkdir /app
 
+RUN chown -R node:node /app
+
+USER node
+
+RUN cd /app
+
 # Create app directory
 WORKDIR /app
 
@@ -54,13 +60,13 @@ COPY package*.json ./
 # Install app dependencies
 RUN yarn install
 
-RUN cd /app
-
 # Bundle app source
-COPY . /app/
+COPY . .
 
 # Creates a "dist" folder with the production build
 RUN yarn run build
 
+EXPOSE 3000
+
 # Start the server using the production build
-CMD [ "node", "dist/main.js" ]
+CMD [ "yarn", "run", "start:prod" ]
