@@ -10,8 +10,11 @@ async function bootstrap() {
 
   app.enableCors({
     origin: '*',
+    credentials: true,
+    preflightContinue: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type, Accept',
+    allowedHeaders: 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+
   });
 
   dotenv.config()
