@@ -17,6 +17,7 @@ import { PageDto } from 'src/dto/page/page.dto';
 import { DataNotValid } from 'src/exceptions/customExcepcion';
 import { validCampusFile, validDataEmpty } from 'src/helpers/validFile';
 import { UploadLogs } from 'src/entitys/upload_logs.entity';
+import { eUserRole } from 'src/enums/eUserRole';
 @Injectable()
 export class UserService implements OnModuleInit {
   /**
@@ -326,27 +327,26 @@ export class UserService implements OnModuleInit {
         email: "superusuario@superuser.com",
         username: "Superusuario",
         password: "superUser123",
-        roles: [1]
+        roles: [eUserRole.Superusuario]
       },
       {
         email: "administrador@administrador.com",
         username: "Administrador",
         password: "administrador123",
-        roles: [2]
-      },
-      {
-        email: "auditor@Auditor.com",
-        username: "Auditor",
-        password: "auditor123",
-        roles: [3]
+        roles: [eUserRole.Administrador]
       },
       {
         email: "Puestodeservicio@servicio.com",
         username: "Punto de servicio",
         password: "servicio123",
-        roles: [4]
+        roles: [eUserRole.Puesto_de_servicio]
       },
-
+      {
+        email: "auditor@Auditor.com",
+        username: "Auditor",
+        password: "auditor123",
+        roles: [eUserRole.Auditor]
+      }
     ]
     const usersCount = await this.userRepository.count();
     if (usersCount === 0) {
