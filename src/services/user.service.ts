@@ -336,7 +336,7 @@ export class UserService implements OnModuleInit {
         roles: [eUserRole.Administrador]
       },
       {
-        email: "Puestodeservicio@servicio.com",
+        email: "puestodeservicio@servicio.com",
         username: "Punto de servicio",
         password: "servicio123",
         roles: [eUserRole.Puesto_de_servicio]
