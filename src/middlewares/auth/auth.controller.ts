@@ -2,10 +2,8 @@ import {
   Body,
   Controller,
   Get,
-  Headers,
   HttpCode,
   HttpStatus,
-  Options,
   Post,
   Req,
   Res,
@@ -27,7 +25,7 @@ import { Response } from 'express';
 import { bodyExampleAuthUser } from 'src/document/body.document';
 import { responseOkAuthUser } from 'src/document/responses.200';
 import { responseErrorExampleAuthUser } from 'src/document/responses.400';
-import { RoleEnumByTypeRole } from "src/constants/roles.enum";
+import { RoleEnumByType } from "src/constants/roles.enum";
 
 @Controller('auth')
 @ApiTags('Auth-user')
@@ -50,14 +48,19 @@ export class AuthController {
     @Body() userData: AuthUserDto,
   ): Promise<any> {
     const { token, rol } = await this.authService.login(userData);
-    switch (rol.id) {
-      case RoleEnumByTypeRole.PUESTO_DE_SERVICIO:
+    switch (rol.tipo) {
+      case RoleEnumByType.PUESTO_DE_SERVICIO:
+        response.setHeader('Set-Cookie', [
+          `access_token=${token};`,
+        ]);
         return {
           access_token: token,
+          rol
         };
       default:
         return {
           access_token: token,
+          rol
         };
     }
   }
