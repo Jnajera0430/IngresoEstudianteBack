@@ -6,12 +6,16 @@ import { configComponents } from './document/components.document';
 import { ValidationPipe } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
+
   app.enableCors({
-    origin: [process.env.HOST_LOCAL, process.env.HOST_FRONT],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    origin: '*',
     credentials: true,
-  },);
+    preflightContinue: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+
+  });
 
   dotenv.config()
   //prefijo para la consulta en la api

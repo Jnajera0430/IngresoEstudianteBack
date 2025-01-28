@@ -9,7 +9,7 @@ import { FileService } from './files/files.service';
 import { MulterModule } from '@nestjs/platform-express';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
-import { BullAdapter } from '@bull-board/api/BullAdapter';
+import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { FilesConsumer } from './consumers/files.consumer';
 import { UserModule } from 'src/modules/user.module';
 import { PersonModule } from 'src/modules/person.module';

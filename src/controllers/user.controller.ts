@@ -46,6 +46,8 @@ import { debug } from 'console';
 import { ICustomResponse } from 'src/intefaces/customResponse.interface';
 import { PageOptionsDto } from 'src/dto/page/pageOptions.dto';
 import { ParameterDateDto } from 'src/dto/page/parameterDate.dto';
+import { UserAllowed } from 'src/decorators/UserAllowed.decorator';
+import { RoleEnumByType } from 'src/constants/roles.enum';
 @Controller('user')
 @ApiTags('api-User')
 export class UserController {
@@ -53,6 +55,7 @@ export class UserController {
     private readonly userService: UserService
   ) { }
   //documentar la request
+  @UserAllowed(RoleEnumByType.ADMINISTRADOR)
   @Post()
   @ApiOperation({
     summary: 'Create new user',
@@ -88,6 +91,7 @@ export class UserController {
   }
 
   @Get()
+  @UserAllowed(RoleEnumByType.ADMINISTRADOR, RoleEnumByType.AUDITOR)
   @ApiOperation({
     summary: 'Users list',
     description: 'Endpoint to list all users',
@@ -184,6 +188,7 @@ export class UserController {
     }
   }
 
+  @UserAllowed(RoleEnumByType.ADMINISTRADOR)
   @Get('uploads/history')
   async getUploadsHistory(@Query() parameterDateDto?:PageOptionsDto):Promise<ICustomResponse> {
     try {

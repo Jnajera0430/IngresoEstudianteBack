@@ -5,6 +5,7 @@ import {
   Headers,
   HttpCode,
   HttpStatus,
+  Options,
   Post,
   Req,
   Res,
@@ -59,9 +60,6 @@ export class AuthController {
           rol
         };
       default:
-        response.setHeader('Set-Cookie', [
-          `access_token=${token}; Path=/; Max-Age=86400;`,
-        ]);
         return {
           access_token: token,
           rol
@@ -72,7 +70,8 @@ export class AuthController {
   // validate if token is valid
   @Get('validate')
   validateToken(@Req() request) {
-    const token = request.cookies['access_token']; // Reemplaza 'your_cookie_name' con el nombre real de tu cookie
+    // const token = request.cookies['access_token']; // Reemplaza 'your_cookie_name' con el nombre real de tu cookie
+    const token = request.headers['authorization'].split(' ')[1];
     console.log('token', token);
     if (!token) {
       throw new UnauthorizedException('Token cookie is missing');

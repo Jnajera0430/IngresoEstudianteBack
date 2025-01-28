@@ -35,4 +35,5 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # variables de entorno
-.env
+pnpm-lock.yaml
+**/*.env

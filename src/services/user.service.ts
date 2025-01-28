@@ -7,7 +7,7 @@ import { DeleteResult, Repository } from 'typeorm';
 import { RolesService } from './roles.service';
 import { Role } from 'src/entitys/roles.entity';
 import { FileService } from 'src/queues/files/files.service';
-import { read } from 'Xlsx'
+import { read } from 'xlsx'
 import { CellObject, DataOfFileExcel, InfoOfProgram, PersonFile } from 'src/dto/person/personFile.dto';
 import { QueuesService } from 'src/queues/queues.service';
 import { PersonTypeEnumDto } from 'src/dto/person/personDocType';
@@ -17,6 +17,7 @@ import { PageDto } from 'src/dto/page/page.dto';
 import { DataNotValid } from 'src/exceptions/customExcepcion';
 import { validCampusFile, validDataEmpty } from 'src/helpers/validFile';
 import { UploadLogs } from 'src/entitys/upload_logs.entity';
+import { eUserRole } from 'src/enums/eUserRole';
 @Injectable()
 export class UserService implements OnModuleInit {
   /**
@@ -182,7 +183,10 @@ export class UserService implements OnModuleInit {
 
 
   async readFile(file: Express.Multer.File, userId: number) {
+
     this.saveLogUploadFile(file.originalname, file.mimetype, userId);
+
+    console.log('file', file);
 
     const workBook = read(file.buffer, {
       type: 'buffer',
@@ -217,6 +221,8 @@ export class UserService implements OnModuleInit {
     //fecha fin
     const cellA9: string = workSheet['A9']?.v;
     const cellC9: string = workSheet['C9']?.v;
+
+    console.log('cellA2', cellA2);
 
     //Valida los datos vacios
     if (!validDataEmpty([cellA2, cellA3, cellA4, cellA6, cellA8, cellA9, cellC2, cellC3, cellC4, cellC6, cellC8, cellC9])) {
@@ -321,27 +327,26 @@ export class UserService implements OnModuleInit {
         email: "superusuario@superuser.com",
         username: "Superusuario",
         password: "superUser123",
-        roles: [1]
+        roles: [eUserRole.Superusuario]
       },
       {
         email: "administrador@administrador.com",
         username: "Administrador",
         password: "administrador123",
-        roles: [2]
+        roles: [eUserRole.Administrador]
+      },
+      {
+        email: "puestodeservicio@servicio.com",
+        username: "Punto de servicio",
+        password: "servicio123",
+        roles: [eUserRole.Puesto_de_servicio]
       },
       {
         email: "auditor@Auditor.com",
         username: "Auditor",
         password: "auditor123",
-        roles: [3]
-      },
-      {
-        email: "Puestodeservicio@servicio.com",
-        username: "Punto de servicio",
-        password: "servicio123",
-        roles: [4]
-      },
-
+        roles: [eUserRole.Auditor]
+      }
     ]
     const usersCount = await this.userRepository.count();
     if (usersCount === 0) {
